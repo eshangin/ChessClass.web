@@ -15,8 +15,8 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     const boardConfig: ChessBoardJS.BoardConfig = {
       draggable: true,
-      pieceTheme: 'https://s3-us-west-2.amazonaws.com/chessimg/{piece}.png',
-      position: 'start'
+      pieceTheme: '/images/chesspieces/{piece}.png',
+      position: 'r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R'
     };
 
     const board = ChessBoard('board', boardConfig);
