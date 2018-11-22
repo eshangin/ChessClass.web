@@ -87,10 +87,11 @@ export class AppComponent implements OnInit {
       status = 'Game over, ' + moveColor + ' is in checkmate.';
     }
   
-    // draw?
-    else if (this.engine.in_draw() === true) {
-      status = 'Game over, drawn position';
-    }
+    // TODO :: I think we need in_threefold_repetition(), insufficient_material() checks instead (and maybe other checks?)
+    // // draw?
+    // else if (this.engine.in_draw() === true) {
+    //   status = 'Game over, drawn position';
+    // }
   
     // game still on
     else {
