@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
   //currentFen: string = 'r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19';
   currentFen: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   currentPgn: string;
+  gameStatus: string;
   title = 'Hi!';
 
   constructor() {
@@ -34,6 +35,8 @@ export class AppComponent implements OnInit {
 
     this.board = ChessBoard('board', boardConfig);
     this.board.position(this.engine.fen());
+
+    this.updateStatus();
   }
 
   private onDrop(source: string, target: string): string {
@@ -47,6 +50,8 @@ export class AppComponent implements OnInit {
     if (move == null) {
         return 'snapback';
     }
+
+    this.updateStatus();
   };
 
   private onSnapEndFunc() {
@@ -68,4 +73,37 @@ export class AppComponent implements OnInit {
         ((String(turn).toLowerCase() === 'b') && (piece.search(/^w/) !== -1))
     );
   }
+
+  private updateStatus() {
+    var status = '';
+  
+    var moveColor = 'White';
+    if (this.engine.turn() === 'b') {
+      moveColor = 'Black';
+    }
+  
+    // checkmate?
+    if (this.engine.in_checkmate() === true) {
+      status = 'Game over, ' + moveColor + ' is in checkmate.';
+    }
+  
+    // draw?
+    else if (this.engine.in_draw() === true) {
+      status = 'Game over, drawn position';
+    }
+  
+    // game still on
+    else {
+      status = moveColor + ' to move';
+  
+      // check?
+      if (this.engine.in_check() === true) {
+        status += ', ' + moveColor + ' is in check';
+      }
+    }
+  
+    this.gameStatus = status;
+    this.currentFen = this.engine.fen();
+    this.currentPgn = this.engine.pgn();
+  };  
 }
