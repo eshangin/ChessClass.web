@@ -1,14 +1,13 @@
-<h1>{{title}}</h1>
-<nav>
-  Nav will be here!
-</nav>
+<div class="container">
+  <nav></nav>
 
-<div id="board" style="width: 400px; margin: 20px"></div>
+  <div id="board" style="width: 400px; margin-top: 100px;"></div>
 
-<div>
-  <div>{{gameStatus}}</div>
-  <div>{{currentFen}}</div>
-  <div>{{currentPgn}}</div>
+  <div class="mt-5">
+    <p>{{gameStatus}}</p>
+    <p>{{currentFen}}</p>
+    <p>{{currentPgn}}</p>
+  </div>
+
+  <router-outlet></router-outlet>
 </div>
-
-<router-outlet></router-outlet>

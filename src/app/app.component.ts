@@ -16,7 +16,6 @@ export class AppComponent implements OnInit {
   currentFen: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   currentPgn: string;
   gameStatus: string;
-  title = 'Hi!';
 
   constructor() {
     this.engine = new Chess();
