@@ -11,9 +11,9 @@ import * as Chess from 'chess.js';
 export class ChessBoardComponent implements OnInit {
 
   @Input() fen: string;
-  @Output() pieceMoved = new EventEmitter<ChessInstance>();
-  @Output() boardInitiated = new EventEmitter<ChessInstance>();
-  private engine: ChessInstance;
+  @Output() private pieceMoved = new EventEmitter<ChessBoardComponent>();
+  @Output() private boardInitiated = new EventEmitter<ChessBoardComponent>();
+  engine: ChessInstance;
   private board: ChessBoardInstance;
 
   constructor(private elementRef: ElementRef) {
@@ -35,8 +35,26 @@ export class ChessBoardComponent implements OnInit {
       this.board = ChessBoard(this.elementRef.nativeElement, boardConfig);
       this.board.position(this.engine.fen());
 
-      this.boardInitiated.emit(this.engine);
+      this.boardInitiated.emit(this);
     }
+  }
+
+  undoMove() {
+    this.engine.undo();
+    this.board.position(this.engine.fen());
+  }
+
+  undoAllMoves() {
+    if (this.canUndo()) {
+      this.undoMove();
+      setTimeout(() => {
+        this.undoAllMoves();
+      }, 150);
+    }
+  }
+
+  canUndo(): boolean {
+    return this.engine.history().length != 0;
   }
 
   private onDrop(source: string, target: string): string {
@@ -51,7 +69,7 @@ export class ChessBoardComponent implements OnInit {
         return 'snapback';
     }
 
-    this.pieceMoved.emit(this.engine);
+    this.pieceMoved.emit(this);
   };
 
   private onSnapEndFunc() {
