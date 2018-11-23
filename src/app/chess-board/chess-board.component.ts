@@ -56,6 +56,12 @@ export class ChessBoardComponent implements OnInit {
     return this.engine.history().length != 0;
   }
 
+  movePiece(move: string | ChessJS.Move) {
+    this.engine.move(move);
+    this.board.move(move.toString());
+    this.pieceMoved.emit(this);
+  }
+
   private onDrop(source: string, target: string): string {
     const tryMove: ChessJS.Move = {
         from: source,
