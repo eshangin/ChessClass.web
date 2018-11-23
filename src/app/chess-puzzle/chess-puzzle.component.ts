@@ -23,11 +23,11 @@ export class ChessPuzzleComponent implements OnInit {
   onPieceMoved(board: ChessBoardComponent) {
     if (this.isCorrectPuzzleMove(this.puzzleInfo, board.engine)) {
       console.log('Correct move!!!');
-    }
 
-    if (this.arraysEqual(this.puzzleInfo.solutionMovements, board.engine.history())) {
-      console.log('Done!!!');
-    }    
+      if (this.puzzleInfo.solutionMovements.length == board.engine.history().length) {
+        console.log('Done!!!');
+      }
+    }
   }
 
   private isCorrectPuzzleMove(puzzle: ChessPuzzle, engine: ChessInstance): boolean {
