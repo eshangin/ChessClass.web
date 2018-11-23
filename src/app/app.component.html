@@ -1,6 +1,10 @@
 <div class="container">
   <nav></nav>
 
+  <div>
+    <app-chess-puzzle [pgn]="pazzlePgn"></app-chess-puzzle>
+  </div>
+
   <div class="row">
     <div class="col-6" *ngFor="let game of games">
       <chess-board 

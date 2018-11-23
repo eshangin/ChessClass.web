@@ -5,12 +5,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ChessBoardComponent } from './chess-board/chess-board.component';
 import { GameControlsComponent } from './game-controls/game-controls.component';
+import { ChessPuzzleComponent } from './chess-puzzle/chess-puzzle.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ChessBoardComponent,
-    GameControlsComponent
+    GameControlsComponent,
+    ChessPuzzleComponent
   ],
   imports: [
     BrowserModule,

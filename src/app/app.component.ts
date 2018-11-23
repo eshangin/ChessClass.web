@@ -16,12 +16,23 @@ interface IGameInfo {
 export class AppComponent implements OnInit {
 
   games: IGameInfo[] = [];
+  pazzlePgn: string;
 
   constructor() { }  
 
   ngOnInit(): void {
     this.games.push({} as IGameInfo);
     this.games.push({} as IGameInfo);
+
+    this.pazzlePgn = `
+[Round "-"]
+[White "9 AUTHORS"]
+[Black "#2"]
+[Result "1-0"]
+[FEN "8/8/8/8/1Q6/1K6/8/2Nk4 w - - 0 1"]
+[SetUp "1"]
+
+1. Qa5 Kxc1 2. Qe1# 1-0`.trim();
   }
 
   onBoardStatusChanged(game: IGameInfo, board: ChessBoardComponent) {

@@ -33,14 +33,15 @@ export class ChessBoardComponent implements OnInit {
 
       this.board = ChessBoard(this.elementRef.nativeElement, boardConfig);
       
-      this.setFen(this.fen);
+      this.engine.load(this.fen);
+      this.board.position(this.engine.fen());
 
       this.boardInitiated.emit(this);
     }
   }
 
   undoMove() {
-    this.engine.undo();
+    this.engine.reset();
     this.board.position(this.engine.fen());
   }
 
