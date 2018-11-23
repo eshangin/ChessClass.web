@@ -11,12 +11,12 @@ import * as Chess from 'chess.js';
 export class ChessBoardComponent implements OnInit {
 
   @Input() fen: string;
-  @Output() moved = new EventEmitter<ChessInstance>();
+  @Output() pieceMoved = new EventEmitter<ChessInstance>();
+  @Output() boardInitiated = new EventEmitter<ChessInstance>();
   private engine: ChessInstance;
   private board: ChessBoardInstance;
 
   constructor(private elementRef: ElementRef) {
-    console.log(elementRef);    
   }  
 
   ngOnInit() {
@@ -34,10 +34,10 @@ export class ChessBoardComponent implements OnInit {
 
       this.board = ChessBoard(this.elementRef.nativeElement, boardConfig);
       this.board.position(this.engine.fen());
+
+      this.boardInitiated.emit(this.engine);
     }
   }
-
-
 
   private onDrop(source: string, target: string): string {
     const tryMove: ChessJS.Move = {
@@ -51,8 +51,7 @@ export class ChessBoardComponent implements OnInit {
         return 'snapback';
     }
 
-    this.moved.emit(this.engine);
-    //this.updateStatus();
+    this.pieceMoved.emit(this.engine);
   };
 
   private onSnapEndFunc() {

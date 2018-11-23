@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
-import * as ChessBoard from 'chessboardjs';
-import * as Chess from 'chess.js';
+interface IGameInfo {
+  currentFen: string;
+  currentPgn: string;
+  status: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -10,75 +13,22 @@ import * as Chess from 'chess.js';
 })
 export class AppComponent implements OnInit {
 
-  private engine: ChessInstance;
-  private board: ChessBoardInstance;
-  //currentFen: string = 'r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19';
-  currentFen: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-  currentPgn: string;
-  gameStatus: string;
+  games: IGameInfo[] = [];
 
-  constructor() {
-    this.engine = new Chess();
-  }  
+  constructor() { }  
 
   ngOnInit(): void {
-    this.engine.load(this.currentFen);
-
-    const boardConfig: ChessBoardJS.BoardConfig = {
-      draggable: true,
-      pieceTheme: '/images/chesspieces/{piece}.png',
-      onDragStart: (source, piece) => this.onDragStart(piece),
-      onDrop: (source, target) => this.onDrop(source, target),
-      onSnapEnd: () => this.onSnapEndFunc()
-    };
-
-    this.board = ChessBoard('board', boardConfig);
-    this.board.position(this.engine.fen());
-
-    this.updateStatus(this.engine);
+    this.games.push({} as IGameInfo);
+    this.games.push({} as IGameInfo);
   }
 
-  onMoved(engine: ChessInstance) {
-    console.log('moved');
-    this.updateStatus(engine);
+  onBoardStatusChanged(game: IGameInfo, engine: ChessInstance) {
+    game.status = this.getGameStatus(engine);
+    game.currentFen = engine.fen();
+    game.currentPgn = engine.pgn();
   }
 
-  private onDrop(source: string, target: string): string {
-    const tryMove: ChessJS.Move = {
-        from: source,
-        to: target,
-        promotion: 'q' // NOTE: always promote to a queen for example simplicity
-    };
-    const move = this.engine.move(tryMove);
-
-    if (move == null) {
-        return 'snapback';
-    }
-
-    this.updateStatus(this.engine);
-  };
-
-  private onSnapEndFunc() {
-    return this.board.position(this.engine.fen());
-  }
-
-  // do not pick up pieces if the game is over
-  // only pick up pieces for the side to move
-  private onDragStart(piece: string): boolean {
-    return (
-        !this.engine.game_over() &&
-        this.allowMove(this.engine.turn(), piece)
-    );
-  };
-
-  private allowMove(turn: string, piece: string): boolean {
-    return !(
-        ((String(turn).toLowerCase() === 'w') && (piece.search(/^b/) !== -1)) ||
-        ((String(turn).toLowerCase() === 'b') && (piece.search(/^w/) !== -1))
-    );
-  }
-
-  private updateStatus(engine: ChessInstance) {
+  private getGameStatus(engine: ChessInstance): string {
     var status = '';
   
     var moveColor = 'White';
@@ -107,8 +57,6 @@ export class AppComponent implements OnInit {
       }
     }
   
-    this.gameStatus = status;
-    this.currentFen = engine.fen();
-    this.currentPgn = engine.pgn();
+    return status;
   };  
 }
