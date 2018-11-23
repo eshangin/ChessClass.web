@@ -9,5 +9,18 @@
     <p>{{currentPgn}}</p>
   </div>
 
+  <div class="row">
+    <div class="col-6">
+      <chess-board 
+        [fen]="'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'"
+        style="width: 400px; margin-top: 100px;" (moved)="onMoved($event)"></chess-board>
+    </div>
+    <div class="col-6">
+      <chess-board 
+        [fen]="'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'"
+        style="width: 400px; margin-top: 100px;"></chess-board>
+    </div>
+  </div>
+
   <router-outlet></router-outlet>
 </div>

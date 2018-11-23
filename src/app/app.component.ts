@@ -35,7 +35,12 @@ export class AppComponent implements OnInit {
     this.board = ChessBoard('board', boardConfig);
     this.board.position(this.engine.fen());
 
-    this.updateStatus();
+    this.updateStatus(this.engine);
+  }
+
+  onMoved(engine: ChessInstance) {
+    console.log('moved');
+    this.updateStatus(engine);
   }
 
   private onDrop(source: string, target: string): string {
@@ -50,7 +55,7 @@ export class AppComponent implements OnInit {
         return 'snapback';
     }
 
-    this.updateStatus();
+    this.updateStatus(this.engine);
   };
 
   private onSnapEndFunc() {
@@ -73,16 +78,16 @@ export class AppComponent implements OnInit {
     );
   }
 
-  private updateStatus() {
+  private updateStatus(engine: ChessInstance) {
     var status = '';
   
     var moveColor = 'White';
-    if (this.engine.turn() === 'b') {
+    if (engine.turn() === 'b') {
       moveColor = 'Black';
     }
   
     // checkmate?
-    if (this.engine.in_checkmate() === true) {
+    if (engine.in_checkmate() === true) {
       status = 'Game over, ' + moveColor + ' is in checkmate.';
     }
   
@@ -97,13 +102,13 @@ export class AppComponent implements OnInit {
       status = moveColor + ' to move';
   
       // check?
-      if (this.engine.in_check() === true) {
+      if (engine.in_check() === true) {
         status += ', ' + moveColor + ' is in check';
       }
     }
   
     this.gameStatus = status;
-    this.currentFen = this.engine.fen();
-    this.currentPgn = this.engine.pgn();
+    this.currentFen = engine.fen();
+    this.currentPgn = engine.pgn();
   };  
 }
