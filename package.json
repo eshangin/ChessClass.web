@@ -25,6 +25,7 @@
     "chessboardjs": "0.0.1",
     "core-js": "^2.5.4",
     "jquery": "^3.3.1",
+    "normalize.css": "^8.0.1",
     "rxjs": "~6.3.3",
     "zone.js": "~0.8.26"
   },

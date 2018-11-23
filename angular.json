@@ -28,6 +28,7 @@
               { "glob": "**/*", "input": "./node_modules/chessboardjs/www/img/chesspieces/wikipedia", "output": "/images/chesspieces" }
             ],
             "styles": [
+              "node_modules/normalize.css/normalize.css",
               "src/styles/bootstrap-custom.scss",
               "src/styles/styles.scss",
               "node_modules/chessboardjs/www/css/chessboard.css"

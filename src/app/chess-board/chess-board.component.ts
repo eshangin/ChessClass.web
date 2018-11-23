@@ -22,7 +22,6 @@ export class ChessBoardComponent implements OnInit {
   ngOnInit() {
     if (this.fen) {
       this.engine = new Chess();
-      this.engine.load(this.fen);
 
       const boardConfig: ChessBoardJS.BoardConfig = {
         draggable: true,
@@ -33,7 +32,8 @@ export class ChessBoardComponent implements OnInit {
       };
 
       this.board = ChessBoard(this.elementRef.nativeElement, boardConfig);
-      this.board.position(this.engine.fen());
+      
+      this.setFen(this.fen);
 
       this.boardInitiated.emit(this);
     }
@@ -45,16 +45,16 @@ export class ChessBoardComponent implements OnInit {
   }
 
   undoAllMoves() {
-    if (this.canUndo()) {
-      this.undoMove();
-      setTimeout(() => {
-        this.undoAllMoves();
-      }, 150);
-    }
+    this.setFen(this.fen);
   }
 
   canUndo(): boolean {
     return this.engine.history().length != 0;
+  }
+
+  private setFen(fen: string) {
+    this.engine.load(fen);
+    this.board.position(fen);
   }
 
   private onDrop(source: string, target: string): string {
