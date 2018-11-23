@@ -41,21 +41,19 @@ export class ChessBoardComponent implements OnInit {
   }
 
   undoMove() {
-    this.engine.reset();
+    this.engine.undo();
     this.board.position(this.engine.fen());
+    this.pieceMoved.emit(this);
   }
 
   undoAllMoves() {
-    this.setFen(this.fen);
+    this.engine.load(this.fen);
+    this.board.position(this.fen);
+    this.pieceMoved.emit(this);
   }
 
   canUndo(): boolean {
     return this.engine.history().length != 0;
-  }
-
-  private setFen(fen: string) {
-    this.engine.load(fen);
-    this.board.position(fen);
   }
 
   private onDrop(source: string, target: string): string {
