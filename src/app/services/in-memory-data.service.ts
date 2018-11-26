@@ -39,13 +39,18 @@ export class InMemoryDataService implements InMemoryDbService {
   // Do this to manipulate the request URL or the parsed result
   // into something your data store can handle.
   parseRequestUrl(url: string, utils: RequestInfoUtilities): ParsedRequestUrl {
-    const newUrl = url.replace(/\/classes\/(\w+)\/pupils/, '/class$1pupils');
-    const parsed = utils.parseRequestUrl(newUrl);
 
-    if (parsed) {
-      console.log(`parseRequestUrl override of '${url}':`, parsed);
+    const pattern = /\/classes\/(\w+)\/pupils/;
+
+    if (RegExp(pattern).test(url)) {
+      const newUrl = url.replace(pattern, '/class$1pupils');
+      const parsed = utils.parseRequestUrl(newUrl);
+  
+      if (parsed) {
+        console.log(`parseRequestUrl override of '${url}':`, parsed);
+      }
+  
+      return parsed;
     }
-
-    return parsed;
   }  
 }
