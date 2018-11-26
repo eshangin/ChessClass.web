@@ -1,21 +1,48 @@
-import { InMemoryDbService } from 'angular-in-memory-web-api';
+import { InMemoryDbService, RequestInfoUtilities, ParsedRequestUrl } from 'angular-in-memory-web-api';
 import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InMemoryDataService implements InMemoryDbService {
+
+  constructor() { }
+
   createDb() {
     const classes = [
       { id: 1, name: 'Class 1' },
-      { id: 2, name: 'Class 2' },
-      { id: 3, name: 'Class 3' }
+      { id: 2, name: 'Class 2' }
+    ];
+
+    const class1pupils = [
+      { id: 'a', name: 'Иван З' },
+      { id: 'b', name: 'Сергей Б' },
+      { id: 'c', name: 'Анна К' }
+    ];
+
+    const class2pupils = [
+      { id: 'a', name: 'Игорь П' },
+      { id: 'b', name: 'Сергей Б' }
     ];
 
     return {
-      classes
+      classes,
+      class1pupils,
+      class2pupils
     };
   }
 
-  constructor() { }
+  // parseRequestUrl override
+  // Do this to manipulate the request URL or the parsed result
+  // into something your data store can handle.
+  parseRequestUrl(url: string, utils: RequestInfoUtilities): ParsedRequestUrl {
+    const newUrl = url.replace(/\/classes\/(\w+)\/pupils/, '/class$1pupils');
+    const parsed = utils.parseRequestUrl(newUrl);
+
+    if (parsed) {
+      console.log(`parseRequestUrl override of '${url}':`, parsed);
+    }
+
+    return parsed;
+  }  
 }

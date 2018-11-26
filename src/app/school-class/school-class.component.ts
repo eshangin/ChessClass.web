@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {PupilService, Pupil} from '../services/pupil.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-school-class',
@@ -7,9 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SchoolClassComponent implements OnInit {
 
-  constructor() { }
+  pupils: Pupil[] = [];
+
+  constructor(
+    private route: ActivatedRoute,
+    private pupilService: PupilService) { }
 
   ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    this.pupilService.getPupils(id).subscribe(pupils => {this.pupils = pupils; console.log(pupils)});
   }
 
 }
