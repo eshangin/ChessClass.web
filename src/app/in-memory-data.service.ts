@@ -25,8 +25,11 @@ export class InMemoryDataService implements InMemoryDbService {
       { id: 'b', name: 'Сергей Б' }
     ];
 
+    const pupils = class1pupils.concat(class2pupils);
+
     return {
       classes,
+      pupils,
       class1pupils,
       class2pupils
     };

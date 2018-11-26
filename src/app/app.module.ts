@@ -12,6 +12,7 @@ import {InMemoryDataService} from './in-memory-data.service';
 import { SchoolClassComponent } from './school-class/school-class.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExperimentsComponent } from './experiments/experiments.component';
+import { TeacherPupilComponent } from './teacher-pupil/teacher-pupil.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ExperimentsComponent } from './experiments/experiments.component';
     ChessPuzzleComponent,
     SchoolClassComponent,
     DashboardComponent,
-    ExperimentsComponent
+    ExperimentsComponent,
+    TeacherPupilComponent
   ],
   imports: [
     BrowserModule,

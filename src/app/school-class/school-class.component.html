@@ -1,6 +1,6 @@
 <ul>
   <li *ngFor="let p of pupils">
-      {{p.name}}
+      <a routerLink="/my/pupils/{{p.id}}">{{p.name}}</a>
   </li>
 </ul>  
 

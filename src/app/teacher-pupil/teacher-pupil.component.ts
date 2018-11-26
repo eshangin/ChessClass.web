@@ -3,13 +3,13 @@ import {PupilService, Pupil} from '../services/pupil.service';
 import {ActivatedRoute} from '@angular/router';
 
 @Component({
-  selector: 'app-school-class',
-  templateUrl: './school-class.component.html',
-  styleUrls: ['./school-class.component.scss']
+  selector: 'app-teacher-pupil',
+  templateUrl: './teacher-pupil.component.html',
+  styleUrls: ['./teacher-pupil.component.scss']
 })
-export class SchoolClassComponent implements OnInit {
+export class TeacherPupilComponent implements OnInit {
 
-  pupils: Pupil[] = [];
+  pupil: Pupil;
 
   constructor(
     private route: ActivatedRoute,
@@ -17,7 +17,7 @@ export class SchoolClassComponent implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.pupilService.getPupils(id).subscribe(pupils => this.pupils = pupils);
+    this.pupilService.getPupil(id).subscribe(p => this.pupil = p);
   }
 
 }

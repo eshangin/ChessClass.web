@@ -17,4 +17,8 @@ export class PupilService {
   getPupils(classId: string): Observable<Pupil[]> {
     return this.http.get<Pupil[]>(`api/classes/${classId}/pupils`);
   }
+
+  getPupil(pupilId: string): Observable<Pupil> {
+    return this.http.get<Pupil>(`api/pupils/${pupilId}`);
+  }
 }
