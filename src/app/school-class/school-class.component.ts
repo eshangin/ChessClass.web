@@ -10,6 +10,7 @@ import {Pupil} from '../services/pupil.model';
 })
 export class SchoolClassComponent implements OnInit {
 
+  classId: string;
   pupils: Pupil[] = [];
 
   constructor(
@@ -17,8 +18,8 @@ export class SchoolClassComponent implements OnInit {
     private pupilService: PupilService) { }
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.pupilService.getPupils(id).subscribe(pupils => this.pupils = pupils);
+    this.classId = this.route.snapshot.paramMap.get('id');
+    this.pupilService.getPupils(this.classId).subscribe(pupils => this.pupils = pupils);
   }
 
 }

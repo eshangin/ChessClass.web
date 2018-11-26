@@ -3,8 +3,9 @@
     {{pupil.name}}
   </p>
   <div *ngFor="let h of pupil.homeworks">
-    <div *ngFor="let q of h.puzzles">
+    <div *ngFor="let q of h.puzzles" class="pull-left mr-4">
       <app-chess-puzzle [pgn]="q.pgn"></app-chess-puzzle>
-    </div>          
+    </div>
+    <div class="clearfix"></div>
   </div>
 </div>

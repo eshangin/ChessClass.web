@@ -1,0 +1,49 @@
+<h2>Назначить домашнее задание</h2>
+
+<form class="mt-4">
+  <div class="form-inline mb-2">
+    <label class="mr-2" for="classInput">Класс</label>
+    <select [(ngModel)]="classId" 
+          name="classId" 
+          class="form-control mr-sm-4" 
+          id="classInput"
+          (ngModelChange)="onClassChange($event)">
+      <option *ngFor="let c of myClasses" [ngValue]="c.id">{{c.name}}</option>
+    </select>
+
+    <label class="mr-2" for="forWho">Кому?</label>
+    <select [(ngModel)]="selectedPupil" name="assignToPupilId" class="form-control mr-sm-2" id="forWho">
+      <option [ngValue]="null">Всем</option>
+      <option *ngFor="let p of classPupils" [ngValue]="p.id">{{p.name}}</option>
+    </select>
+
+    <!-- <div class="input-group my-1 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text">@</div>
+      </div>
+      <input type="text" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Username">
+    </div>
+
+    <div class="form-check mb-2 mr-sm-2">
+      <input class="form-check-input" type="checkbox" id="inlineFormCheck">
+      <label class="form-check-label" for="inlineFormCheck">
+        Remember me
+      </label>
+    </div> -->
+  </div>
+
+  <div class="mb-3">
+    <h3>Выбор задач</h3>
+
+    <div *ngFor="let s of puzzleSets">
+      <div *ngFor="let p of s.puzzles" class="pull-left mr-5">
+        <app-chess-puzzle [pgn]="p.pgn"></app-chess-puzzle>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+
+  <div>
+    <button type="submit" class="btn btn-primary">Назначить</button>
+  </div>
+</form>

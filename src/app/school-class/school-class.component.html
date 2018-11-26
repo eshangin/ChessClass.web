@@ -1,4 +1,7 @@
 <ul>
+  <p>
+    <a class="btn btn-primary" routerLink="/my/class/{{classId}}/add-homework">Назначить домашнее задание</a>
+  </p>
   <li *ngFor="let p of pupils">
       <a routerLink="/my/pupils/{{p.id}}">{{p.name}}</a>
   </li>

@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -13,6 +14,7 @@ import { SchoolClassComponent } from './school-class/school-class.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExperimentsComponent } from './experiments/experiments.component';
 import { TeacherPupilComponent } from './teacher-pupil/teacher-pupil.component';
+import { AddHomeworkComponent } from './teacher/add-homework/add-homework.component';
 
 @NgModule({
   declarations: [
@@ -23,12 +25,14 @@ import { TeacherPupilComponent } from './teacher-pupil/teacher-pupil.component';
     SchoolClassComponent,
     DashboardComponent,
     ExperimentsComponent,
-    TeacherPupilComponent
+    TeacherPupilComponent,
+    AddHomeworkComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
 
     // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
     // and returns simulated server responses.

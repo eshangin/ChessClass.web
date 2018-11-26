@@ -48,13 +48,14 @@ export class InMemoryDataService implements InMemoryDbService {
     ];
 
     const classes = [
-      { id: 1, name: 'Class 1' },
-      { id: 2, name: 'Class 2' }
+      { id: '1', name: 'Класс 1' },
+      { id: '2', name: 'Класс 2' }
     ];
 
     return {
       classes,
       pupils,
+      puzzles,
       class1pupils: pupils.slice(0, 3),
       class2pupils: pupils.slice(3)
     };
