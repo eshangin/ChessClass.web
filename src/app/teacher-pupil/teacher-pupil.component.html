@@ -3,7 +3,7 @@
     {{pupil.name}}
   </p>
   <div *ngFor="let h of pupil.homeworks">
-    <div *ngFor="let q of h.quizes">
+    <div *ngFor="let q of h.puzzles">
       <app-chess-puzzle [pgn]="q.pgn"></app-chess-puzzle>
     </div>          
   </div>

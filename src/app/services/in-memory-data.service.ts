@@ -9,7 +9,7 @@ export class InMemoryDataService implements InMemoryDbService {
   constructor() { }
 
   createDb() {
-    const quizes = [
+    const puzzles = [
       {
         id: 'a',
         pgn: `
@@ -40,7 +40,7 @@ export class InMemoryDataService implements InMemoryDbService {
     ];
 
     const pupils = [
-      { id: 'a', name: 'Иван З', homeworks: [{id: 1, quizes: [ quizes[0], quizes[1] ] }] },
+      { id: 'a', name: 'Иван З', homeworks: [{id: 1, puzzles: [ puzzles[0], puzzles[1] ] }] },
       { id: 'b', name: 'Сергей Б' },
       { id: 'c', name: 'Анна К' },
       { id: 'd', name: 'Игорь П' },
