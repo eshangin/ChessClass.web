@@ -18,7 +18,7 @@ export class TeacherPupilComponent implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.pupilService.getPupil(id).subscribe(p => this.pupil = p);
+    this.pupilService.getPupil(id).subscribe(p => {this.pupil = p; console.log(p)});
   }
 
 }
