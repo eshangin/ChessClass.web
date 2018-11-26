@@ -8,7 +8,7 @@ import { ChessBoardComponent } from './chess-board/chess-board.component';
 import { GameControlsComponent } from './game-controls/game-controls.component';
 import { ChessPuzzleComponent } from './chess-puzzle/chess-puzzle.component';
 import {HttpClientInMemoryWebApiModule} from 'angular-in-memory-web-api';
-import {InMemoryDataService} from './in-memory-data.service';
+import {InMemoryDataService} from './services/in-memory-data.service';
 import { SchoolClassComponent } from './school-class/school-class.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExperimentsComponent } from './experiments/experiments.component';

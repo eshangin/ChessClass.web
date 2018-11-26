@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-
-export class Pupil {
-  id: string;
-  name: string;
-}
+import {Pupil} from './pupil.model';
 
 @Injectable({
   providedIn: 'root'
