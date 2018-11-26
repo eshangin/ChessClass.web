@@ -23,21 +23,22 @@ export class ChessPuzzleComponent implements OnInit {
   onPieceMoved(board: ChessBoardComponent) {
     if (this.isCorrectPuzzleMove(this.puzzleInfo, board.engine)) {
       console.log('Correct move!!!');
-      if (board.engine.history().length % 2 == 1) {
-        console.log('try move piece');
-        this.movePieceIfOnlyOnePossibleMove(board);
-      }
+      this.tryMovePieceIfOnlyOnePossibleMove(board);
 
       if (this.puzzleInfo.solutionMovements.length == board.engine.history().length) {
         console.log('Done!!!');
       }
+    } else {
+      this.tryMovePieceIfOnlyOnePossibleMove(board);
     }
   }
 
-  private movePieceIfOnlyOnePossibleMove(board: ChessBoardComponent) {
-    const possibleMoves = board.engine.moves();
-    if (possibleMoves.length == 1) {
-      board.movePiece(possibleMoves[0]);
+  private tryMovePieceIfOnlyOnePossibleMove(board: ChessBoardComponent) {
+    if (board.engine.history().length % 2 == 1) {
+      const possibleMoves = board.engine.moves();
+      if (possibleMoves.length == 1) {
+        board.movePiece(possibleMoves[0]);
+      }
     }
   }
 
