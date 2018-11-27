@@ -10,6 +10,7 @@ import {ChessBoardComponent} from '../chess-board/chess-board.component';
 export class ChessPuzzleComponent implements OnInit {
 
   @Input() pgn: string;
+  @Input() showBoardNotation: boolean = true;
   puzzleInitialFen: string;
   private puzzleInfo: ChessPuzzle;
 

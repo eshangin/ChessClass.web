@@ -1,4 +1,5 @@
 <chess-board 
+  *ngIf="puzzleInitialFen"
   [fen]="puzzleInitialFen" 
-  (pieceMoved)="onPieceMoved($event)" 
-  style="width: 400px"></chess-board>
+  [showNotation]="showBoardNotation"
+  (pieceMoved)="onPieceMoved($event)"></chess-board>

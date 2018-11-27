@@ -1,15 +1,15 @@
-<div>
-  <app-chess-puzzle [pgn]="pazzlePgn"></app-chess-puzzle>
+<div class="mb-4">
+  <app-chess-puzzle style="width: 250px" [pgn]="pazzlePgn"></app-chess-puzzle>
 </div>
 
 <div class="row">
   <div class="col-6" *ngFor="let game of games">
     <chess-board 
       [fen]="'8/8/8/8/1Q6/1K6/8/2Nk4 w - - 0 1'"
-      style="width: 400px; margin-top: 100px;" 
+      style="width: 400px;" 
       (pieceMoved)="onBoardStatusChanged(game, $event)" 
       (boardInitiated)="onBoardStatusChanged(game, $event)"></chess-board>
-    <game-controls [board]="game.board" class="mt-2"></game-controls>
+    <game-controls *ngIf="game.board" [board]="game.board" class="mt-2"></game-controls>
     <div class="mt-3">
       <div>{{game.status}}</div>
       <div>{{game.currentFen}}</div>

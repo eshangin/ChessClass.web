@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import * as Chess from 'chess.js';
 import {ChessBoardComponent} from '../chess-board/chess-board.component';
 
 @Component({

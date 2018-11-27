@@ -32,12 +32,12 @@
     </div> -->
   </div>
 
-  <div class="mb-3">
+  <div>
     <h3>Выбор задач</h3>
 
     <div *ngFor="let s of puzzleSets">
-      <div *ngFor="let p of s.puzzles" class="pull-left mr-5">
-        <app-chess-puzzle [pgn]="p.pgn"></app-chess-puzzle>
+      <div *ngFor="let p of s.puzzles" class="pull-left mr-3 mb-3">
+        <app-chess-puzzle style="width: 200px" [pgn]="p.pgn" [showBoardNotation]="false"></app-chess-puzzle>
       </div>
       <div class="clearfix"></div>
     </div>
