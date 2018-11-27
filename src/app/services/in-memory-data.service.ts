@@ -29,7 +29,10 @@ export class InMemoryDataService implements InMemoryDbService {
       pupils,
       puzzles,
       class1pupils: pupils.slice(0, 3),
-      class2pupils: pupils.slice(3)
+      class2pupils: pupils.slice(3),
+      'puzzles-count-2': this.getRandom(puzzles, 2),
+      'puzzles-count-3': this.getRandom(puzzles, 3),
+      'puzzles-count-4': this.getRandom(puzzles, 4)
     };
   }
 
@@ -50,6 +53,34 @@ export class InMemoryDataService implements InMemoryDbService {
   
       return parsed;
     }
+
+    const puzzlesPattern = /\/puzzles\?count=(\w+)/;
+
+    if (RegExp(puzzlesPattern).test(url)) {
+      const newUrl = url.replace(puzzlesPattern, '/puzzles-count-$1');
+      const parsed = utils.parseRequestUrl(newUrl);
+      console.log(newUrl, parsed);
+  
+      if (parsed) {
+        console.log(`parseRequestUrl override of '${url}':`, parsed);
+      }
+  
+      return parsed;
+    }
+  }
+
+  private getRandom(arr, n) {
+    var result = new Array(n),
+        len = arr.length,
+        taken = new Array(len);
+    if (n > len)
+        throw new RangeError("getRandom: more elements taken than available");
+    while (n--) {
+        var x = Math.floor(Math.random() * len);
+        result[n] = arr[x in taken ? taken[x] : x];
+        taken[x] = --len in taken ? taken[len] : len;
+    }
+    return result;
   }
   
   private getPuzzles() {
@@ -95,6 +126,21 @@ export class InMemoryDataService implements InMemoryDbService {
 [SetUp "1"]
 
 1. Qxf6 Bb1 2. c4# 1-0`.trim()
+      },
+      {
+        id: 'd',
+        pgn: `
+[Event "The Chess Players' Quarterly Chronicle"]
+[Site "?"]
+[Date "1870.??.??"]
+[Round "-"]
+[White "ABBOTT Joseph William"]
+[Black "#2"]
+[Result "1-0"]
+[FEN "K5Q1/3p1R2/3P3p/5N1p/3Pk2P/3p1p2/3B4/7B w - - 0 1"]
+[SetUp "1"]
+
+1. Kb7 Kd5 2. Re7# 1-0`.trim()
       }
     ];
   }

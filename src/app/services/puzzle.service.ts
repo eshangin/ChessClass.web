@@ -10,7 +10,7 @@ export class PuzzleService {
 
   constructor(private http: HttpClient) { }
 
-  getPuzzles(): Observable<Puzzle[]> {
-    return this.http.get<Puzzle[]>(`api/puzzles`);
+  getPuzzles(count: number): Observable<Puzzle[]> {
+    return this.http.get<Puzzle[]>(`api/puzzles?count=${count}`);
   }  
 }

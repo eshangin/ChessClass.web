@@ -8,10 +8,6 @@ import {PuzzleService} from 'src/app/services/puzzle.service';
 import {Observable, Subscription} from 'rxjs';
 import {Puzzle} from 'src/app/services/puzzle.model';
 
-interface IPuzzleSet {
-  puzzles: Puzzle[]
-}
-
 @Component({
   selector: 'app-add-homework',
   templateUrl: './add-homework.component.html',
@@ -23,7 +19,8 @@ export class AddHomeworkComponent implements OnInit {
   myClasses: SchoolClass[] = [];
   selectedPupil: string = null;
   classPupils: Pupil[] = [];
-  puzzleSets: IPuzzleSet[] = [];
+  selectedPuzzles: Puzzle[] = [];
+  addPuzzlesCount: number = 3;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,16 +32,20 @@ export class AddHomeworkComponent implements OnInit {
     this.classId = this.route.snapshot.paramMap.get('id');
     this.classService.getClasses().subscribe(classes => this.myClasses = classes);
     this.loadPupils();
-    this.getPuzzles().subscribe(puzzles => this.puzzleSets.push({ puzzles: puzzles }));
+    //this.getPuzzles().subscribe(puzzles => this.puzzleSets.push({ puzzles: puzzles }));
   }
 
   onClassChange() {
     this.loadPupils();
   }
 
-  private getPuzzles(): Observable<Puzzle[]> {
+  onAddPuzzles() {
+    this.getPuzzles(this.addPuzzlesCount).subscribe(puzzles => this.selectedPuzzles.push(...puzzles));
+  }
+
+  private getPuzzles(count: number): Observable<Puzzle[]> {
     // TODO :: take X puzzles of specific type (checkmate in 2 moves/3 moves/etc.)
-    return this.puzzleService.getPuzzles();
+    return this.puzzleService.getPuzzles(count);
   }
 
   private loadPupils(): Subscription {

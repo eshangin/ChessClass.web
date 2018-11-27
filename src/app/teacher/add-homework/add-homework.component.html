@@ -16,30 +16,31 @@
       <option [ngValue]="null">Всем</option>
       <option *ngFor="let p of classPupils" [ngValue]="p.id">{{p.name}}</option>
     </select>
-
-    <!-- <div class="input-group my-1 mr-sm-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text">@</div>
-      </div>
-      <input type="text" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Username">
-    </div>
-
-    <div class="form-check mb-2 mr-sm-2">
-      <input class="form-check-input" type="checkbox" id="inlineFormCheck">
-      <label class="form-check-label" for="inlineFormCheck">
-        Remember me
-      </label>
-    </div> -->
   </div>
 
   <div>
     <h3>Выбор задач</h3>
 
-    <div *ngFor="let s of puzzleSets">
-      <div *ngFor="let p of s.puzzles" class="pull-left mr-3 mb-3">
-        <app-chess-puzzle style="width: 200px" [pgn]="p.pgn" [showBoardNotation]="false"></app-chess-puzzle>
+    <div class="mb-2" *ngIf="selectedPuzzles.length">
+      <div *ngFor="let p of selectedPuzzles" class="pull-left mr-2 mb-2">
+        <app-chess-puzzle style="width: 180px" [pgn]="p.pgn" [showBoardNotation]="false"></app-chess-puzzle>
       </div>
       <div class="clearfix"></div>
+    </div>
+
+    <div class="mb-2">
+      <div class="mb-2 p-2 mr-2 border d-inline-block align-top">
+        <div class="form-inline">
+          <button class="btn btn-sm btn-secondary mr-2" (click)="onAddPuzzles($event)">Добавить</button>
+          <select [(ngModel)]="addPuzzlesCount" class="form-control form-control-sm mr-2" name="addPuzzlesCount">
+            <option *ngFor="let i of [2, 3, 4]" [ngValue]="i">{{i}}</option>
+          </select>
+          задачи по теме "Мат в 2 хода" (TODO)</div>
+      </div>
+
+      <div class="mb-2 p-2 border d-inline-block align-top">
+          <button class="btn btn-sm btn-secondary">Добавить</button> задачи из избранного (TODO)
+      </div>
     </div>
   </div>
 
