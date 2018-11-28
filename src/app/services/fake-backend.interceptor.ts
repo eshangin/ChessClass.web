@@ -4,10 +4,11 @@ import { Observable, of } from 'rxjs';
 import {Puzzle} from './puzzle.model';
 import {Router} from '@angular/router';
 import {Pupil} from './pupil.model';
+import {SchoolClass} from './school-class.model';
 
 class Db {
     puzzles: Puzzle[];
-    classes: any[];
+    classes: SchoolClass[];
     pupils: Pupil[];
     pupil2class: Pupil2Class[]
 }
