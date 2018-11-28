@@ -51,7 +51,7 @@ export class AddHomeworkComponent implements OnInit {
     // TODO :: validate if at least one puzzle was added
     this.classService.addHomework(this.classId, puzzleIds, this.selectedPupilId).subscribe(() => {
       this.toastr.success('Домашнее задание назначено!');
-      this.router.navigate(['dashboard']);
+      this.router.navigate(['home']);
     });
   }
 

@@ -8,8 +8,8 @@ import {AddHomeworkComponent} from './teacher/add-homework/add-homework.componen
 import {SearchPuzzlesComponent} from './teacher/search-puzzles/search-puzzles.component';
 
 const routes: Routes = [
-  //{ path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: DashboardComponent },
   { path: 'my/classes/:id', component: SchoolClassComponent },
   { path: 'experiments', component: ExperimentsComponent },
   { path: 'my/pupils/:id', component: TeacherPupilComponent },
