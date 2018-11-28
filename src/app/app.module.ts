@@ -15,6 +15,7 @@ import { DashboardComponent } from './teacher/dashboard/dashboard.component';
 import { ExperimentsComponent } from './experiments/experiments.component';
 import { TeacherPupilComponent } from './teacher/teacher-pupil/teacher-pupil.component';
 import { AddHomeworkComponent } from './teacher/add-homework/add-homework.component';
+import { SearchPuzzlesComponent } from './teacher/search-puzzles/search-puzzles.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { AddHomeworkComponent } from './teacher/add-homework/add-homework.compon
     DashboardComponent,
     ExperimentsComponent,
     TeacherPupilComponent,
-    AddHomeworkComponent
+    AddHomeworkComponent,
+    SearchPuzzlesComponent
   ],
   imports: [
     BrowserModule,

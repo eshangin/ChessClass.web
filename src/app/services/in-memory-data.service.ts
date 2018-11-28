@@ -1,5 +1,6 @@
 import { InMemoryDbService, RequestInfoUtilities, ParsedRequestUrl } from 'angular-in-memory-web-api';
 import { Injectable } from '@angular/core';
+import {Puzzle} from './puzzle.model';
 
 @Injectable({
   providedIn: 'root'
@@ -40,32 +41,33 @@ export class InMemoryDataService implements InMemoryDbService {
   // Do this to manipulate the request URL or the parsed result
   // into something your data store can handle.
   parseRequestUrl(url: string, utils: RequestInfoUtilities): ParsedRequestUrl {
+    const parsed = this.tryGetClassPupils(url, utils) ||
+      this.tryGetCountOfPuzzles(url, utils);
 
+      console.log(url);
+
+    if (parsed) {
+      console.log(`parseRequestUrl override of '${url}':`, parsed);
+    }
+
+    return parsed;      
+  }
+
+  private tryGetClassPupils(url: string, utils: RequestInfoUtilities): ParsedRequestUrl {
     const pattern = /\/classes\/(\w+)\/pupils/;
 
     if (RegExp(pattern).test(url)) {
       const newUrl = url.replace(pattern, '/class$1pupils');
-      const parsed = utils.parseRequestUrl(newUrl);
-  
-      if (parsed) {
-        console.log(`parseRequestUrl override of '${url}':`, parsed);
-      }
-  
-      return parsed;
+      return utils.parseRequestUrl(newUrl);
     }
+  }
 
-    const puzzlesPattern = /\/puzzles\?count=(\w+)/;
+  private tryGetCountOfPuzzles(url: string, utils: RequestInfoUtilities): ParsedRequestUrl {
+    const pattern = /\/puzzles\?count=(\w+)/;
 
-    if (RegExp(puzzlesPattern).test(url)) {
-      const newUrl = url.replace(puzzlesPattern, '/puzzles-count-$1');
-      const parsed = utils.parseRequestUrl(newUrl);
-      console.log(newUrl, parsed);
-  
-      if (parsed) {
-        console.log(`parseRequestUrl override of '${url}':`, parsed);
-      }
-  
-      return parsed;
+    if (RegExp(pattern).test(url)) {
+      const newUrl = url.replace(pattern, '/puzzles-count-$1');
+      return utils.parseRequestUrl(newUrl);
     }
   }
 
@@ -83,7 +85,7 @@ export class InMemoryDataService implements InMemoryDbService {
     return result;
   }
   
-  private getPuzzles() {
+  private getPuzzles(): Puzzle[] {
     return [
       {
         id: 'a',
@@ -96,7 +98,7 @@ export class InMemoryDataService implements InMemoryDbService {
 [SetUp "1"]
 
 1. Qa5 Kxc1 2. Qe1# 1-0`.trim() 
-      },
+      } as Puzzle,
       {
         id: 'b',
         pgn: `
@@ -110,8 +112,9 @@ export class InMemoryDataService implements InMemoryDbService {
 [FEN "8/8/5R2/8/2P1k3/2K5/5P2/2B5 w - - 0 1"]
 [SetUp "1"]
 
-1. Bb2 Ke5 2. Kd3# 1-0`.trim()
-      },
+1. Bb2 Ke5 2. Kd3# 1-0`.trim(),
+        isFavorite: true
+      } as Puzzle,
       {
         id: 'c',
         pgn: `
@@ -126,7 +129,7 @@ export class InMemoryDataService implements InMemoryDbService {
 [SetUp "1"]
 
 1. Qxf6 Bb1 2. c4# 1-0`.trim()
-      },
+      } as Puzzle,
       {
         id: 'd',
         pgn: `
@@ -141,7 +144,7 @@ export class InMemoryDataService implements InMemoryDbService {
 [SetUp "1"]
 
 1. Kb7 Kd5 2. Re7# 1-0`.trim()
-      }
+      } as Puzzle
     ];
   }
 }

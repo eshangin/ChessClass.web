@@ -1,0 +1,14 @@
+<div>
+  <div *ngFor="let item of searchItems" class="card mr-3 mb-3 pull-left" style="width: 302px;">    
+    <app-chess-puzzle [pgn]="item.pgn" style="width: 300px"></app-chess-puzzle>
+    <div class="card-body">
+      <div class="pull-right">
+        <button class="btn btn-link" (click)="onAddToFavoriteClick(item)">
+          <i class="fa-star text-warning" [ngClass]="{'fas': item.isFavorite, 'far': !item.isFavorite}"></i>
+        </button>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+</div>
