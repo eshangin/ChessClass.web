@@ -42,7 +42,9 @@ registerLocaleData(localeRu);
     HttpClientModule,
     FormsModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot({
+      timeOut: 3000
+    })
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AddHeadersInterceptor, multi: true, },
