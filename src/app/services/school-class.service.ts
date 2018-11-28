@@ -8,11 +8,9 @@ import {SchoolClass} from './school-class.model';
 })
 export class SchoolClassService {
 
-  private classesUrl = 'api/classes';
-
   constructor(private http: HttpClient) { }
 
   getClasses(): Observable<SchoolClass[]> {
-    return this.http.get<SchoolClass[]>(this.classesUrl);
+    return this.http.get<SchoolClass[]>('api/classes');
   }
 }

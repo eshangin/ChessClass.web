@@ -8,8 +8,6 @@ import { AppComponent } from './app.component';
 import { ChessBoardComponent } from './chess-board/chess-board.component';
 import { GameControlsComponent } from './game-controls/game-controls.component';
 import { ChessPuzzleComponent } from './chess-puzzle/chess-puzzle.component';
-import {HttpClientInMemoryWebApiModule} from 'angular-in-memory-web-api';
-import {InMemoryDataService} from './services/in-memory-data.service';
 import { SchoolClassComponent } from './teacher/school-class/school-class.component';
 import { DashboardComponent } from './teacher/dashboard/dashboard.component';
 import { ExperimentsComponent } from './experiments/experiments.component';
@@ -35,14 +33,7 @@ import {fakeBackendProvider} from './services/fake-backend.interceptor';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule,
-
-    // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
-    // and returns simulated server responses.
-    // Remove it when a real server is ready to receive requests.
-    HttpClientInMemoryWebApiModule.forRoot(
-      InMemoryDataService, { dataEncapsulation: false }
-    )
+    FormsModule
   ],
   providers: [
     // provider used to create fake backend

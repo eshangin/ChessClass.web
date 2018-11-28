@@ -3,6 +3,20 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS
 import { Observable, of } from 'rxjs';
 import {Puzzle} from './puzzle.model';
 import {Router} from '@angular/router';
+import {Pupil} from './pupil.model';
+
+class Db {
+    puzzles: Puzzle[];
+    classes: any[];
+    pupils: Pupil[];
+    pupil2class: Pupil2Class[]
+}
+
+class Pupil2Class {
+    id: string;
+    pupilId: string;
+    classId: string;
+}
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -14,25 +28,48 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     //
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        // array in local storage for registered users
-        let puzzles: Puzzle[] = JSON.parse(localStorage.getItem('puzzles')) || this.getPuzzles();
+
+        const db = this.getDb();
+
+        // const pupils = [
+        //     { id: 'a', name: 'Иван З', homeworks: [{id: 1, puzzles: [ puzzles[0], puzzles[1] ] }] },
+        //     { id: 'b', name: 'Сергей Б' },
+        //     { id: 'c', name: 'Анна К' },
+        //     { id: 'd', name: 'Игорь П' },
+        //     { id: 'e', name: 'Сергей Н' }
+        // ];
 
         let result = null;
 
         if (request.url.match(/api\/puzzles/) && request.method === 'GET') {
             const url = this.router.parseUrl(request.url);
             const count = url.queryParamMap.get('count');
-            result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(puzzles, count) : puzzles }));
+            result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(db.puzzles, count) : db.puzzles }));
         } else if (request.url.match(/api\/puzzles\/(\w+)\/favorites/)) {
-            const id = request.url.split('/')[3];
+            const id = request.url.split('/')[2];
             if (request.method == "POST") {
-                puzzles.find(_ => _.id == id).isFavorite = true;
-                this.updateStoragePuzzles(puzzles);
+                db.puzzles.find(_ => _.id == id).isFavorite = true;
+                this.updateStoragePuzzles(db.puzzles);
                 result = of(new HttpResponse({ status: 200 }));
             } else if (request.method == "DELETE") {
-                puzzles.find(_ => _.id == id).isFavorite = false;
-                this.updateStoragePuzzles(puzzles);
+                db.puzzles.find(_ => _.id == id).isFavorite = false;
+                this.updateStoragePuzzles(db.puzzles);
                 result = of(new HttpResponse({ status: 200 }));
+            }
+        } else if (request.url == "api/classes") {
+            result = of(new HttpResponse({ status: 200, body: db.classes }));
+        } else if (request.url.match(/api\/classes\/(\w+)\/pupils/)) {
+            const id = request.url.split('/')[2];
+            if (request.method == "GET") {
+                const pupilIds = db.pupil2class.filter(_ => _.classId == id).map(_ => _.pupilId);
+                const pupils = db.pupils.filter(_ => pupilIds.includes(_.id));
+                result = of(new HttpResponse({ status: 200, body: pupils }));
+            }
+        } else if (request.url.match(/api\/pupils\/(\w+)/)) {
+            const id = request.url.split('/')[2];
+            if (request.method == "GET") {
+                const pupil = db.pupils.find(_ => _.id == id);
+                result = of(new HttpResponse({ status: 200, body: pupil }));
             }
         }
 
@@ -174,6 +211,60 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             taken[x] = --len in taken ? taken[len] : len;
         }
         return result;
+    }
+
+    private getDb(): Db {
+        if (!localStorage.getItem('isInitialized')) {
+            const pupils = this.getPupils();
+            const classes = this.getClasses();
+            localStorage.setItem('pupils', JSON.stringify(pupils));
+            localStorage.setItem('classes', JSON.stringify(classes));
+            this.updateStoragePuzzles(this.getPuzzles());
+            this.addPupillToClass(pupils[0], classes[0]);
+            this.addPupillToClass(pupils[1], classes[0]);
+            this.addPupillToClass(pupils[2], classes[1]);
+            this.addPupillToClass(pupils[3], classes[1]);
+            this.addPupillToClass(pupils[4], classes[1]);
+
+            localStorage.setItem('isInitialized', 'true');
+        }
+
+        return {
+            puzzles: JSON.parse(localStorage.getItem('puzzles')),
+            classes: JSON.parse(localStorage.getItem('classes')),
+            pupils: JSON.parse(localStorage.getItem('pupils')),
+            pupil2class: JSON.parse(localStorage.getItem('pupil2class'))
+        } as Db;
+    }
+
+    private addPupillToClass(pupil: any, classItem: any) {
+        let pupil2class = JSON.parse(localStorage.getItem('pupil2class')) || [];
+        pupil2class.push({ id: this.generateId(), pupilId: pupil.id, classId: classItem.id } as Pupil2Class)
+        localStorage.setItem('pupil2class', JSON.stringify(pupil2class));
+    }
+
+    private generateId(): string {
+        // Math.random should be unique because of its seeding algorithm.
+        // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+        // after the decimal.
+        return Math.random().toString(36).substr(2, 9);
+    };
+
+    private getPupils(): any[] {
+        return [
+            { id: 'a', name: 'Иван З' },
+            { id: 'b', name: 'Сергей Б' },
+            { id: 'c', name: 'Анна К' },
+            { id: 'd', name: 'Игорь П' },
+            { id: 'e', name: 'Сергей Н' }
+        ];
+    }
+
+    private getClasses(): any[] {
+        return [
+            { id: '1', name: 'Класс 1' },
+            { id: '2', name: 'Класс 2' }
+        ];
     }
 
     private getPuzzles(): Puzzle[] {

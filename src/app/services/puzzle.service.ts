@@ -26,10 +26,10 @@ export class PuzzleService {
   }
   
   addToFavorites(puzzleId: string): Observable<any> {
-    return this.http.post(`/api/puzzles/${puzzleId}/favorites`, null, httpOptions);
+    return this.http.post(`api/puzzles/${puzzleId}/favorites`, null, httpOptions);
   }
 
   removeFromFavorites(puzzleId: string): Observable<any> {
-    return this.http.delete(`/api/puzzles/${puzzleId}/favorites`, httpOptions);
+    return this.http.delete(`api/puzzles/${puzzleId}/favorites`, httpOptions);
   }
 }
