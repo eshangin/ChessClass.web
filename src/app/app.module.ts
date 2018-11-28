@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
@@ -16,6 +16,10 @@ import { AddHomeworkComponent } from './teacher/add-homework/add-homework.compon
 import { SearchPuzzlesComponent } from './teacher/search-puzzles/search-puzzles.component';
 import {AddHeadersInterceptor} from './core/add-headers.interceptor';
 import {FakeBackendInterceptor} from './core/fake-backend.interceptor';
+import localeRu from '@angular/common/locales/ru';
+import {registerLocaleData} from '@angular/common';
+
+registerLocaleData(localeRu);
 
 @NgModule({
   declarations: [
@@ -39,7 +43,8 @@ import {FakeBackendInterceptor} from './core/fake-backend.interceptor';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AddHeadersInterceptor, multi: true, },
     // provider used to create fake backend
-    { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true, }
+    { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true, },
+    { provide: LOCALE_ID, useValue: 'ru'}
   ],
   bootstrap: [AppComponent]
 })

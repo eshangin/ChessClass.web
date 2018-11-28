@@ -1,22 +1,32 @@
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS, HttpResponse } from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import {Puzzle} from '../services/puzzle.model';
 import {Router} from '@angular/router';
 import {Pupil} from '../services/pupil.model';
 import {SchoolClass} from '../services/school-class.model';
+import {Homework} from '../services/homework.model';
 
 class Db {
     puzzles: Puzzle[];
     classes: SchoolClass[];
     pupils: Pupil[];
-    pupil2class: Pupil2Class[]
+    pupil2class: Pupil2Class[];
+    homeworks: DbHomework[];
 }
 
 class Pupil2Class {
     id: string;
     pupilId: string;
     classId: string;
+}
+
+class DbHomework {
+    id: string;
+    classId: string;
+    puzzleIds: string[];
+    pupilId: string;
+    dateCreated: Date
 }
 
 @Injectable()
@@ -58,7 +68,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 const pupils = db.pupils.filter(_ => pupilIds.includes(_.id));
                 result = of(new HttpResponse({ status: 200, body: pupils }));
             }
-        } else if (request.url.match(/api\/pupils\/(\w+)/)) {
+        } else if (request.url.match(/api\/pupils\/(\w+)$/)) {
             const id = request.url.split('/')[2];
             if (request.method == "GET") {
                 const pupil = db.pupils.find(_ => _.id == id);
@@ -70,6 +80,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 console.log(request.body.puzzleIds, request.body.pupilId);
                 this.addHomework(id, request.body.puzzleIds, request.body.pupilId);
                 result = of(new HttpResponse({ status: 200 }));
+            }
+        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks$/)) {
+            const id = request.url.split('/')[2];
+            if (request.method == "GET") {
+                const homeworks = db.homeworks.filter(_ => _.pupilId == id);
+                const items = homeworks.map(_ => {
+                    let h = new Homework();
+                    h.id = _.id;
+                    h.pupilId = id;
+                    h.puzzles = _.puzzleIds.map(pId => db.puzzles.find(p => p.id == pId));
+                    h.dateCreated = _.dateCreated;
+                    return h;
+                });
+                result = of(new HttpResponse({ status: 200, body: items }));
             }
         }
 
@@ -120,13 +144,21 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             puzzles: JSON.parse(localStorage.getItem('puzzles')),
             classes: JSON.parse(localStorage.getItem('classes')),
             pupils: JSON.parse(localStorage.getItem('pupils')),
-            pupil2class: JSON.parse(localStorage.getItem('pupil2class'))
+            pupil2class: JSON.parse(localStorage.getItem('pupil2class')),
+            homeworks: JSON.parse(localStorage.getItem('homeworks'))
         } as Db;
     }
 
     private addHomework(classId: string, puzzleIds: string[], pupilId?: string) {
+        const date = new Date();
         let homeworks = JSON.parse(localStorage.getItem('homeworks')) || [];
-        homeworks.push({ id: this.generateId(), classId, puzzleIds, pupilId });
+        if (pupilId) {
+            homeworks.push(<DbHomework>{ id: this.generateId(), classId, puzzleIds, pupilId, dateCreated: date });
+        } else {
+            this.getDb().pupil2class.filter(_ => _.classId == classId).map(_ => _.pupilId).forEach(pId => {
+                homeworks.push(<DbHomework>{ id: this.generateId(), classId, puzzleIds, pupilId: pId, dateCreated: date });
+            });
+        }
         localStorage.setItem('homeworks', JSON.stringify(homeworks));
     }
 
