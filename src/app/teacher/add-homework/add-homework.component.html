@@ -12,7 +12,7 @@
     </select>
 
     <label class="mr-2" for="forWho">Кому?</label>
-    <select [(ngModel)]="selectedPupil" name="assignToPupilId" class="form-control mr-sm-2" id="forWho">
+    <select [(ngModel)]="selectedPupilId" name="assignToPupilId" class="form-control mr-sm-2" id="forWho">
       <option [ngValue]="null">Всем</option>
       <option *ngFor="let p of classPupils" [ngValue]="p.id">{{p.name}}</option>
     </select>
@@ -45,6 +45,6 @@
   </div>
 
   <div>
-    <button type="submit" class="btn btn-primary">Назначить</button>
+    <button type="submit" class="btn btn-primary" (click)="onApplyHomeworkClick()">Назначить</button>
   </div>
 </form>

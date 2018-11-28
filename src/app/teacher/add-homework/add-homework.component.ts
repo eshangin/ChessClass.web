@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {SchoolClassService} from 'src/app/services/school-class.service';
 import {SchoolClass} from 'src/app/services/school-class.model';
 import {PupilService} from 'src/app/services/pupil.service';
@@ -17,7 +17,7 @@ export class AddHomeworkComponent implements OnInit {
 
   classId: string;
   myClasses: SchoolClass[] = [];
-  selectedPupil: string = null;
+  selectedPupilId: string = null;
   classPupils: Pupil[] = [];
   selectedPuzzles: Puzzle[] = [];
   addPuzzlesCount: number = 3;
@@ -26,13 +26,13 @@ export class AddHomeworkComponent implements OnInit {
     private route: ActivatedRoute,
     private classService: SchoolClassService,
     private pupilService: PupilService,
-    private puzzleService: PuzzleService) { }
+    private puzzleService: PuzzleService,
+    private router: Router) { }
 
   ngOnInit() {
     this.classId = this.route.snapshot.paramMap.get('id');
     this.classService.getClasses().subscribe(classes => this.myClasses = classes);
     this.loadPupils();
-    //this.getPuzzles().subscribe(puzzles => this.puzzleSets.push({ puzzles: puzzles }));
   }
 
   onClassChange() {
@@ -43,6 +43,13 @@ export class AddHomeworkComponent implements OnInit {
     this.getPuzzles(this.addPuzzlesCount).subscribe(puzzles => this.selectedPuzzles.push(...puzzles));
   }
 
+  onApplyHomeworkClick() {
+    const puzzleIds = this.selectedPuzzles.map(_ => _.id);
+    this.classService.addHomework(this.classId, puzzleIds, this.selectedPupilId).subscribe(() => {
+      this.router.navigate(['dashboard']);
+    });
+  }
+
   private getPuzzles(count: number): Observable<Puzzle[]> {
     // TODO :: take X puzzles of specific type (checkmate in 2 moves/3 moves/etc.)
     return this.puzzleService.getPuzzles(count);
@@ -50,7 +57,7 @@ export class AddHomeworkComponent implements OnInit {
 
   private loadPupils(): Subscription {
     return this.pupilService.getPupils(this.classId).subscribe(pupils => {
-      this.selectedPupil = null;
+      this.selectedPupilId = null;
       this.classPupils = pupils;
     });
   }

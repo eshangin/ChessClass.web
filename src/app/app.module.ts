@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,7 +14,8 @@ import { ExperimentsComponent } from './experiments/experiments.component';
 import { TeacherPupilComponent } from './teacher/teacher-pupil/teacher-pupil.component';
 import { AddHomeworkComponent } from './teacher/add-homework/add-homework.component';
 import { SearchPuzzlesComponent } from './teacher/search-puzzles/search-puzzles.component';
-import {fakeBackendProvider} from './services/fake-backend.interceptor';
+import {AddHeadersInterceptor} from './core/add-headers.interceptor';
+import {FakeBackendInterceptor} from './core/fake-backend.interceptor';
 
 @NgModule({
   declarations: [
@@ -36,8 +37,9 @@ import {fakeBackendProvider} from './services/fake-backend.interceptor';
     FormsModule
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AddHeadersInterceptor, multi: true, },
     // provider used to create fake backend
-    fakeBackendProvider
+    { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true, }
   ],
   bootstrap: [AppComponent]
 })

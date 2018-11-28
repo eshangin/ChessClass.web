@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Puzzle} from './puzzle.model';
 import {Router} from '@angular/router';
-
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-};
 
 @Injectable({
   providedIn: 'root'
@@ -26,10 +22,10 @@ export class PuzzleService {
   }
   
   addToFavorites(puzzleId: string): Observable<any> {
-    return this.http.post(`api/puzzles/${puzzleId}/favorites`, null, httpOptions);
+    return this.http.post(`api/puzzles/${puzzleId}/favorites`, null);
   }
 
   removeFromFavorites(puzzleId: string): Observable<any> {
-    return this.http.delete(`api/puzzles/${puzzleId}/favorites`, httpOptions);
+    return this.http.delete(`api/puzzles/${puzzleId}/favorites`);
   }
 }

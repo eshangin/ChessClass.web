@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import {Puzzle} from './puzzle.model';
+import {Puzzle} from '../services/puzzle.model';
 import {Router} from '@angular/router';
-import {Pupil} from './pupil.model';
-import {SchoolClass} from './school-class.model';
+import {Pupil} from '../services/pupil.model';
+import {SchoolClass} from '../services/school-class.model';
 
 class Db {
     puzzles: Puzzle[];
@@ -64,6 +64,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 const pupil = db.pupils.find(_ => _.id == id);
                 result = of(new HttpResponse({ status: 200, body: pupil }));
             }
+        } else if (request.url.match(/api\/classes\/(\w+)\/homework/)) {
+            const id = request.url.split('/')[2];
+            if (request.method == "POST") {
+                console.log(request.body.puzzleIds, request.body.pupilId);
+                this.addHomework(id, request.body.puzzleIds, request.body.pupilId);
+                result = of(new HttpResponse({ status: 200 }));
+            }
         }
 
         if (result) {
@@ -115,6 +122,12 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             pupils: JSON.parse(localStorage.getItem('pupils')),
             pupil2class: JSON.parse(localStorage.getItem('pupil2class'))
         } as Db;
+    }
+
+    private addHomework(classId: string, puzzleIds: string[], pupilId?: string) {
+        let homeworks = JSON.parse(localStorage.getItem('homeworks')) || [];
+        homeworks.push({ id: this.generateId(), classId, puzzleIds, pupilId });
+        localStorage.setItem('homeworks', JSON.stringify(homeworks));
     }
 
     private addPupillToClass(pupil: any, classItem: any) {
@@ -209,10 +222,3 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         ];
       }
 }
-
-export let fakeBackendProvider = {
-    // use fake backend in place of Http service for backend-less development
-    provide: HTTP_INTERCEPTORS,
-    useClass: FakeBackendInterceptor,
-    multi: true
-};
