@@ -33,7 +33,8 @@
               "src/styles/bootstrap-custom.scss",
               "src/styles/styles.scss",
               "node_modules/chessboardjs/www/css/chessboard.css",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js"

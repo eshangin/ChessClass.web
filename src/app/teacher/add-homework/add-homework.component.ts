@@ -7,6 +7,7 @@ import {Pupil} from 'src/app/services/pupil.model';
 import {PuzzleService} from 'src/app/services/puzzle.service';
 import {Observable, Subscription} from 'rxjs';
 import {Puzzle} from 'src/app/services/puzzle.model';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-homework',
@@ -27,7 +28,8 @@ export class AddHomeworkComponent implements OnInit {
     private classService: SchoolClassService,
     private pupilService: PupilService,
     private puzzleService: PuzzleService,
-    private router: Router) { }
+    private router: Router,
+    private toastr: ToastrService) { }
 
   ngOnInit() {
     this.classId = this.route.snapshot.paramMap.get('id');
@@ -46,6 +48,7 @@ export class AddHomeworkComponent implements OnInit {
   onApplyHomeworkClick() {
     const puzzleIds = this.selectedPuzzles.map(_ => _.id);
     this.classService.addHomework(this.classId, puzzleIds, this.selectedPupilId).subscribe(() => {
+      this.toastr.success('Домашнее задание назначено!');
       this.router.navigate(['dashboard']);
     });
   }

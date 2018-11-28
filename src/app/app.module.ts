@@ -18,6 +18,8 @@ import {AddHeadersInterceptor} from './core/add-headers.interceptor';
 import {FakeBackendInterceptor} from './core/fake-backend.interceptor';
 import localeRu from '@angular/common/locales/ru';
 import {registerLocaleData} from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 registerLocaleData(localeRu);
 
@@ -38,7 +40,9 @@ registerLocaleData(localeRu);
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AddHeadersInterceptor, multi: true, },
