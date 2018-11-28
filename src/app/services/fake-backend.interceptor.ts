@@ -25,8 +25,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(puzzles, count) : puzzles }));
         } else if (request.url.match(/api\/puzzles\/(\w+)\/favorites/)) {
             const id = request.url.split('/')[3];
-
-            if (request.method == "PUT") {
+            if (request.method == "POST") {
                 puzzles.find(_ => _.id == id).isFavorite = true;
                 this.updateStoragePuzzles(puzzles);
                 result = of(new HttpResponse({ status: 200 }));
