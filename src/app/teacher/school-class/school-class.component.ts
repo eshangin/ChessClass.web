@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {PupilService} from '../services/pupil.service';
 import {ActivatedRoute} from '@angular/router';
-import {Pupil} from '../services/pupil.model';
+import {Pupil} from 'src/app/services/pupil.model';
+import {PupilService} from 'src/app/services/pupil.service';
 
 @Component({
   selector: 'app-school-class',

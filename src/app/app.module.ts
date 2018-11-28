@@ -10,10 +10,10 @@ import { GameControlsComponent } from './game-controls/game-controls.component';
 import { ChessPuzzleComponent } from './chess-puzzle/chess-puzzle.component';
 import {HttpClientInMemoryWebApiModule} from 'angular-in-memory-web-api';
 import {InMemoryDataService} from './services/in-memory-data.service';
-import { SchoolClassComponent } from './school-class/school-class.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { SchoolClassComponent } from './teacher/school-class/school-class.component';
+import { DashboardComponent } from './teacher/dashboard/dashboard.component';
 import { ExperimentsComponent } from './experiments/experiments.component';
-import { TeacherPupilComponent } from './teacher-pupil/teacher-pupil.component';
+import { TeacherPupilComponent } from './teacher/teacher-pupil/teacher-pupil.component';
 import { AddHomeworkComponent } from './teacher/add-homework/add-homework.component';
 
 @NgModule({

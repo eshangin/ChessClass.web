@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {PupilService} from '../services/pupil.service';
 import {ActivatedRoute} from '@angular/router';
-import {Pupil} from '../services/pupil.model';
+import {Pupil} from 'src/app/services/pupil.model';
+import {PupilService} from 'src/app/services/pupil.service';
 
 @Component({
   selector: 'app-teacher-pupil',
@@ -20,5 +20,4 @@ export class TeacherPupilComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     this.pupilService.getPupil(id).subscribe(p => {this.pupil = p; console.log(p)});
   }
-
 }
