@@ -21,6 +21,8 @@ export class SearchPuzzlesComponent implements OnInit {
     puzzle.isFavorite = !puzzle.isFavorite;
     if (puzzle.isFavorite) {
       this.puzzleService.addToFavorites(puzzle.id).subscribe();
+    } else {
+      this.puzzleService.removeFromFavorites(puzzle.id).subscribe();
     }
   }
 }

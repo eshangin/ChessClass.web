@@ -16,6 +16,7 @@ import { ExperimentsComponent } from './experiments/experiments.component';
 import { TeacherPupilComponent } from './teacher/teacher-pupil/teacher-pupil.component';
 import { AddHomeworkComponent } from './teacher/add-homework/add-homework.component';
 import { SearchPuzzlesComponent } from './teacher/search-puzzles/search-puzzles.component';
+import {fakeBackendProvider} from './services/fake-backend.interceptor';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,10 @@ import { SearchPuzzlesComponent } from './teacher/search-puzzles/search-puzzles.
       InMemoryDataService, { dataEncapsulation: false }
     )
   ],
-  providers: [],
+  providers: [
+    // provider used to create fake backend
+    fakeBackendProvider
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

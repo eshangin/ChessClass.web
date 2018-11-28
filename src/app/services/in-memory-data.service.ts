@@ -28,7 +28,7 @@ export class InMemoryDataService implements InMemoryDbService {
     return {
       classes,
       pupils,
-      puzzles,
+      //puzzles,
       class1pupils: pupils.slice(0, 3),
       class2pupils: pupils.slice(3),
       'puzzles-count-2': this.getRandom(puzzles, 2),
