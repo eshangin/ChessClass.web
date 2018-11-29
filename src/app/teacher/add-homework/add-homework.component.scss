@@ -1,0 +1,11 @@
+.b-homework-puzzle {
+    position: relative;
+    &__delete {
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 1;
+    }
+}

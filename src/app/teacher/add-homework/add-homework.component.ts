@@ -54,6 +54,11 @@ export class AddHomeworkComponent implements OnInit {
     });    
   }
 
+  removePuzzle(index) {
+    this.selectedPuzzles.splice(index, 1);
+    this.formPuzzles.removeAt(index);
+  }
+
   private get formPuzzles(): FormArray {
     return this.form.get('formPuzzles') as FormArray;
   }
