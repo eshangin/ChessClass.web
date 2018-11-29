@@ -48,7 +48,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             const url = this.router.parseUrl(request.url);
             const count = url.queryParamMap.get('count');
             result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(db.puzzles, count) : db.puzzles }));
-        } else if (request.url.match(/api\/puzzles\/(\w+)\/favorites/)) {
+        } else if (request.url.match(/api\/favorites(\/(\w+))?/)) {
             const id = request.url.split('/')[2];
             if (request.method == "POST") {
                 db.puzzles.find(_ => _.id == id).isFavorite = true;
@@ -58,6 +58,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 db.puzzles.find(_ => _.id == id).isFavorite = false;
                 this.updateStoragePuzzles(db.puzzles);
                 result = of(new HttpResponse({ status: 200 }));
+            } else if (request.method == "GET") {
+                console.log(id);
+                if (!id) {
+                    result = of(new HttpResponse({ status: 200, body: db.puzzles.filter(_ => _.isFavorite == true) }));
+                }
             }
         } else if (request.url == "api/classes") {
             result = of(new HttpResponse({ status: 200, body: db.classes }));

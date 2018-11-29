@@ -24,7 +24,7 @@ export class SelectFavoritesModalComponent implements OnInit {
     private puzzleService: PuzzleService) { }
 
   ngOnInit() {
-    this.puzzleService.getPuzzles().subscribe(puzzles => {
+    this.puzzleService.getFavorites().subscribe(puzzles => {
       this.selectablePuzzles = puzzles.map(_ => new SelectablePuzzle(_));
       this.isLoading = false;
     });

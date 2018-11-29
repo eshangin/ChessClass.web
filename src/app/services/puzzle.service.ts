@@ -14,18 +14,22 @@ export class PuzzleService {
     private router: Router) { }
 
   getPuzzles(count?: number): Observable<Puzzle[]> {
-    var url = this.router.parseUrl('/api/puzzles');
+    var url = this.router.parseUrl('api/puzzles');
     if (count) {
       url.queryParams['count'] = count;
     }
     return this.http.get<Puzzle[]>(url.toString());
   }
+
+  getFavorites(): Observable<Puzzle[]> {
+    return this.http.get<Puzzle[]>('api/favorites');
+  }
   
   addToFavorites(puzzleId: string): Observable<any> {
-    return this.http.post(`api/puzzles/${puzzleId}/favorites`, null);
+    return this.http.post(`api/favorites/${puzzleId}`, null);
   }
 
   removeFromFavorites(puzzleId: string): Observable<any> {
-    return this.http.delete(`api/puzzles/${puzzleId}/favorites`);
+    return this.http.delete(`api/favorites/${puzzleId}`);
   }
 }
