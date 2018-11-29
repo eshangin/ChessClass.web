@@ -1,0 +1,10 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{modalTitle}}</h4>
+</div>
+<div class="modal-body">
+  <p>Задачи TODO</p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Отмена</button>
+  <button type="button" class="btn btn-primary" (click)="activeModal.close({value: 1})">Добавить</button>
+</div>

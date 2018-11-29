@@ -20,6 +20,8 @@ import localeRu from '@angular/common/locales/ru';
 import {registerLocaleData} from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { SelectFavoritesModalComponent } from './teacher/select-favorites-modal/select-favorites-modal.component';
 
 registerLocaleData(localeRu);
 
@@ -34,7 +36,8 @@ registerLocaleData(localeRu);
     ExperimentsComponent,
     TeacherPupilComponent,
     AddHomeworkComponent,
-    SearchPuzzlesComponent
+    SearchPuzzlesComponent,
+    SelectFavoritesModalComponent
   ],
   imports: [
     BrowserModule,
@@ -45,8 +48,10 @@ registerLocaleData(localeRu);
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       timeOut: 3000
-    })
+    }),
+    NgbModule
   ],
+  entryComponents: [SelectFavoritesModalComponent],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AddHeadersInterceptor, multi: true, },
     // provider used to create fake backend

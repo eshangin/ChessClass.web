@@ -9,6 +9,8 @@ import {Observable, Subscription} from 'rxjs';
 import {Puzzle} from 'src/app/services/puzzle.model';
 import {ToastrService} from 'ngx-toastr';
 import {FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angular/forms';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import {SelectFavoritesModalComponent} from '../select-favorites-modal/select-favorites-modal.component';
 
 @Component({
   selector: 'app-add-homework',
@@ -32,7 +34,8 @@ export class AddHomeworkComponent implements OnInit {
     private puzzleService: PuzzleService,
     private router: Router,
     private toastr: ToastrService,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private modalService: NgbModal) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -57,6 +60,14 @@ export class AddHomeworkComponent implements OnInit {
   removePuzzle(index) {
     this.selectedPuzzles.splice(index, 1);
     this.formPuzzles.removeAt(index);
+  }
+
+  onAddFromFavoriteClick() {
+    const modalRef = this.modalService.open(SelectFavoritesModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
+    modalRef.componentInstance.modalTitle = 'Добавление из избранного';
+    modalRef.result.then((result) => {
+      console.log(`Closed with: ${result}`);
+    }, () => {});
   }
 
   private get formPuzzles(): FormArray {
