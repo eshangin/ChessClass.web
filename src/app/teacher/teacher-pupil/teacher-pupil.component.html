@@ -1,6 +1,6 @@
 <div *ngIf="pupil">
   <p>
-    {{pupil.name}}
+      <img [src]="pupil.picture" width="30" /> {{pupil.name}}
   </p>
   <div *ngFor="let h of homeworks">
     <span>Назначено {{h.dateCreated | date:'d MMMM, h:mm':undefined:'ru' }}</span>

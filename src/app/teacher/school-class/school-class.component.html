@@ -1,9 +1,9 @@
-<ul>
-  <p>
-    <a class="btn btn-primary" routerLink="/my/class/{{classId}}/add-homework">Назначить домашнее задание</a>
-  </p>
-  <li *ngFor="let p of pupils">
-      <a routerLink="/my/pupils/{{p.id}}">{{p.name}}</a>
+<p>
+  <a class="btn btn-primary" routerLink="/my/class/{{classId}}/add-homework">Назначить домашнее задание</a>
+</p>
+<ul class="list-unstyled">
+  <li *ngFor="let p of pupils" class="pull-left mr-4 mb-4">
+      <a routerLink="/my/pupils/{{p.id}}"><img [src]="p.picture" width="30" /> {{p.name}}</a>
   </li>
 </ul>  
 

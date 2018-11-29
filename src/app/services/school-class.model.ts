@@ -1,4 +1,7 @@
+import {Pupil} from "./pupil.model";
+
 export class SchoolClass {
-    id: number;
+    id: string;
     name: string;
+    pupils: Pupil[] = [];
 }

@@ -65,7 +65,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 }
             }
         } else if (request.url == "api/classes") {
-            result = of(new HttpResponse({ status: 200, body: db.classes }));
+            const classes = db.classes.map(c => {
+                db.pupil2class.filter(p2c => p2c.classId == c.id).forEach(p2c => {
+                    c.pupils.push(db.pupils.find(p => p.id == p2c.pupilId));
+                });
+                return c;
+            });
+            result = of(new HttpResponse({ status: 200, body: classes }));
         } else if (request.url.match(/api\/classes\/(\w+)\/pupils/)) {
             const id = request.url.split('/')[2];
             if (request.method == "GET") {
@@ -150,7 +156,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             classes: JSON.parse(localStorage.getItem('classes')),
             pupils: JSON.parse(localStorage.getItem('pupils')),
             pupil2class: JSON.parse(localStorage.getItem('pupil2class')),
-            homeworks: JSON.parse(localStorage.getItem('homeworks'))
+            homeworks: JSON.parse(localStorage.getItem('homeworks')) || []
         } as Db;
     }
 
@@ -180,20 +186,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return Math.random().toString(36).substr(2, 9);
     };
 
-    private getPupils(): any[] {
+    private getPupils(): Pupil[] {
         return [
-            { id: 'a', name: 'Иван З' },
-            { id: 'b', name: 'Сергей Б' },
-            { id: 'c', name: 'Анна К' },
-            { id: 'd', name: 'Игорь П' },
-            { id: 'e', name: 'Сергей Н' }
+            { id: 'a', name: 'Иван З', picture: '/assets/kid-pics/boy-1.png' },
+            { id: 'b', name: 'Сергей Б', picture: '/assets/kid-pics/boy-2.png' },
+            { id: 'c', name: 'Анна К', picture: '/assets/kid-pics/girl-1.png' },
+            { id: 'd', name: 'Игорь П', picture: '/assets/kid-pics/boy-3.png' },
+            { id: 'e', name: 'Лена Н', picture: '/assets/kid-pics/girl-2.png' }
         ];
     }
 
-    private getClasses(): any[] {
+    private getClasses(): SchoolClass[] {
         return [
-            { id: '1', name: 'Класс 1' },
-            { id: '2', name: 'Класс 2' }
+            { id: '1', name: 'Класс 1', pupils: [] },
+            { id: '2', name: 'Класс 2', pupils: [] }
         ];
     }
 
