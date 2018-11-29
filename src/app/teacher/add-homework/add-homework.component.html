@@ -32,7 +32,7 @@
     <div class="mb-2">
       <div class="mb-2 p-2 mr-2 border d-inline-block align-top">
         <div class="form-inline">
-          <button class="btn btn-sm btn-secondary mr-2" (click)="onAddPuzzles($event)">Добавить</button>
+          <button type="button" class="btn btn-sm btn-secondary mr-2" (click)="onAddPuzzles($event)">Добавить</button>
           <select [(ngModel)]="addPuzzlesCount" class="form-control form-control-sm mr-2" name="addPuzzlesCount" [ngModelOptions]="{standalone: true}">
             <option *ngFor="let i of [2, 3, 4]" [ngValue]="i">{{i}}</option>
           </select>
@@ -40,7 +40,7 @@
       </div>
 
       <div class="mb-2 p-2 border d-inline-block align-top">
-          <button class="btn btn-sm btn-secondary">Добавить</button> задачи из избранного (TODO)
+          <button type="button" class="btn btn-sm btn-secondary">Добавить</button> задачи из избранного (TODO)
       </div>
     </div>
   </div>
