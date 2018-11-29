@@ -1,18 +1,18 @@
 <h2>Назначить домашнее задание</h2>
 
-<form class="mt-4">
+<form class="mt-4" (ngSubmit)="onApplyHomeworkClick()" [formGroup]="form" #ngForm="ngForm">
   <div class="form-inline mb-2">
     <label class="mr-2" for="classInput">Класс</label>
     <select [(ngModel)]="classId" 
           name="classId" 
           class="form-control mr-sm-4" 
           id="classInput"
-          (ngModelChange)="onClassChange($event)">
+          (ngModelChange)="onClassChange($event)" [ngModelOptions]="{standalone: true}">
       <option *ngFor="let c of myClasses" [ngValue]="c.id">{{c.name}}</option>
     </select>
 
     <label class="mr-2" for="forWho">Кому?</label>
-    <select [(ngModel)]="selectedPupilId" name="assignToPupilId" class="form-control mr-sm-2" id="forWho">
+    <select [(ngModel)]="selectedPupilId" name="assignToPupilId" class="form-control mr-sm-2" id="forWho" [ngModelOptions]="{standalone: true}">
       <option [ngValue]="null">Всем</option>
       <option *ngFor="let p of classPupils" [ngValue]="p.id">{{p.name}}</option>
     </select>
@@ -20,6 +20,7 @@
 
   <div>
     <h3>Выбор задач</h3>
+    <div class="text-danger mb-3" *ngIf="formPuzzles.invalid && ngForm.submitted">Необходимо добавить хотя бы одну задачу</div>
 
     <div class="mb-2" *ngIf="selectedPuzzles.length">
       <div *ngFor="let p of selectedPuzzles" class="pull-left mr-2 mb-2">
@@ -32,7 +33,7 @@
       <div class="mb-2 p-2 mr-2 border d-inline-block align-top">
         <div class="form-inline">
           <button class="btn btn-sm btn-secondary mr-2" (click)="onAddPuzzles($event)">Добавить</button>
-          <select [(ngModel)]="addPuzzlesCount" class="form-control form-control-sm mr-2" name="addPuzzlesCount">
+          <select [(ngModel)]="addPuzzlesCount" class="form-control form-control-sm mr-2" name="addPuzzlesCount" [ngModelOptions]="{standalone: true}">
             <option *ngFor="let i of [2, 3, 4]" [ngValue]="i">{{i}}</option>
           </select>
           задачи по теме "Мат в 2 хода" (TODO)</div>
@@ -45,6 +46,6 @@
   </div>
 
   <div>
-    <button type="submit" class="btn btn-primary" (click)="onApplyHomeworkClick()">Назначить</button>
+    <button type="submit" class="btn btn-primary">Назначить</button>
   </div>
 </form>

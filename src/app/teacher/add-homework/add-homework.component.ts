@@ -8,6 +8,7 @@ import {PuzzleService} from 'src/app/services/puzzle.service';
 import {Observable, Subscription} from 'rxjs';
 import {Puzzle} from 'src/app/services/puzzle.model';
 import {ToastrService} from 'ngx-toastr';
+import {FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angular/forms';
 
 @Component({
   selector: 'app-add-homework',
@@ -22,6 +23,7 @@ export class AddHomeworkComponent implements OnInit {
   classPupils: Pupil[] = [];
   selectedPuzzles: Puzzle[] = [];
   addPuzzlesCount: number = 3;
+  form: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,9 +31,13 @@ export class AddHomeworkComponent implements OnInit {
     private pupilService: PupilService,
     private puzzleService: PuzzleService,
     private router: Router,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    this.form = this.formBuilder.group({
+      formPuzzles: this.formBuilder.array([], Validators.required)
+    });
     this.classId = this.route.snapshot.paramMap.get('id');
     this.classService.getClasses().subscribe(classes => this.myClasses = classes);
     this.loadPupils();
@@ -42,17 +48,25 @@ export class AddHomeworkComponent implements OnInit {
   }
 
   onAddPuzzles() {
-    this.getPuzzles(this.addPuzzlesCount).subscribe(puzzles => this.selectedPuzzles.push(...puzzles));
+    this.getPuzzles(this.addPuzzlesCount).subscribe(puzzles => {
+      this.selectedPuzzles.push(...puzzles);
+      puzzles.forEach(_ => this.formPuzzles.push(new FormControl()));
+    });    
+  }
+
+  private get formPuzzles(): FormArray {
+    return this.form.get('formPuzzles') as FormArray;
   }
 
   onApplyHomeworkClick() {
-    const puzzleIds = this.selectedPuzzles.map(_ => _.id);
+    if (this.form.valid) {
+      const puzzleIds = this.selectedPuzzles.map(_ => _.id);
 
-    // TODO :: validate if at least one puzzle was added
-    this.classService.addHomework(this.classId, puzzleIds, this.selectedPupilId).subscribe(() => {
-      this.toastr.success('Домашнее задание назначено!');
-      this.router.navigate(['home']);
-    });
+      this.classService.addHomework(this.classId, puzzleIds, this.selectedPupilId).subscribe(() => {
+        this.toastr.success('Домашнее задание назначено!');
+        this.router.navigate(['home']);
+      });
+    }
   }
 
   private getPuzzles(count: number): Observable<Puzzle[]> {
