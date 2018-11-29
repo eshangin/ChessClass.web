@@ -52,8 +52,7 @@ export class AddHomeworkComponent implements OnInit {
 
   onAddPuzzles() {
     this.getPuzzles(this.addPuzzlesCount).subscribe(puzzles => {
-      this.selectedPuzzles.push(...puzzles);
-      puzzles.forEach(_ => this.formPuzzles.push(new FormControl()));
+      this.pushPuzzles(puzzles);
     });    
   }
 
@@ -64,10 +63,14 @@ export class AddHomeworkComponent implements OnInit {
 
   onAddFromFavoriteClick() {
     const modalRef = this.modalService.open(SelectFavoritesModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
-    modalRef.componentInstance.modalTitle = 'Добавление из избранного';
     modalRef.result.then((result) => {
-      console.log(`Closed with: ${result}`);
+      this.pushPuzzles(result.puzzles);
     }, () => {});
+  }
+
+  private pushPuzzles(puzzles: Puzzle[]) {
+    this.selectedPuzzles.push(...puzzles);
+    puzzles.forEach(_ => this.formPuzzles.push(new FormControl()));
   }
 
   private get formPuzzles(): FormArray {

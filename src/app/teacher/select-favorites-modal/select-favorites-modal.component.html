@@ -1,10 +1,26 @@
 <div class="modal-header">
-  <h4 class="modal-title">{{modalTitle}}</h4>
+  <div class="modal-title">
+    <h4>Добавление из избранного</h4>
+    <div class="small">Отметьте галочкой задачи, которые хотите добавить</div>
+  </div>
 </div>
 <div class="modal-body">
-  <p>Задачи TODO</p>
+  <div *ngIf="isLoading" class="text-center m-5">Пожалуйста подождите <i class="fas fa-circle-notch fa-spin"></i></div>
+
+  <div *ngIf="!isLoading">
+    <div *ngFor="let item of selectablePuzzles; let i = index" class="card mr-3 mb-3 pull-left" style="width: 182px;">    
+      <app-chess-puzzle [showBoardNotation]="false" [pgn]="item.puzzle.pgn" style="width: 180px"></app-chess-puzzle>
+      <div class="card-body">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="customCheck{{i}}" [(ngModel)]="item.isSelected">
+          <label class="custom-control-label" for="customCheck{{i}}">&nbsp;</label>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>  
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Отмена</button>
-  <button type="button" class="btn btn-primary" (click)="activeModal.close({value: 1})">Добавить</button>
+  <button type="button" class="btn btn-primary" (click)="activeModal.close({ puzzles: getSelectedPuzzles })">Добавить</button>
 </div>

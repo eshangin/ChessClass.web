@@ -1,5 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {PuzzleService} from 'src/app/services/puzzle.service';
+import {Puzzle} from 'src/app/services/puzzle.model';
+
+class SelectablePuzzle {
+  puzzle: Puzzle;
+  isSelected: false;
+  constructor(p: Puzzle) { this.puzzle = p; }
+}
 
 @Component({
   selector: 'app-select-favorites-modal',
@@ -8,11 +16,22 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class SelectFavoritesModalComponent implements OnInit {
 
-  @Input() modalTitle: string;
+  isLoading: boolean = true;
+  selectablePuzzles: SelectablePuzzle[];
 
-  constructor(public activeModal: NgbActiveModal) { }
+  constructor(
+    public activeModal: NgbActiveModal,
+    private puzzleService: PuzzleService) { }
 
   ngOnInit() {
+    this.puzzleService.getPuzzles().subscribe(puzzles => {
+      this.selectablePuzzles = puzzles.map(_ => new SelectablePuzzle(_));
+      this.isLoading = false;
+    });
+  }
+
+  get getSelectedPuzzles(): Puzzle[] {
+    return this.selectablePuzzles.filter(_ => _.isSelected).map(_ => _.puzzle);
   }
 
 }
