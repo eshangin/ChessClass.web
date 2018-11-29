@@ -92,7 +92,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     h.puzzles = _.puzzleIds.map(pId => db.puzzles.find(p => p.id == pId));
                     h.dateCreated = _.dateCreated;
                     return h;
-                });
+                }).sort((a, b) => a.dateCreated > b.dateCreated ? -1:1);
                 result = of(new HttpResponse({ status: 200, body: items }));
             }
         }
