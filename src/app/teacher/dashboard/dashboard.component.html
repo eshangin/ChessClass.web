@@ -2,8 +2,8 @@
     <button (click)="onCreateClassClick()" type="button" class="btn btn-primary">Добавить класс</button>
 </div>
 
-<div class="row mb-3" *ngFor="let g of gropedClasses">
-  <div class="col-sm-4" *ngFor="let c of g">
+<div class="row mb-3" *ngFor="let g of gClasses">
+  <div class="col-sm-4" *ngFor="let c of g" [@anim]="c.uiState">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">
