@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {SchoolClass} from 'src/app/services/school-class.model';
 import {SchoolClassService} from 'src/app/services/school-class.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {CreateClassModalComponent} from '../create-class-modal/create-class-modal.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,10 +13,18 @@ export class DashboardComponent implements OnInit {
 
   myClasses: SchoolClass[] = [];
 
-  constructor(private classService: SchoolClassService) { }
+  constructor(
+    private classService: SchoolClassService,
+    private modalService: NgbModal) { }
 
   ngOnInit() {
     this.classService.getClasses().subscribe(classes => this.myClasses = classes);
   }
 
+  onCreateClassClick() {
+    const modalRef = this.modalService.open(CreateClassModalComponent, {ariaLabelledBy: 'modal-basic-title'});
+    modalRef.result.then((result) => {
+      
+    }, () => {});    
+  }
 }

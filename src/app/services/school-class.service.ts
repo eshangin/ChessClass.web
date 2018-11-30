@@ -21,4 +21,11 @@ export class SchoolClassService {
     };
     return this.http.post<SchoolClass[]>(`api/classes/${classId}/homework`, body);
   }
+
+  createClass(name: string): Observable<SchoolClass> {
+    const body = {
+      name
+    };
+    return this.http.post<SchoolClass>(`api/classes`, body);
+  }
 }

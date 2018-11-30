@@ -65,13 +65,17 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 }
             }
         } else if (request.url == "api/classes") {
-            const classes = db.classes.map(c => {
-                db.pupil2class.filter(p2c => p2c.classId == c.id).forEach(p2c => {
-                    c.pupils.push(db.pupils.find(p => p.id == p2c.pupilId));
+            if (request.method == "GET") {
+                const classes = db.classes.map(c => {
+                    db.pupil2class.filter(p2c => p2c.classId == c.id).forEach(p2c => {
+                        c.pupils.push(db.pupils.find(p => p.id == p2c.pupilId));
+                    });
+                    return c;
                 });
-                return c;
-            });
-            result = of(new HttpResponse({ status: 200, body: classes }));
+                result = of(new HttpResponse({ status: 200, body: classes }));
+            } else if (request.method == "POST") {
+                result = of(new HttpResponse({ status: 200, body: this.createClass(request.body.name) }));
+            }
         } else if (request.url.match(/api\/classes\/(\w+)\/pupils/)) {
             const id = request.url.split('/')[2];
             if (request.method == "GET") {
@@ -138,9 +142,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     private getDb(): Db {
         if (!localStorage.getItem('isInitialized')) {
             const pupils = this.getPupils();
+            this.createClass('Класс 1');
+            this.createClass('Класс 2');
             const classes = this.getClasses();
             localStorage.setItem('pupils', JSON.stringify(pupils));
-            localStorage.setItem('classes', JSON.stringify(classes));
             this.updateStoragePuzzles(this.getPuzzles());
             this.addPupillToClass(pupils[0], classes[0]);
             this.addPupillToClass(pupils[1], classes[0]);
@@ -196,11 +201,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         ];
     }
 
+    private createClass(name: string): SchoolClass {
+        const c = <SchoolClass>{ id: this.generateId(), name: name, pupils: [] };
+        const classes = this.getClasses();
+        classes.push(c);
+        localStorage.setItem('classes', JSON.stringify(classes));
+        return c;
+    }
+
     private getClasses(): SchoolClass[] {
-        return [
-            { id: '1', name: 'Класс 1', pupils: [] },
-            { id: '2', name: 'Класс 2', pupils: [] }
-        ];
+        return JSON.parse(localStorage.getItem('classes')) || [];
     }
 
     private getPuzzles(): Puzzle[] {
