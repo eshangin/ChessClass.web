@@ -23,7 +23,8 @@ export class DashboardComponent implements OnInit {
 
   onCreateClassClick() {
     const modalRef = this.modalService.open(CreateClassModalComponent, {ariaLabelledBy: 'modal-basic-title'});
-    modalRef.result.then((result) => {      
+    modalRef.result.then((result) => {
+      this.myClasses.push(result.class);
     }, () => {});    
   }
 
