@@ -89,6 +89,12 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 const pupil = db.pupils.find(_ => _.id == id);
                 result = of(new HttpResponse({ status: 200, body: pupil }));
             }
+        } else if (request.url.match(/api\/pupils$/)) {
+            if (request.method == "POST") {
+                const pupil = this.createPupil(request.body.firstName, request.body.lastName, request.body.picture);                
+                this.addPupillToClass(pupil, db.classes.find(_ => _.id == request.body.classId));
+                result = of(new HttpResponse({ status: 200, body: pupil }));
+            }
         } else if (request.url.match(/api\/classes\/(\w+)\/homework/)) {
             const id = request.url.split('/')[2];
             if (request.method == "POST") {
@@ -141,7 +147,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     private getDb(): Db {
         if (!localStorage.getItem('isInitialized')) {
+            this.createPupil('Иван', 'З', '/assets/kid-pics/boy-1.png');
+            this.createPupil('Сергей', 'Б', '/assets/kid-pics/boy-2.png');
+            this.createPupil('Анна', 'К', '/assets/kid-pics/girl-1.png');
+            this.createPupil('Игорь', 'П', '/assets/kid-pics/boy-3.png');
+            this.createPupil('Лена', 'Н', '/assets/kid-pics/girl-2.png');
             const pupils = this.getPupils();
+
             this.createClass('Класс 1');
             this.createClass('Класс 2');
             const classes = this.getClasses();
@@ -191,14 +203,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return Math.random().toString(36).substr(2, 9);
     };
 
+    private createPupil(firstName: string, lastName: string, picture: string) {
+        const p = <Pupil>{ id: this.generateId(), name: firstName + ' ' + lastName, picture: picture };
+        const pupils = this.getPupils();
+        pupils.push(p);
+        localStorage.setItem('pupils', JSON.stringify(pupils));
+        return p;
+    }
+
     private getPupils(): Pupil[] {
-        return [
-            { id: 'a', name: 'Иван З', picture: '/assets/kid-pics/boy-1.png' },
-            { id: 'b', name: 'Сергей Б', picture: '/assets/kid-pics/boy-2.png' },
-            { id: 'c', name: 'Анна К', picture: '/assets/kid-pics/girl-1.png' },
-            { id: 'd', name: 'Игорь П', picture: '/assets/kid-pics/boy-3.png' },
-            { id: 'e', name: 'Лена Н', picture: '/assets/kid-pics/girl-2.png' }
-        ];
+        return JSON.parse(localStorage.getItem('pupils')) || [];
     }
 
     private createClass(name: string): SchoolClass {

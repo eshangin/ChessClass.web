@@ -5,7 +5,7 @@
 <div class="row mb-3" *ngFor="let g of gropedClasses">
   <div class="col-sm-4" *ngFor="let c of g">
     <div class="card">
-      <div class="card-body" *ngIf="c">
+      <div class="card-body">
         <h5 class="card-title">
           <a routerLink="/my/classes/{{c.id}}">{{c.name}}</a>
         </h5>
@@ -18,7 +18,7 @@
         </ul>
       </div>
       <div class="card-footer">
-        <a routerLink="/my/classes/{{c.id}}">Перейти</a>
+        <button type="button" class="btn btn-sm btn-link" (click)="onAddPupilClick(c)">Добавить ученика</button>
       </div>
     </div>
   </div>

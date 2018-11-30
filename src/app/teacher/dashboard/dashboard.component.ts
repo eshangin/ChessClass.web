@@ -3,6 +3,7 @@ import {SchoolClass} from 'src/app/services/school-class.model';
 import {SchoolClassService} from 'src/app/services/school-class.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CreateClassModalComponent} from '../create-class-modal/create-class-modal.component';
+import {AddPupilToClassModalComponent} from '../add-pupil-to-class-modal/add-pupil-to-class-modal.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +26,16 @@ export class DashboardComponent implements OnInit {
     const modalRef = this.modalService.open(CreateClassModalComponent, {ariaLabelledBy: 'modal-basic-title'});
     modalRef.result.then((result) => {
       this.myClasses.push(result.class);
-    }, () => {});    
+    }, () => {});
+  }
+
+  onAddPupilClick(c: SchoolClass) {
+    const modalRef = this.modalService.open(AddPupilToClassModalComponent, {ariaLabelledBy: 'modal-basic-title'});
+    modalRef.componentInstance.classId = c.id;
+    modalRef.componentInstance.className = c.name;
+    modalRef.result.then((result) => {
+      c.pupils.push(result.pupil);
+    }, () => {});
   }
 
   get gropedClasses() {

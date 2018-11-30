@@ -1,13 +1,13 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" #ngForm="ngForm">
   <div class="modal-header">
     <div class="modal-title">
       <h4>Добавление класса</h4>
     </div>
   </div>
   <div class="modal-body">
-    <label for="classNameEl">Название класса</label>
+    <label for="classNameEl">Название класса *</label>
     <input id="classNameEl" class="form-control" formControlName="name" required>
-    <div *ngIf="name.invalid && (name.dirty || name.touched)">
+    <div *ngIf="ngForm.submitted && name.invalid">
       <div class="text-danger" *ngIf="name.errors.required">Поле не заполнено</div>
     </div>      
   </div>

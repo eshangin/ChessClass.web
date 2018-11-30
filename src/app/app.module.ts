@@ -23,6 +23,7 @@ import { ToastrModule } from 'ngx-toastr';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { SelectFavoritesModalComponent } from './teacher/select-favorites-modal/select-favorites-modal.component';
 import { CreateClassModalComponent } from './teacher/create-class-modal/create-class-modal.component';
+import { AddPupilToClassModalComponent } from './teacher/add-pupil-to-class-modal/add-pupil-to-class-modal.component';
 
 registerLocaleData(localeRu);
 
@@ -39,7 +40,8 @@ registerLocaleData(localeRu);
     AddHomeworkComponent,
     SearchPuzzlesComponent,
     SelectFavoritesModalComponent,
-    CreateClassModalComponent
+    CreateClassModalComponent,
+    AddPupilToClassModalComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +57,8 @@ registerLocaleData(localeRu);
   ],
   entryComponents: [
     SelectFavoritesModalComponent,
-    CreateClassModalComponent
+    CreateClassModalComponent,
+    AddPupilToClassModalComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AddHeadersInterceptor, multi: true, },

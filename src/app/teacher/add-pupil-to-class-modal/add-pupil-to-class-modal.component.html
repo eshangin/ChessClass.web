@@ -1,0 +1,27 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" #ngForm="ngForm">
+  <div class="modal-header">
+    <div class="modal-title">
+      <h4>Добавление ученика в "{{className}}"</h4>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="firstNameEl">Имя *</label>
+      <input id="firstNameEl" class="form-control" formControlName="firstName" required>
+      <div *ngIf="ngForm.submitted && firstName.invalid">
+        <div class="text-danger" *ngIf="firstName.errors.required">Поле не заполнено</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="lastNameEl">Фамилия *</label>
+      <input id="lastNameEl" class="form-control" formControlName="lastName" required>
+      <div *ngIf="ngForm.submitted && lastName.invalid">
+        <div class="text-danger" *ngIf="lastName.errors.required">Поле не заполнено</div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Отмена</button>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+  </div>
+</form>

@@ -17,4 +17,15 @@ export class PupilService {
   getPupil(pupilId: string): Observable<Pupil> {
     return this.http.get<Pupil>(`api/pupils/${pupilId}`);
   }
+
+  createPupil(classId: string, firstName: string, lastName: string): Observable<Pupil> {
+    // TODO :: use default picture
+    const body = {
+      firstName,
+      lastName,
+      picture: '/assets/kid-pics/boy-1.png',
+      classId
+    };
+    return this.http.post<Pupil>(`api/pupils`, body);
+  }
 }
