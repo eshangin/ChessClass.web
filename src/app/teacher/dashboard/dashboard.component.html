@@ -1,24 +1,25 @@
-<div class="card-deck">
-  <div class="card" *ngFor="let c of myClasses">
-    <div class="card-body">
-      <h5 class="card-title">
-        <a routerLink="/my/classes/{{c.id}}">{{c.name}}</a>
-      </h5>
-      <ul class="list-inline">
-        <li class="list-inline-item" *ngFor="let p of c.pupils">
-          <a routerLink="/my/pupils/{{p.id}}">
-            <img [src]="p.picture" [title]="p.name" width="20">
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="card-footer">
-      <a routerLink="/my/classes/{{c.id}}">Перейти</a>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-body d-flex align-items-center justify-content-center">
-      <button (click)="onCreateClassClick()" type="button" class="btn btn-primary">Добавить класс (TODO)</button>
+<div class="mb-3">
+    <button (click)="onCreateClassClick()" type="button" class="btn btn-primary">Добавить класс</button>
+</div>
+
+<div class="row mb-3" *ngFor="let g of gropedClasses">
+  <div class="col-sm-4" *ngFor="let c of g">
+    <div class="card">
+      <div class="card-body" *ngIf="c">
+        <h5 class="card-title">
+          <a routerLink="/my/classes/{{c.id}}">{{c.name}}</a>
+        </h5>
+        <ul class="list-inline">
+          <li class="list-inline-item" *ngFor="let p of c.pupils">
+            <a routerLink="/my/pupils/{{p.id}}">
+              <img [src]="p.picture" [title]="p.name" width="20">
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/my/classes/{{c.id}}">Перейти</a>
+      </div>
     </div>
   </div>
 </div>

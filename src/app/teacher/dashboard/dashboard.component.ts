@@ -23,8 +23,19 @@ export class DashboardComponent implements OnInit {
 
   onCreateClassClick() {
     const modalRef = this.modalService.open(CreateClassModalComponent, {ariaLabelledBy: 'modal-basic-title'});
-    modalRef.result.then((result) => {
-      
+    modalRef.result.then((result) => {      
     }, () => {});    
+  }
+
+  get gropedClasses() {
+    const groupBy = 3;
+    return this.myClasses.reduce((p, c) => {
+      if (p[p.length - 1].length == groupBy) {
+        p.push([]);
+      }
+      let lastArr = p[p.length - 1];
+      lastArr.push(c);
+      return p;
+    }, [[]]);
   }
 }
