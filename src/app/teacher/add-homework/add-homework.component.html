@@ -7,7 +7,7 @@
           name="classId" 
           class="form-control mr-sm-4" 
           id="classInput"
-          (ngModelChange)="onClassChange($event)" [ngModelOptions]="{standalone: true}">
+          (ngModelChange)="onClassChange()" [ngModelOptions]="{standalone: true}">
       <option *ngFor="let c of myClasses" [ngValue]="c.id">{{c.name}}</option>
     </select>
 
@@ -33,7 +33,7 @@
     <div class="mb-2">
       <div class="mb-2 p-2 mr-2 border d-inline-block align-top">
         <div class="form-inline">
-          <button type="button" class="btn btn-link p-1" (click)="onAddPuzzles($event)">Добавить</button>
+          <button type="button" class="btn btn-link p-1" (click)="onAddPuzzles()">Добавить</button>
           <select [(ngModel)]="addPuzzlesCount" class="form-control form-control-sm mr-2" name="addPuzzlesCount" [ngModelOptions]="{standalone: true}">
             <option *ngFor="let i of [2, 3, 4]" [ngValue]="i">{{i}}</option>
           </select>

@@ -32,6 +32,6 @@ export class AddPupilToClassModalComponent implements OnInit {
     }
   }
 
-  private get firstName() { return this.form.get('firstName'); }
-  private get lastName() { return this.form.get('lastName'); }
+  get firstName() { return this.form.get('firstName'); }
+  get lastName() { return this.form.get('lastName'); }
 }

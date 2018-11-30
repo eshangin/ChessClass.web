@@ -73,7 +73,7 @@ export class AddHomeworkComponent implements OnInit {
     puzzles.forEach(_ => this.formPuzzles.push(new FormControl()));
   }
 
-  private get formPuzzles(): FormArray {
+  get formPuzzles(): FormArray {
     return this.form.get('formPuzzles') as FormArray;
   }
 

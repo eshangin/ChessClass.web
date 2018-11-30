@@ -28,6 +28,5 @@ export class CreateClassModalComponent implements OnInit {
     }
   }
 
-  private get name() { return this.form.get('name'); }
-
+  get name() { return this.form.get('name'); }
 }
