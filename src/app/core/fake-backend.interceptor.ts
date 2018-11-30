@@ -147,11 +147,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     private getDb(): Db {
         if (!localStorage.getItem('isInitialized')) {
-            this.createPupil('Иван', 'З', '/assets/kid-pics/boy-1.png');
-            this.createPupil('Сергей', 'Б', '/assets/kid-pics/boy-2.png');
-            this.createPupil('Анна', 'К', '/assets/kid-pics/girl-1.png');
-            this.createPupil('Игорь', 'П', '/assets/kid-pics/boy-3.png');
-            this.createPupil('Лена', 'Н', '/assets/kid-pics/girl-2.png');
+            this.createPupil('Иван', 'З', './assets/kid-pics/boy-1.png');
+            this.createPupil('Сергей', 'Б', './assets/kid-pics/boy-2.png');
+            this.createPupil('Анна', 'К', './assets/kid-pics/girl-1.png');
+            this.createPupil('Игорь', 'П', './assets/kid-pics/boy-3.png');
+            this.createPupil('Лена', 'Н', './assets/kid-pics/girl-2.png');
             const pupils = this.getPupils();
 
             this.createClass('Класс 1');

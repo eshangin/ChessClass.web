@@ -23,7 +23,7 @@ export class PupilService {
     const body = {
       firstName,
       lastName,
-      picture: '/assets/kid-pics/boy-1.png',
+      picture: './assets/kid-pics/boy-1.png',
       classId
     };
     return this.http.post<Pupil>(`api/pupils`, body);

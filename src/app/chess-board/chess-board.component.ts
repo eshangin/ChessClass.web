@@ -28,7 +28,7 @@ export class ChessBoardComponent implements OnInit, AfterViewInit {
 
       const boardConfig: ChessBoardJS.BoardConfig = {
         draggable: true,
-        pieceTheme: '/images/chesspieces/{piece}.png',
+        pieceTheme: './assets/images/chesspieces/{piece}.png',
         onDragStart: (source, piece) => this.onDragStart(piece),
         onDrop: (source, target) => this.onDrop(source, target),
         onSnapEnd: () => this.onSnapEndFunc(),
