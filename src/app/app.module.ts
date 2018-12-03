@@ -24,6 +24,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { SelectFavoritesModalComponent } from './teacher/select-favorites-modal/select-favorites-modal.component';
 import { CreateClassModalComponent } from './teacher/create-class-modal/create-class-modal.component';
 import { AddPupilToClassModalComponent } from './teacher/add-pupil-to-class-modal/add-pupil-to-class-modal.component';
+import { StartPageComponent } from './home/start-page/start-page.component';
+import { TeacherAreaComponent } from './teacher/teacher-area/teacher-area.component';
 
 registerLocaleData(localeRu);
 
@@ -41,7 +43,9 @@ registerLocaleData(localeRu);
     SearchPuzzlesComponent,
     SelectFavoritesModalComponent,
     CreateClassModalComponent,
-    AddPupilToClassModalComponent
+    AddPupilToClassModalComponent,
+    StartPageComponent,
+    TeacherAreaComponent
   ],
   imports: [
     BrowserModule,
