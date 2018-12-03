@@ -3,6 +3,6 @@ import {Puzzle} from "./puzzle.model";
 export class Homework {
     id: string;
     puzzles: Puzzle[];
-    pupilId: string;
+    classId: string;
     dateCreated: Date;
 }

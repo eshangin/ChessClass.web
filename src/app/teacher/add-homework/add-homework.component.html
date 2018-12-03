@@ -11,11 +11,11 @@
       <option *ngFor="let c of myClasses" [ngValue]="c.id">{{c.name}}</option>
     </select>
 
-    <label class="mr-2" for="forWho">Кому?</label>
+    <!-- <label class="mr-2" for="forWho">Кому?</label>
     <select [(ngModel)]="selectedPupilId" name="assignToPupilId" class="form-control mr-sm-2" id="forWho" [ngModelOptions]="{standalone: true}">
       <option [ngValue]="null">Всем</option>
       <option *ngFor="let p of classPupils" [ngValue]="p.id">{{p.name}}</option>
-    </select>
+    </select> -->
   </div>
 
   <div>
@@ -48,6 +48,7 @@
   </div>
 
   <div>
+    <a class="btn btn-link" routerLink="/my/classes/{{classId}}">Отмена</a>&nbsp;
     <button type="submit" class="btn btn-primary">Назначить</button>
   </div>
 </form>

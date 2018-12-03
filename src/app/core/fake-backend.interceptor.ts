@@ -25,7 +25,6 @@ class DbHomework {
     id: string;
     classId: string;
     puzzleIds: string[];
-    pupilId: string;
     dateCreated: Date
 }
 
@@ -76,7 +75,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             } else if (request.method == "POST") {
                 result = of(new HttpResponse({ status: 200, body: this.createClass(request.body.name) }));
             }
-        } else if (request.url.match(/api\/classes\/(\w+)\/pupils/)) {
+        } else if (request.url.match(/api\/classes\/(\w+)$/)) {
+            const id = request.url.split('/')[2];
+            if (request.method == "GET") {
+                const c = db.classes.find(_ => _.id == id);                
+                db.pupil2class.filter(p2c => p2c.classId == c.id).forEach(p2c => {
+                    c.pupils.push(db.pupils.find(p => p.id == p2c.pupilId));
+                });
+                result = of(new HttpResponse({ status: 200, body: c }));
+            }
+        }else if (request.url.match(/api\/classes\/(\w+)\/pupils$/)) {
             const id = request.url.split('/')[2];
             if (request.method == "GET") {
                 const pupilIds = db.pupil2class.filter(_ => _.classId == id).map(_ => _.pupilId);
@@ -95,21 +103,32 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 this.addPupillToClass(pupil, db.classes.find(_ => _.id == request.body.classId));
                 result = of(new HttpResponse({ status: 200, body: pupil }));
             }
-        } else if (request.url.match(/api\/classes\/(\w+)\/homework/)) {
+        } else if (request.url.match(/api\/classes\/(\w+)\/homeworks$/)) {
             const id = request.url.split('/')[2];
             if (request.method == "POST") {
-                console.log(request.body.puzzleIds, request.body.pupilId);
                 this.addHomework(id, request.body.puzzleIds, request.body.pupilId);
                 result = of(new HttpResponse({ status: 200 }));
+            } else if (request.method == "GET") {
+                const homeworks = db.homeworks.filter(_ => _.classId == id);
+                const items = homeworks.map(_ => {
+                    let h = new Homework();
+                    h.id = _.id;
+                    h.classId = _.classId;
+                    h.puzzles = _.puzzleIds.map(pId => db.puzzles.find(p => p.id == pId));
+                    h.dateCreated = _.dateCreated;
+                    return h;
+                }).sort((a, b) => a.dateCreated > b.dateCreated ? -1:1);
+                result = of(new HttpResponse({ status: 200, body: items }));
             }
         } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks$/)) {
             const id = request.url.split('/')[2];
             if (request.method == "GET") {
-                const homeworks = db.homeworks.filter(_ => _.pupilId == id);
+                const classId = db.pupil2class.find(_ => _.pupilId == id).classId;
+                const homeworks = db.homeworks.filter(_ => _.classId == classId);
                 const items = homeworks.map(_ => {
                     let h = new Homework();
                     h.id = _.id;
-                    h.pupilId = id;
+                    h.classId = _.classId;
                     h.puzzles = _.puzzleIds.map(pId => db.puzzles.find(p => p.id == pId));
                     h.dateCreated = _.dateCreated;
                     return h;

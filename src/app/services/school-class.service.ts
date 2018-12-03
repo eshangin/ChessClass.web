@@ -14,18 +14,15 @@ export class SchoolClassService {
     return this.http.get<SchoolClass[]>('api/classes');
   }
 
-  addHomework(classId: string, puzzleIds: string[], pupilId?: string): Observable<SchoolClass[]> {
-    const body = {
-      puzzleIds,
-      pupilId
-    };
-    return this.http.post<SchoolClass[]>(`api/classes/${classId}/homework`, body);
-  }
-
   createClass(name: string): Observable<SchoolClass> {
     const body = {
       name
     };
     return this.http.post<SchoolClass>(`api/classes`, body);
   }
+
+  getClass(classId: string): any {
+    return this.http.get<SchoolClass>(`api/classes/${classId}`);
+  }
+
 }

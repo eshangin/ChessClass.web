@@ -11,6 +11,7 @@ import {ToastrService} from 'ngx-toastr';
 import {FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angular/forms';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import {SelectFavoritesModalComponent} from '../select-favorites-modal/select-favorites-modal.component';
+import {HomeworkService} from 'src/app/services/homework.service';
 
 @Component({
   selector: 'app-add-homework',
@@ -21,7 +22,7 @@ export class AddHomeworkComponent implements OnInit {
 
   classId: string;
   myClasses: SchoolClass[] = [];
-  selectedPupilId: string = null;
+  //selectedPupilId: string = null;
   classPupils: Pupil[] = [];
   selectedPuzzles: Puzzle[] = [];
   addPuzzlesCount: number = 3;
@@ -35,7 +36,8 @@ export class AddHomeworkComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private formBuilder: FormBuilder,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,
+    private homeworkService: HomeworkService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -81,9 +83,9 @@ export class AddHomeworkComponent implements OnInit {
     if (this.form.valid) {
       const puzzleIds = this.selectedPuzzles.map(_ => _.id);
 
-      this.classService.addHomework(this.classId, puzzleIds, this.selectedPupilId).subscribe(() => {
+      this.homeworkService.addHomework(this.classId, puzzleIds).subscribe(() => {
         this.toastr.success('Домашнее задание назначено!');
-        this.router.navigate(['home']);
+        this.router.navigate(['my/classes', this.classId]);
       });
     }
   }
@@ -95,7 +97,7 @@ export class AddHomeworkComponent implements OnInit {
 
   private loadPupils(): Subscription {
     return this.pupilService.getPupils(this.classId).subscribe(pupils => {
-      this.selectedPupilId = null;
+      //this.selectedPupilId = null;
       this.classPupils = pupils;
     });
   }

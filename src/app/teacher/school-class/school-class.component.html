@@ -1,9 +1,21 @@
-<p>
-  <a class="btn btn-primary" routerLink="/my/class/{{classId}}/add-homework">Назначить домашнее задание</a>
-</p>
-<ul class="list-unstyled">
-  <li *ngFor="let p of pupils" class="pull-left mr-4 mb-4">
+<h2>{{class.name}}</h2>
+
+<ul class="list-inline">
+  <li *ngFor="let p of class.pupils" class="list-inline-item mr-4 mb-4">
       <a routerLink="/my/pupils/{{p.id}}"><img [src]="p.picture" width="30" /> {{p.name}}</a>
   </li>
 </ul>  
 
+<h3>
+  Домашние задания <a class="btn btn-primary btn-sm" routerLink="/my/class/{{class.id}}/add-homework">назначить новое</a>
+</h3>
+<ul class="list-unstyled">
+  <li *ngFor="let h of homeworks" class="mb-4">
+    <span>Назначено {{h.dateCreated | date:'d MMMM, h:mm':undefined:'ru' }}</span>
+    <hr>
+    <div *ngFor="let q of h.puzzles" class="pull-left mr-3 mb-3">
+      <app-chess-puzzle style="width: 300px" [pgn]="q.pgn"></app-chess-puzzle>
+    </div>
+    <div class="clearfix"></div>
+  </li>
+</ul>  

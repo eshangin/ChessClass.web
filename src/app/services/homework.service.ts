@@ -13,4 +13,15 @@ export class HomeworkService {
   getHomeworks(pupilId: string): Observable<Homework[]> {
     return this.http.get<Homework[]>(`api/pupils/${pupilId}/homeworks`);
   }
+
+  addHomework(classId: string, puzzleIds: string[]): Observable<void> {
+    const body = {
+      puzzleIds
+    };
+    return this.http.post<void>(`api/classes/${classId}/homeworks`, body);
+  }
+
+  getClassHomeworks(classId: string): Observable<Homework[]> {
+    return this.http.get<Homework[]>(`api/classes/${classId}/homeworks`);
+  }
 }
