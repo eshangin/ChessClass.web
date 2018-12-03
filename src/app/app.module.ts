@@ -26,6 +26,8 @@ import { CreateClassModalComponent } from './teacher/create-class-modal/create-c
 import { AddPupilToClassModalComponent } from './teacher/add-pupil-to-class-modal/add-pupil-to-class-modal.component';
 import { StartPageComponent } from './home/start-page/start-page.component';
 import { TeacherAreaComponent } from './teacher/teacher-area/teacher-area.component';
+import { LoginComponent } from './auth/login/login.component';
+import { LogoutComponent } from './auth/logout/logout.component';
 
 registerLocaleData(localeRu);
 
@@ -45,7 +47,9 @@ registerLocaleData(localeRu);
     CreateClassModalComponent,
     AddPupilToClassModalComponent,
     StartPageComponent,
-    TeacherAreaComponent
+    TeacherAreaComponent,
+    LoginComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
