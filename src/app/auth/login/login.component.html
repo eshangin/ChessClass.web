@@ -1,5 +1,22 @@
-<h2>Login</h2>
-<p>{{message}}</p>
-<p>
-  <button type="button" class="btn btn-primary" (click)="login()">Login</button>
-</p>
+<div class="row">
+  <div class="mt-5 col-md-4 offset-md-4 col-sm-8 offset-sm-2">
+    <h2 class="mb-3">Вход для учителей</h2>
+    <form [formGroup]="form" (ngSubmit)="login()" #ngForm="ngForm">
+      <div class="form-group">
+        <input class="form-control" type="text" placeholder="Email" formControlName="emailField" required>
+        <div *ngIf="emailField.invalid && (emailField.dirty || emailField.touched || ngForm.submitted)">
+          <div class="text-danger" *ngIf="emailField.errors.required">Поле не заполнено</div>
+        </div> 
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="password" placeholder="Пароль" formControlName="passwordField" required>
+        <div *ngIf="passwordField.invalid && (passwordField.dirty || passwordField.touched || ngForm.submitted)">
+            <div class="text-danger" *ngIf="passwordField.errors.required">Поле не заполнено</div>
+          </div> 
+        </div>
+      <p>
+        <button type="submit" class="btn btn-primary">Войти</button>
+      </p>
+    </form>
+  </div>
+</div>

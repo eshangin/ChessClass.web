@@ -9,7 +9,7 @@ import {Observable, Subscription} from 'rxjs';
 import {Puzzle} from 'src/app/services/puzzle.model';
 import {ToastrService} from 'ngx-toastr';
 import {FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angular/forms';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {SelectFavoritesModalComponent} from '../select-favorites-modal/select-favorites-modal.component';
 import {HomeworkService} from 'src/app/services/homework.service';
 
