@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {ChessBoardComponent} from './chess-board/chess-board.component';
 
 @Component({
   selector: 'app-root',

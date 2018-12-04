@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {ChessHelperService, ChessPuzzle} from '../services/chess-helper.service';
 import {ChessBoardComponent} from '../chess-board/chess-board.component';
+import {ChessPuzzle, ChessHelperService} from 'src/app/services/chess-helper.service';
 
 @Component({
   selector: 'app-chess-puzzle',

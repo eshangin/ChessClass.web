@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {ExperimentsComponent} from './experiments/experiments.component';
 import {StartPageComponent} from './home/start-page/start-page.component';
 import {LoginComponent} from './auth/login/login.component';
 import {LogoutComponent} from './auth/logout/logout.component';
+import {ExperimentsComponent} from './home/experiments/experiments.component';
 
 const routes: Routes = [
   { path: '', component: StartPageComponent },

@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ExperimentsComponent } from './experiments/experiments.component';
 import {AddHeadersInterceptor} from './core/add-headers.interceptor';
 import {FakeBackendInterceptor} from './core/fake-backend.interceptor';
 import localeRu from '@angular/common/locales/ru';
@@ -16,6 +15,7 @@ import { StartPageComponent } from './home/start-page/start-page.component';
 import { LoginComponent } from './auth/login/login.component';
 import { LogoutComponent } from './auth/logout/logout.component';
 import {SharedModule} from './shared/shared.module';
+import {ExperimentsComponent} from './home/experiments/experiments.component';
 
 registerLocaleData(localeRu);
 

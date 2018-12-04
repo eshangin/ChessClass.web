@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ChessBoardComponent} from '../chess-board/chess-board.component';
+import {ChessBoardComponent} from 'src/app/shared/chess-board/chess-board.component';
 
 interface IGameInfo {
   board: ChessBoardComponent;
