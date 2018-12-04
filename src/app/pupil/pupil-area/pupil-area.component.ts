@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {AuthService} from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-pupil-area',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PupilAreaComponent implements OnInit {
 
-  constructor() { }
+  pupilName: string;
+
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
+    this.pupilName = this.authService.currentUser.name;
   }
 
 }

@@ -6,6 +6,7 @@ import {Router} from '@angular/router';
 import {Pupil} from '../services/pupil.model';
 import {SchoolClass} from '../services/school-class.model';
 import {Homework} from '../services/homework.model';
+import {User, Role} from '../services/user.model';
 
 class Db {
     puzzles: Puzzle[];
@@ -47,6 +48,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             const url = this.router.parseUrl(request.url);
             const count = url.queryParamMap.get('count');
             result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(db.puzzles, count) : db.puzzles }));
+        } else if (request.url.match(/api\/auth\/login/)) {
+            if (request.url == 'api/auth/login/pupil') {
+                const randomPupil = db.pupils[Math.floor(Math.random() * db.pupils.length)];
+                result = of(new HttpResponse({ status: 200, body: <User>{ id: randomPupil.id, name: randomPupil.name, role: Role.Pupil } }));
+            } else if (request.url == 'api/auth/login/teacher') {
+                result = of(new HttpResponse({ status: 200, body: <User>{ id: this.generateId(), name: 'Бобби Фишер', role: Role.Pupil } }));
+            }
         } else if (request.url.match(/api\/favorites(\/(\w+))?/)) {
             const id = request.url.split('/')[2];
             if (request.method == "POST") {
@@ -84,7 +92,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 });
                 result = of(new HttpResponse({ status: 200, body: c }));
             }
-        }else if (request.url.match(/api\/classes\/(\w+)\/pupils$/)) {
+        } else if (request.url.match(/api\/classes\/(\w+)\/pupils$/)) {
             const id = request.url.split('/')[2];
             if (request.method == "GET") {
                 const pupilIds = db.pupil2class.filter(_ => _.classId == id).map(_ => _.pupilId);
