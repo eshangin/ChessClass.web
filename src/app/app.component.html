@@ -1,5 +1,7 @@
 <router-outlet></router-outlet>
 
 <div class="position-fixed p-2 border" style="bottom: 20px; right: 20px;">
-  development: <a routerLink="/experiments">experiments</a>
+  <span class="align-middle">development:</span>
+  <a routerLink="/experiments" class="btn btn-link p-1">experiments</a>
+  <button type="button" (click)="clearLocalStorage()" class="btn btn-link p-1">clear local storage</button>
 </div>
