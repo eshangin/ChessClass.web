@@ -29,7 +29,8 @@ const routes: Routes = [
       { path: 'pupils/:id', component: TeacherPupilComponent },
       { path: 'class/:id/add-homework', component: AddHomeworkComponent },
     ]
-  }
+  },
+  { path: 'p', loadChildren: './pupil/pupil.module#PupilModule' },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
