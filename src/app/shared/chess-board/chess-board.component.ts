@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, Input, ElementRef, Output, EventEmitter, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
 
 import * as ChessBoard from 'chessboardjs';
 import * as Chess from 'chess.js';
@@ -8,38 +8,42 @@ import * as Chess from 'chess.js';
   templateUrl: './chess-board.component.html',
   styleUrls: ['./chess-board.component.scss']
 })
-export class ChessBoardComponent implements OnInit, AfterViewInit {
+export class ChessBoardComponent implements AfterViewInit, OnChanges {
 
   @Input() fen: string;
   @Input() showNotation: boolean = true;
   @Output() private pieceMoved = new EventEmitter<ChessBoardComponent>();
   @Output() private boardInitiated = new EventEmitter<ChessBoardComponent>();
-  engine: ChessInstance;
+  engine: ChessInstance = new Chess();
   private board: ChessBoardInstance;
 
   constructor(private elementRef: ElementRef) {
-  }  
+  }
 
-  ngOnInit(): void {
-    if (this.fen) {
-      this.engine = new Chess();
-      
-      this.engine.load(this.fen);
-
-      const boardConfig: ChessBoardJS.BoardConfig = {
-        draggable: true,
-        pieceTheme: './assets/images/chesspieces/{piece}.png',
-        onDragStart: (source, piece) => this.onDragStart(piece),
-        onDrop: (source, target) => this.onDrop(source, target),
-        onSnapEnd: () => this.onSnapEndFunc(),
-        showNotation: this.showNotation
-      };
-
-      this.board = ChessBoard(this.elementRef.nativeElement, boardConfig);      
-      this.board.position(this.engine.fen());
-
-      this.boardInitiated.emit(this);
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.fen) {
+      this.updateFen();
     }
+  }
+  
+  private updateFen() {
+    this.engine.load(this.fen);
+
+    const boardConfig: ChessBoardJS.BoardConfig = {
+      draggable: true,
+      pieceTheme: './assets/images/chesspieces/{piece}.png',
+      onDragStart: (source, piece) => this.onDragStart(piece),
+      onDrop: (source, target) => this.onDrop(source, target),
+      onSnapEnd: () => this.onSnapEndFunc(),
+      showNotation: this.showNotation
+    };
+
+    if (!this.board) {
+      this.board = ChessBoard(this.elementRef.nativeElement, boardConfig);
+    }
+    this.board.position(this.engine.fen(), false);
+
+    this.boardInitiated.emit(this);    
   }
 
   ngAfterViewInit() {

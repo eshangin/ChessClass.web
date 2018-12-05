@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import {ChessBoardComponent} from '../chess-board/chess-board.component';
 import {ChessPuzzle, ChessHelperService} from 'src/app/services/chess-helper.service';
 
@@ -7,7 +7,7 @@ import {ChessPuzzle, ChessHelperService} from 'src/app/services/chess-helper.ser
   templateUrl: './chess-puzzle.component.html',
   styleUrls: ['./chess-puzzle.component.scss']
 })
-export class ChessPuzzleComponent implements OnInit {
+export class ChessPuzzleComponent implements OnChanges {
 
   @Input() pgn: string;
   @Input() showBoardNotation: boolean = true;
@@ -16,7 +16,13 @@ export class ChessPuzzleComponent implements OnInit {
 
   constructor(private chessHelperService: ChessHelperService) { }
 
-  ngOnInit() {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.pgn) {
+      this.updatePgn();
+    }
+  }
+
+  private updatePgn() {
     this.puzzleInfo = this.chessHelperService.parsePuzzle(this.pgn);
     this.puzzleInitialFen = this.puzzleInfo.initialFen;
   }
