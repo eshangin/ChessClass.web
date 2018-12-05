@@ -1,0 +1,20 @@
+<table class="table table-bordered">
+  <tbody>
+    <tr *ngFor="let h of homeworks">
+      <td>
+        {{h.dateCreated | date:'d MMMM, h:mm':undefined:'ru' }} назначено {{h.puzzles.length}} задач
+      </td>
+      <td class="text-right" [ngSwitch]="h.pupilStats[0].fixedPuzzlesCount">
+        <span *ngSwitchCase="0">
+          <a routerLink="/p/homeworks/{{h.id}}">решить</a>
+        </span>
+        <span *ngSwitchCase="h.puzzles.length">
+          задачи решены <i class="fas fa-thumbs-up text-warning"></i>
+        </span>
+        <span *ngSwitchDefault>
+            <a routerLink="/p/homeworks/{{h.id}}">решить</a> {{h.puzzles.length - h.pupilStats[0].fixedPuzzlesCount}} оставшиеся задачи
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>

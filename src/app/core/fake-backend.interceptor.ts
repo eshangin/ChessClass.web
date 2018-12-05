@@ -7,6 +7,7 @@ import {Pupil} from '../services/pupil.model';
 import {SchoolClass} from '../services/school-class.model';
 import {Homework} from '../services/homework.model';
 import {User, Role} from '../services/user.model';
+import {HomeworkPupilStat} from '../services/homework-pupil-stat.model';
 
 class Db {
     puzzles: Puzzle[];
@@ -14,6 +15,8 @@ class Db {
     pupils: Pupil[];
     pupil2class: Pupil2Class[];
     homeworks: DbHomework[];
+    homework2puzzle: DbHomework2Puzzle[];
+    fixedPuzzles: DbFixedPuzzle[];
 }
 
 class Pupil2Class {
@@ -22,10 +25,23 @@ class Pupil2Class {
     classId: string;
 }
 
+class DbFixedPuzzle {
+    id: string;
+    homework2puzzleId: string;
+    pupilId: string;
+    dateCreated: Date;
+}
+
+class DbHomework2Puzzle {
+    id: string;
+    homeworkId: string;
+    puzzleId: string;
+    dateCreated: Date;
+}
+
 class DbHomework {
     id: string;
     classId: string;
-    puzzleIds: string[];
     dateCreated: Date
 }
 
@@ -114,7 +130,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         } else if (request.url.match(/api\/classes\/(\w+)\/homeworks$/)) {
             const id = request.url.split('/')[2];
             if (request.method == "POST") {
-                this.addHomework(id, request.body.puzzleIds, request.body.pupilId);
+                this.addHomework(id, request.body.puzzleIds);
                 result = of(new HttpResponse({ status: 200 }));
             } else if (request.method == "GET") {
                 const homeworks = db.homeworks.filter(_ => _.classId == id);
@@ -122,26 +138,52 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     let h = new Homework();
                     h.id = _.id;
                     h.classId = _.classId;
-                    h.puzzles = _.puzzleIds.map(pId => db.puzzles.find(p => p.id == pId));
+                    h.puzzles = db.homework2puzzle.filter(h2p => h2p.homeworkId == _.id).map(h2p => db.puzzles.find(p => p.id == h2p.puzzleId));
                     h.dateCreated = _.dateCreated;
                     return h;
                 }).sort((a, b) => a.dateCreated > b.dateCreated ? -1:1);
                 result = of(new HttpResponse({ status: 200, body: items }));
             }
         } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks$/)) {
-            const id = request.url.split('/')[2];
+            const pupilId = request.url.split('/')[2];
             if (request.method == "GET") {
-                const classId = db.pupil2class.find(_ => _.pupilId == id).classId;
+                const classId = db.pupil2class.find(_ => _.pupilId == pupilId).classId;
                 const homeworks = db.homeworks.filter(_ => _.classId == classId);
                 const items = homeworks.map(_ => {
                     let h = new Homework();
                     h.id = _.id;
                     h.classId = _.classId;
-                    h.puzzles = _.puzzleIds.map(pId => db.puzzles.find(p => p.id == pId));
+                    h.puzzles = db.homework2puzzle.filter(h2p => h2p.homeworkId == _.id).map(h2p => db.puzzles.find(p => p.id == h2p.puzzleId));
                     h.dateCreated = _.dateCreated;
+                    let h2pItems = db.homework2puzzle.filter(h2p => h2p.homeworkId == _.id);
+                    h.pupilStats = [{
+                        pupilId: pupilId,
+                        fixedPuzzlesCount: db.fixedPuzzles.filter(_ => _.pupilId == pupilId && h2pItems.map(h2p => h2p.id).indexOf(_.homework2puzzleId) != -1).length
+                    } as HomeworkPupilStat]
                     return h;
                 }).sort((a, b) => a.dateCreated > b.dateCreated ? -1:1);
                 result = of(new HttpResponse({ status: 200, body: items }));
+            }
+        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks\/(\w+)\/puzzles\/non-fixed/)) {
+            const pupilId = request.url.split('/')[3];
+            const homeworkId = request.url.split('/')[5];
+            const url = this.router.parseUrl(request.url);
+            const count = +url.queryParamMap.get('count');
+            if (request.method == "GET") {
+                const puzzles = db.homework2puzzle
+                    .filter(h2p => h2p.homeworkId == homeworkId && !db.fixedPuzzles.find(fp => fp.pupilId == pupilId && fp.homework2puzzleId == h2p.id))
+                    .sort((a, b) => a.dateCreated > b.dateCreated ? -1:1)
+                    .map(h2p => db.puzzles.find(p => p.id == h2p.puzzleId));
+
+                result = of(new HttpResponse({ status: 200, body: count ? puzzles.slice(0, count) : puzzles }));
+            }
+        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks\/(\w+)\/puzzles\/(\w+)\/fixed/)) {
+            const pupilId = request.url.split('/')[3];
+            const homeworkId = request.url.split('/')[5];
+            const puzzleId = request.url.split('/')[7];
+            if (request.method == "POST") {
+                this.markPuzzleFixed(pupilId, homeworkId, puzzleId);
+                result = of(new HttpResponse({ status: 200 }));
             }
         }
 
@@ -200,21 +242,28 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             classes: JSON.parse(localStorage.getItem('classes')),
             pupils: JSON.parse(localStorage.getItem('pupils')),
             pupil2class: JSON.parse(localStorage.getItem('pupil2class')),
-            homeworks: JSON.parse(localStorage.getItem('homeworks')) || []
+            homeworks: JSON.parse(localStorage.getItem('homeworks')) || [],
+            homework2puzzle: JSON.parse(localStorage.getItem('homework2puzzle')) || [],
+            fixedPuzzles: JSON.parse(localStorage.getItem('fixedPuzzles')) || [],
         } as Db;
     }
 
-    private addHomework(classId: string, puzzleIds: string[], pupilId?: string) {
+    private markPuzzleFixed(pupilId: string, homeworkId: string, puzzleId: string) {
+        let fixedPuzzles = this.getDb().fixedPuzzles;
+        let h2p = this.getDb().homework2puzzle.find(_ => _.homeworkId == homeworkId && _.puzzleId == puzzleId);
+        fixedPuzzles.push({ id: this.generateId(), pupilId: pupilId, homework2puzzleId: h2p.id, dateCreated: new Date() } as DbFixedPuzzle);
+        localStorage.setItem('fixedPuzzles', JSON.stringify(fixedPuzzles));
+    }
+
+    private addHomework(classId: string, puzzleIds: string[]) {
         const date = new Date();
-        let homeworks = JSON.parse(localStorage.getItem('homeworks')) || [];
-        if (pupilId) {
-            homeworks.push(<DbHomework>{ id: this.generateId(), classId, puzzleIds, pupilId, dateCreated: date });
-        } else {
-            this.getDb().pupil2class.filter(_ => _.classId == classId).map(_ => _.pupilId).forEach(pId => {
-                homeworks.push(<DbHomework>{ id: this.generateId(), classId, puzzleIds, pupilId: pId, dateCreated: date });
-            });
-        }
+        let homeworks = this.getDb().homeworks;
+        let homework2puzzle = this.getDb().homework2puzzle;
+        var newHomework = { id: this.generateId(), classId, dateCreated: date } as DbHomework;
+        homeworks.push(newHomework);
+        puzzleIds.forEach(id => homework2puzzle.push({ id: this.generateId(), homeworkId: newHomework.id, puzzleId: id, dateCreated: date } as DbHomework2Puzzle));
         localStorage.setItem('homeworks', JSON.stringify(homeworks));
+        localStorage.setItem('homework2puzzle', JSON.stringify(homework2puzzle));
     }
 
     private addPupillToClass(pupil: any, classItem: any) {

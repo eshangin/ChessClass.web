@@ -1,0 +1,6 @@
+<div class="row" *ngIf="currentPuzzle">
+  <app-chess-puzzle class="col-6" [pgn]="currentPuzzle.pgn"></app-chess-puzzle>
+  <div class="col-6">
+    <button type="button" class="btn btn-sm" (click)="markFixed()">пометить решенной</button>
+  </div>
+</div>

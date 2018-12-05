@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import {Homework} from './homework.model';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
+import {Puzzle} from './puzzle.model';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HomeworkService {
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router) { }
 
   getHomeworks(pupilId: string): Observable<Homework[]> {
     return this.http.get<Homework[]>(`api/pupils/${pupilId}/homeworks`);
@@ -23,5 +27,17 @@ export class HomeworkService {
 
   getClassHomeworks(classId: string): Observable<Homework[]> {
     return this.http.get<Homework[]>(`api/classes/${classId}/homeworks`);
+  }
+
+  markPuzzleFixed(pupilId: string, homeworkId: string, puzzleId: string): Observable<any> {
+    return this.http.post<Puzzle[]>(`/api/pupils/${pupilId}/homeworks/${homeworkId}/puzzles/${puzzleId}/fixed`, {});
+  }
+
+  getNonFixedPuzzles(pupilId: string, homeworkId: string, count: number): Observable<Puzzle[]> {
+    var url = this.router.parseUrl(`api/pupils/${pupilId}/homeworks/${homeworkId}/puzzles/non-fixed`);
+    if (count) {
+      url.queryParams['count'] = count;
+    }
+    return this.http.get<Puzzle[]>(url.toString());
   }
 }

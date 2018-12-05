@@ -1,5 +1,10 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/p"><i class="fas fa-home"></i></a>
+        </li>
+      </ul>
       <ul class="ml-auto navbar-nav">
         <li class="nav-item">
           <a class="nav-link" routerLink="/logout">Выход</a>
@@ -9,6 +14,6 @@
   </nav>
     
   <div class="container pt-3">
-    Привет {{pupilName}}
+    <!-- Привет {{pupilName}} -->
     <router-outlet></router-outlet>
   </div>

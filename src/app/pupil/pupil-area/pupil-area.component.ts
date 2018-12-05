@@ -10,7 +10,8 @@ export class PupilAreaComponent implements OnInit {
 
   pupilName: string;
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService) { }
 
   ngOnInit() {
     this.pupilName = this.authService.currentUser.name;
