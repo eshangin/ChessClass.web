@@ -4,7 +4,7 @@ import * as ChessBoard from 'chessboardjs';
 import * as Chess from 'chess.js';
 
 @Component({
-  selector: 'chess-board',
+  selector: 'app-chess-board',
   templateUrl: './chess-board.component.html',
   styleUrls: ['./chess-board.component.scss']
 })

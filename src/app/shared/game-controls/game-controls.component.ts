@@ -3,7 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import {ChessBoardComponent} from '../chess-board/chess-board.component';
 
 @Component({
-  selector: 'game-controls',
+  selector: 'app-game-controls',
   templateUrl: './game-controls.component.html',
   styleUrls: ['./game-controls.component.scss']
 })
