@@ -18,7 +18,7 @@ const routes: Routes = [
       { path: 'classes', component: DashboardComponent },
       { path: 'classes/:id', component: SchoolClassComponent },
       { path: 'pupils/:id', component: TeacherPupilComponent },
-      { path: 'class/:id/add-homework', component: AddHomeworkComponent },      
+      { path: 'classes/:id/add-homework', component: AddHomeworkComponent },      
       { path: 'puzzles', component: SearchPuzzlesComponent },
     ]
   },  
