@@ -1,6 +1,9 @@
 
-<div *ngFor="let p of pupils" class="border border-dark p-3 d-inline-block rounded b-print-block mr-5 mb-5">
-  <div>TODO :: имя сайта</div>
-  <p class="lead text-center">{{p.firstName}} {{p.lastName}}</p>
-  <div>Код доступа: <b>{{p.accessCode}}</b></div>
+<div *ngFor="let p of pupils" class="border border-dark d-inline-block rounded b-print-block mr-5 mb-5" style="border-radius: 25px !important; overflow: hidden">
+  <div style="height: 50px; background: url('./assets/chess-board-colors.jpg') repeat !important;" class="border-bottom"></div>
+  <div class="p-2 px-3 pb-3">
+    <div>TODO :: имя сайта</div>
+    <p class="lead text-center">{{p.firstName}} {{p.lastName}}</p>
+    <div>Код доступа: <b>{{p.accessCode}}</b></div>
+  </div>
 </div>

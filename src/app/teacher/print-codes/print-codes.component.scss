@@ -5,3 +5,10 @@ html {
 .b-print-block {
     border-width: 3px !important;
 }
+
+@media print {
+* {
+    -webkit-print-color-adjust: exact !important; /*Chrome, Safari */
+    color-adjust: exact !important;  /*Firefox*/
+    }
+}
