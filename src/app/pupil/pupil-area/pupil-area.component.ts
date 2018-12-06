@@ -14,7 +14,7 @@ export class PupilAreaComponent implements OnInit {
     private authService: AuthService) { }
 
   ngOnInit() {
-    this.pupilName = this.authService.currentUser.name;
+    this.pupilName = this.authService.currentUser.getFullName();
   }
 
 }

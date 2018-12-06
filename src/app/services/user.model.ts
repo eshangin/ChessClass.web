@@ -5,6 +5,10 @@ export enum Role {
 
 export class User {
     id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
+    getFullName(): string {
+        return this.firstName + ' ' + this.lastName;
+    };
     role: Role;
 }

@@ -36,6 +36,7 @@ export class AuthService {
     return this.http.post<User>(`api/auth/login/pupil`, body).pipe(
       delay(1000),
       tap(val => {
+        console.log(val);
         this.loginAs(val);
       })
     );

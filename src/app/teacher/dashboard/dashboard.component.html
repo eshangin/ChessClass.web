@@ -2,23 +2,54 @@
     <button (click)="onCreateClassClick()" type="button" class="btn btn-primary">Добавить класс</button>
 </div>
 
-<div class="row mb-3" *ngFor="let g of gClasses">
-  <div class="col-sm-4" *ngFor="let c of g" [@anim]="c.uiState">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">
-          <a routerLink="/my/classes/{{c.id}}">{{c.name}}</a>
-        </h5>
-        <ul class="list-inline">
-          <li class="list-inline-item" *ngFor="let p of c.pupils">
-            <a routerLink="/my/pupils/{{p.id}}">
-              <img [src]="p.picture" [title]="p.name" width="20">
-            </a>
-          </li>
-        </ul>
+<div class="row" *ngFor="let g of gClasses">
+  <div class="col-sm-6" *ngFor="let c of g" [@anim]="c.uiState">
+    <div class="card mb-4">
+      <div class="card-header">
+        <a routerLink="/my/classes/{{c.id}}" class="btn btn-link">{{c.name}}</a>
+      </div>      
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              <th>Имя</th>
+              <th>Фамилия</th>
+              <th>Код доступа</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of c.pupils">
+              <td><img [src]="p.picture" [title]="p.firstName + ' ' + p.lastName" width="20"></td>
+              <td>{{p.firstName}}</td>
+              <td>{{p.lastName}}</td>
+              <td>
+                <a href="#">Распечатать</a>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">&nbsp;</td>
+              <td>
+                <a href="#">Распечатать все</a>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4">
+                <div class="form-inline">
+                  <input type="text" class="form-control mr-1" placeholder="Имя">
+                  <input type="text" class="form-control mr-1" placeholder="Фамилия">
+                  <button type="button" class="btn">Добавить</button>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
       <div class="card-footer">
-        <button type="button" class="btn btn-sm btn-link" (click)="onAddPupilClick(c)">Добавить ученика</button>
+        <!-- <button type="button" class="btn btn-sm btn-link" (click)="onAddPupilClick(c)">Добавить ученика</button> -->
+        <a class="btn btn-link" routerLink="/my/classes/{{c.id}}/add-homework">Назначить домашнее задание</a>
       </div>
     </div>
   </div>

@@ -66,10 +66,14 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(db.puzzles, count) : db.puzzles }));
         } else if (request.url.match(/api\/auth\/login/)) {
             if (request.url == 'api/auth/login/pupil') {
-                const randomPupil = db.pupils[Math.floor(Math.random() * db.pupils.length)];
-                result = of(new HttpResponse({ status: 200, body: <User>{ id: randomPupil.id, name: randomPupil.name, role: Role.Pupil } }));
+                const pupil = db.pupils.find(_ => _.accessCode.toLowerCase() == request.body.code.toLowerCase());
+                if (pupil) {
+                    result = of(new HttpResponse({ status: 200, body: <User>{ id: pupil.id, firstName: pupil.firstName, lastName: pupil.lastName, role: Role.Pupil } }));
+                } else {
+                    result = of(new HttpResponse({ status: 404, statusText: 'incorrect access code' }));
+                }
             } else if (request.url == 'api/auth/login/teacher') {
-                result = of(new HttpResponse({ status: 200, body: <User>{ id: this.generateId(), name: 'Бобби Фишер', role: Role.Pupil } }));
+                result = of(new HttpResponse({ status: 200, body: <User>{ id: this.generateId(), firstName: 'Бобби', lastName: 'Фишер', role: Role.Pupil } }));
             }
         } else if (request.url.match(/api\/favorites(\/(\w+))?/)) {
             const id = request.url.split('/')[2];
@@ -216,11 +220,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     private getDb(): Db {
         if (!localStorage.getItem('isInitialized')) {
-            this.createPupil('Иван', 'З', './assets/kid-pics/boy-1.png');
-            this.createPupil('Сергей', 'Б', './assets/kid-pics/boy-2.png');
-            this.createPupil('Анна', 'К', './assets/kid-pics/girl-1.png');
-            this.createPupil('Игорь', 'П', './assets/kid-pics/boy-3.png');
-            this.createPupil('Лена', 'Н', './assets/kid-pics/girl-2.png');
+            this.createPupil('Иван', 'Зузин', './assets/kid-pics/boy-1.png');
+            this.createPupil('Сергей', 'Бобин', './assets/kid-pics/boy-2.png');
+            this.createPupil('Анна', 'Кроликова', './assets/kid-pics/girl-1.png');
+            this.createPupil('Игорь', 'Петров', './assets/kid-pics/boy-3.png');
+            this.createPupil('Лена', 'Никонорова', './assets/kid-pics/girl-2.png');
             const pupils = this.getPupils();
 
             this.createClass('Класс 1');
@@ -280,7 +284,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     };
 
     private createPupil(firstName: string, lastName: string, picture: string) {
-        const p = <Pupil>{ id: this.generateId(), name: firstName + ' ' + lastName, picture: picture };
+        const p = { id: this.generateId(), accessCode: this.generatePupilAccessCode(), firstName: firstName, lastName: lastName, picture: picture } as Pupil;
         const pupils = this.getPupils();
         pupils.push(p);
         localStorage.setItem('pupils', JSON.stringify(pupils));
@@ -301,6 +305,17 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     private getClasses(): SchoolClass[] {
         return JSON.parse(localStorage.getItem('classes')) || [];
+    }
+
+    private generatePupilAccessCode(): string {
+        const accessCodeLen = 5;
+        var text = "";
+        var possible = "БГДЖЗЛУФХШЭЮЯ123456789";
+
+        for (var i = 0; i < accessCodeLen; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
     }
 
     private getPuzzles(): Puzzle[] {

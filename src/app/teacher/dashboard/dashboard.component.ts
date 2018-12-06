@@ -59,7 +59,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private addClassToGroup(c: SchoolClass) {
-    const groupBy = 3;
+    const groupBy = 2;
     if (this.gClasses[this.gClasses.length - 1].length == groupBy) {
       this.gClasses.push(Array<SchoolClass>());
     }
