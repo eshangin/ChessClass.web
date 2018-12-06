@@ -7,6 +7,7 @@ import {SchoolClassComponent} from './school-class/school-class.component';
 import {TeacherPupilComponent} from './teacher-pupil/teacher-pupil.component';
 import {AddHomeworkComponent} from './add-homework/add-homework.component';
 import {SearchPuzzlesComponent} from './search-puzzles/search-puzzles.component';
+import { PrintCodesComponent } from './print-codes/print-codes.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,12 @@ const routes: Routes = [
       { path: 'classes/:id/add-homework', component: AddHomeworkComponent },      
       { path: 'puzzles', component: SearchPuzzlesComponent },
     ]
-  },  
+  },
+  {
+    path: 'print-codes',
+    component: PrintCodesComponent,
+    canActivate: [AuthGuard]
+  }
 ];
 
 @NgModule({

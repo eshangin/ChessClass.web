@@ -24,13 +24,13 @@
               <td>{{p.firstName}}</td>
               <td>{{p.lastName}}</td>
               <td>
-                <a href="#">Распечатать</a>
+                <a target="_blank" routerLink="/my/print-codes" [queryParams]="{ pupilId: p.id }">Распечатать</a>
               </td>
             </tr>
             <tr>
               <td colspan="3">&nbsp;</td>
               <td>
-                <a href="#">Распечатать все</a>
+                <a target="_blank" routerLink="/my/print-codes" [queryParams]="{ classId: c.id }">Распечатать все</a>
               </td>
             </tr>
           </tbody>
