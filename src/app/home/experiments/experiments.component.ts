@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ChessBoardComponent} from 'src/app/shared/chess-board/chess-board.component';
+import {ChessBoardComponent, MoveInfo} from 'src/app/shared/chess-board/chess-board.component';
 
 interface IGameInfo {
   board: ChessBoardComponent;
@@ -35,13 +35,16 @@ export class ExperimentsComponent implements OnInit {
 1. Qa5 Kxc1 2. Qe1# 1-0`.trim();      
   }
 
-  onBoardStatusChanged(game: IGameInfo, board: ChessBoardComponent) {
+  boardInitiated(game: IGameInfo, board: ChessBoardComponent) {
     if (!game.board) {
       game.board = board;
     }
-    game.status = this.getGameStatus(board.engine);
-    game.currentFen = board.engine.fen();
-    game.currentPgn = board.engine.pgn();
+  }
+
+  onBoardStatusChanged(game: IGameInfo, moveInfo: MoveInfo) {
+    game.status = this.getGameStatus(game.board.engine);
+    game.currentFen = game.board.engine.fen();
+    game.currentPgn = game.board.engine.pgn();
   }
 
   private getGameStatus(engine: ChessInstance): string {

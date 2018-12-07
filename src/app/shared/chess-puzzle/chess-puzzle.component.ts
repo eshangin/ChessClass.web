@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import {ChessBoardComponent} from '../chess-board/chess-board.component';
+import {ChessBoardComponent, MoveInfo, MoveType} from '../chess-board/chess-board.component';
 import {ChessPuzzle, ChessHelperService} from 'src/app/services/chess-helper.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class ChessPuzzleComponent implements OnChanges {
   @Input() showBoardNotation: boolean = true;
   puzzleInitialFen: string;
   private puzzleInfo: ChessPuzzle;
+  private board: ChessBoardComponent;
 
   constructor(private chessHelperService: ChessHelperService) { }
 
@@ -27,17 +28,35 @@ export class ChessPuzzleComponent implements OnChanges {
     this.puzzleInitialFen = this.puzzleInfo.initialFen;
   }
 
-  onPieceMoved(board: ChessBoardComponent) {
-    if (this.isCorrectPuzzleMove(this.puzzleInfo, board.engine)) {
-      console.log('Correct move!!!');
-      this.tryMovePieceIfOnlyOnePossibleMove(board);
+  onPieceMoved(moveInfo: MoveInfo) {
+    if (moveInfo.moveType == MoveType.NormalOnDrop) {
+      if (this.isCorrectPuzzleMove(this.puzzleInfo, this.board.engine)) {
+        console.log('Correct move!!!');
 
-      if (this.puzzleInfo.solutionMovements.length == board.engine.history().length) {
-        console.log('Done!!!');
+        //this.tryMovePieceIfOnlyOnePossibleMove(board);
+
+        if (this.puzzleInfo.solutionMovements.length == this.board.engine.history().length) {
+          console.log('Done!!!');
+        } else {
+          this.makeSolutionMove();
+        }
+      } else {
+        this.board.undoMove();
+        //this.tryMovePieceIfOnlyOnePossibleMove(board);
       }
-    } else {
-      this.tryMovePieceIfOnlyOnePossibleMove(board);
     }
+  }
+
+  makeSolutionMove() {
+    if (this.board.engine.history().length % 2 == 1) {
+      const movesMadeCount = this.board.engine.history().length;
+      let move = this.puzzleInfo.solutionMovements[movesMadeCount];
+      this.board.movePiece(move);
+    }
+  }
+
+  onBoardStatusChanged(board: ChessBoardComponent) {
+    this.board = board;
   }
 
   private tryMovePieceIfOnlyOnePossibleMove(board: ChessBoardComponent) {

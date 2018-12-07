@@ -3,6 +3,18 @@ import { Component, Input, ElementRef, Output, EventEmitter, AfterViewInit, Simp
 import * as ChessBoard from 'chessboardjs';
 import * as Chess from 'chess.js';
 
+export enum MoveType {
+  NormalOnDrop = 1,
+  NormalProgrammatic,
+  Undo,
+  UndoAll
+}
+
+export interface MoveInfo {
+  move: ChessJS.Move;
+  moveType: MoveType;
+}
+
 @Component({
   selector: 'app-chess-board',
   templateUrl: './chess-board.component.html',
@@ -12,7 +24,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
 
   @Input() fen: string;
   @Input() showNotation: boolean = true;
-  @Output() private pieceMoved = new EventEmitter<ChessBoardComponent>();
+  @Output() private pieceMoved = new EventEmitter<MoveInfo>();
   @Output() private boardInitiated = new EventEmitter<ChessBoardComponent>();
   engine: ChessInstance = new Chess();
   private board: ChessBoardInstance;
@@ -53,15 +65,15 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
   }
 
   undoMove() {
-    this.engine.undo();
+    let move = this.engine.undo();
     this.board.position(this.engine.fen());
-    this.pieceMoved.emit(this);
+    this.pieceMoved.emit({ move: move, moveType: MoveType.Undo });
   }
 
   undoAllMoves() {
     this.engine.load(this.fen);
     this.board.position(this.fen);
-    this.pieceMoved.emit(this);
+    this.pieceMoved.emit({ move: null, moveType: MoveType.Undo });
   }
 
   canUndo(): boolean {
@@ -69,9 +81,9 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
   }
 
   movePiece(move: string | ChessJS.Move) {
-    this.engine.move(move);
+    let moveMade = this.engine.move(move);
     this.board.move(move.toString());
-    this.pieceMoved.emit(this);
+    this.pieceMoved.emit({ move: moveMade, moveType: MoveType.NormalProgrammatic });
   }
 
   private onDrop(source: string, target: string): string {
@@ -86,7 +98,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
         return 'snapback';
     }
 
-    this.pieceMoved.emit(this);
+    this.pieceMoved.emit({ move: move, moveType: MoveType.NormalOnDrop });
   };
 
   private onSnapEndFunc() {
