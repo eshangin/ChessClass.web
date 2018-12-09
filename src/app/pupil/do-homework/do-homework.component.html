@@ -1,6 +1,19 @@
 <div class="row" *ngIf="currentPuzzle">
-  <app-chess-puzzle class="col-6" [pgn]="currentPuzzle.pgn"></app-chess-puzzle>
+  <app-chess-puzzle class="col-6" [pgn]="currentPuzzle.pgn" (puzzleSolutionStageChanged)="onPuzzleSolutionStageChanged($event)"></app-chess-puzzle>
   <div class="col-6">
-    <button type="button" class="btn btn-sm" (click)="markFixed()">пометить решенной</button>
+    <div [ngSwitch]="puzzleState">
+      <div *ngSwitchCase="puzzleSolutionStateTypes.CorrectMove">
+        Верный ход!
+      </div>
+      <div *ngSwitchCase="puzzleSolutionStateTypes.PuzzleDone">
+        Задача решена!        
+      </div>
+      <div *ngSwitchCase="puzzleSolutionStateTypes.IncorrectMove">
+        Неверный ход!
+      </div>
+    </div>
+    <div *ngIf="puzzleFixed">
+      <button type="button" class="btn btn-default" (click)="goToNextPuzzle()">Перейти к следующей задаче</button>
+    </div>
   </div>
 </div>

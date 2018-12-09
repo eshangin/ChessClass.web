@@ -3,6 +3,7 @@ import {AuthService} from 'src/app/services/auth.service';
 import {HomeworkService} from 'src/app/services/homework.service';
 import {ActivatedRoute} from '@angular/router';
 import {Puzzle} from 'src/app/services/puzzle.model';
+import { PuzzleSolutionStateType } from 'src/app/shared/chess-puzzle/chess-puzzle.component';
 
 @Component({
   selector: 'app-do-homework',
@@ -12,6 +13,9 @@ import {Puzzle} from 'src/app/services/puzzle.model';
 export class DoHomeworkComponent implements OnInit {
 
   currentPuzzle: Puzzle;
+  puzzleState: PuzzleSolutionStateType;
+  puzzleSolutionStateTypes = PuzzleSolutionStateType;
+  puzzleFixed: boolean = false;
   private homeworkId: string;
 
   constructor(
@@ -25,14 +29,25 @@ export class DoHomeworkComponent implements OnInit {
     this.updateCurrentPuzzle();
   }
 
-  // TODO :: remove when interactive puzzle solution will work
-  markFixed() {
-    this.homeworkService.markPuzzleFixed(this.authService.currentUser.id, this.homeworkId, this.currentPuzzle.id).subscribe(() => this.updateCurrentPuzzle());
+  goToNextPuzzle() {
+    this.updateCurrentPuzzle();
+  }
+
+  onPuzzleSolutionStageChanged(state: PuzzleSolutionStateType) {
+    this.puzzleState = state;
+    if (state == PuzzleSolutionStateType.PuzzleDone) {
+      this.homeworkService.markPuzzleFixed(this.authService.currentUser.id, this.homeworkId, this.currentPuzzle.id).subscribe(() => 
+        this.puzzleFixed = true
+      );
+    }
   }
 
   private updateCurrentPuzzle() {
     this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, this.homeworkId, 1).subscribe(
-      puzzles => this.currentPuzzle = puzzles[0]);
+      puzzles => {
+        this.puzzleFixed = false;
+        this.currentPuzzle = puzzles[0];
+      });
   }
 
 }

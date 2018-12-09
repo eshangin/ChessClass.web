@@ -1,6 +1,12 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import {ChessBoardComponent, MoveInfo, MoveType} from '../chess-board/chess-board.component';
 import {ChessPuzzle, ChessHelperService} from 'src/app/services/chess-helper.service';
+
+export enum PuzzleSolutionStateType {
+  CorrectMove = 1,
+  PuzzleDone,
+  IncorrectMove
+}
 
 @Component({
   selector: 'app-chess-puzzle',
@@ -12,6 +18,7 @@ export class ChessPuzzleComponent implements OnChanges {
   @Input() pgn: string;
   @Input() showBoardNotation: boolean = true;
   puzzleInitialFen: string;
+  @Output() private puzzleSolutionStageChanged = new EventEmitter<PuzzleSolutionStateType>();
   private puzzleInfo: ChessPuzzle;
   private board: ChessBoardComponent;
 
@@ -37,10 +44,13 @@ export class ChessPuzzleComponent implements OnChanges {
 
         if (this.puzzleInfo.solutionMovements.length == this.board.engine.history().length) {
           console.log('Done!!!');
+          this.puzzleSolutionStageChanged.emit(PuzzleSolutionStateType.PuzzleDone);
         } else {
+          this.puzzleSolutionStageChanged.emit(PuzzleSolutionStateType.CorrectMove);
           this.makeSolutionMove();
         }
       } else {
+        this.puzzleSolutionStageChanged.emit(PuzzleSolutionStateType.IncorrectMove);
         this.board.undoMove();
         //this.tryMovePieceIfOnlyOnePossibleMove(board);
       }
