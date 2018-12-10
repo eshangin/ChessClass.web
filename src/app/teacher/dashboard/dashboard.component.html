@@ -34,7 +34,7 @@
               </td>
             </tr>
           </tbody>
-          <tfoot>
+          <!-- <tfoot>
             <tr>
               <td colspan="4">
                 <div class="form-inline">
@@ -44,12 +44,12 @@
                 </div>
               </td>
             </tr>
-          </tfoot>
+          </tfoot> -->
         </table>
       </div>
       <div class="card-footer">
-        <!-- <button type="button" class="btn btn-sm btn-link" (click)="onAddPupilClick(c)">Добавить ученика</button> -->
-        <a class="btn btn-link" routerLink="/my/classes/{{c.id}}/add-homework">Назначить домашнее задание</a>
+        <button type="button" class="btn btn-sm btn-link" (click)="onAddPupilClick(c)">Добавить ученика</button>
+        <a class="btn btn-sm btn-link" routerLink="/my/classes/{{c.id}}/add-homework">Назначить домашнее задание</a>
       </div>
     </div>
   </div>
