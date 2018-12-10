@@ -206,7 +206,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                             assignedPuzzlesCount: puzzles.length
                         },
                         activityType: PupilActivityType.HomeworkAdded,
-                        title: `назначено ${puzzles.length} задач`
+                        title: `назначен${this.buildNounEnding(puzzles.length, 'а', 'ы')} ${puzzles.length} задач${this.buildNounEnding(puzzles.length, 'а', 'и')}`
                     } as PupilActivity;
                 });
 
@@ -223,7 +223,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                         data: {
                             fixesCount: group.length
                         },
-                        title: `решено ${group.length} задач`
+                        title: `решен${this.buildNounEnding(group.length, 'а', 'ы')} ${group.length} задач${this.buildNounEnding(group.length, 'а', 'и')}`
                     } as PupilActivity);
                 });
 
@@ -238,6 +238,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         // pass through any requests not handled above
         return next.handle(request);
+    }
+
+    private buildNounEnding(num: number, singularEnding: string, pluralEnding: string): string {
+        return num === 1 ? singularEnding : pluralEnding;
     }
 
     private updateStoragePuzzles(puzzles: Puzzle[]) {
