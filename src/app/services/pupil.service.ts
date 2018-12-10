@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Pupil} from './pupil.model';
+import { PupilActivity } from './pupil-activity.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,10 @@ export class PupilService {
   getPupil(pupilId: string): Observable<Pupil> {
     return this.http.get<Pupil>(`api/pupils/${pupilId}`);
   }
+
+  getActivities(pupilId: string): Observable<PupilActivity[]> {
+    return this.http.get<PupilActivity[]>(`api/pupils/${pupilId}/activities`);
+  }  
 
   createPupil(classId: string, firstName: string, lastName: string): Observable<Pupil> {
     // TODO :: use default picture

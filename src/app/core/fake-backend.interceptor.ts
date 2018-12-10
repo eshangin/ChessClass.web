@@ -8,6 +8,9 @@ import {SchoolClass} from '../services/school-class.model';
 import {Homework} from '../services/homework.model';
 import {User, Role} from '../services/user.model';
 import {HomeworkPupilStat} from '../services/homework-pupil-stat.model';
+import { PupilActivity, PupilActivityType } from '../services/pupil-activity.model';
+import { _ } from 'underscore';
+import * as moment from 'moment';
 
 class Db {
     puzzles: Puzzle[];
@@ -188,6 +191,43 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             if (request.method == "POST") {
                 this.markPuzzleFixed(pupilId, homeworkId, puzzleId);
                 result = of(new HttpResponse({ status: 200 }));
+            }
+        } else if (request.url.match(/api\/pupils\/(\w+)\/activities$/)) {
+            const pupilId = request.url.split('/')[2];
+            if (request.method == "GET") {
+                const classId = db.pupil2class.find(_ => _.pupilId == pupilId).classId;
+                const homeworks = db.homeworks.filter(_ => _.classId == classId);                
+
+                let allActivities = homeworks.map(h => {
+                    const puzzles = db.homework2puzzle.filter(h2p => h2p.homeworkId == h.id).map(h2p => db.puzzles.find(p => p.id == h2p.puzzleId));
+                    return {
+                        dateCreated: h.dateCreated,
+                        data: {
+                            assignedPuzzlesCount: puzzles.length
+                        },
+                        activityType: PupilActivityType.HomeworkAdded,
+                        title: `назначено ${puzzles.length} задач`
+                    } as PupilActivity;
+                });
+
+                const occurrenceDay = function(item) {
+                    return moment(item.dateCreated).startOf('day').format();
+                };                    
+
+                let fixesByDay = _.groupBy(db.fixedPuzzles.filter(_ => _.pupilId == pupilId), occurrenceDay);
+
+                _(fixesByDay).map((group, day) => {
+                    allActivities.push({
+                        dateCreated: day,
+                        activityType: PupilActivityType.PuzzleFixed,
+                        data: {
+                            fixesCount: group.length
+                        },
+                        title: `решено ${group.length} задач`
+                    } as PupilActivity);
+                });
+
+                result = of(new HttpResponse({ status: 200, body: allActivities }));
             }
         }
 

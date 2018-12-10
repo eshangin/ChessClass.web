@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HomeworkService} from 'src/app/services/homework.service';
 import {AuthService} from 'src/app/services/auth.service';
-import {Homework} from 'src/app/services/homework.model';
+import { Homework } from 'src/app/services/homework.model';
 
 @Component({
   selector: 'app-pupil-home',
@@ -10,17 +10,20 @@ import {Homework} from 'src/app/services/homework.model';
 })
 export class PupilHomeComponent implements OnInit {
 
-  homeworks: Homework[] = [];
+  pupilId: string;
+  homeworks: Homework[];
+  nonFixedPuzzlesCount: number = 0;
 
   constructor(
     private authService: AuthService,
     private homeworkService: HomeworkService) { }
 
-  ngOnInit() {    
-    this.homeworkService.getHomeworks(this.authService.currentUser.id).subscribe(homeworks => this.homeworks = homeworks);
-    setTimeout(() => {
-      console.log(this.homeworks);
-    }, 1000);
+  ngOnInit() {
+    this.pupilId = this.authService.currentUser.id;
+    this.homeworkService.getHomeworks(this.authService.currentUser.id).subscribe(homeworks => {
+      homeworks.forEach(h => this.nonFixedPuzzlesCount += h.puzzles.length - h.pupilStats[0].fixedPuzzlesCount);
+      this.homeworks = homeworks;
+    });
   }
 
 }
