@@ -8,7 +8,7 @@
   <div *ngIf="isLoading" class="text-center m-5">Пожалуйста подождите <i class="fas fa-circle-notch fa-spin"></i></div>
 
   <div *ngIf="!isLoading">
-    <div *ngFor="let item of selectablePuzzles; let i = index" class="card mr-3 mb-3 pull-left" style="width: 182px;">    
+    <div *ngFor="let item of selectablePuzzles; let i = index" class="card mr-3 mb-3 pull-left d-inline-block" style="width: 182px;">    
       <app-chess-puzzle [showBoardNotation]="false" [pgn]="item.puzzle.pgn" style="width: 180px"></app-chess-puzzle>
       <div class="card-body">
         <div class="custom-control custom-checkbox">
