@@ -19,14 +19,21 @@
   </tbody>
 </table> -->
 
-<p class="lead card card-body bg-light">
-  <span [ngSwitch]="nonFixedPuzzlesCount">
-    <span *ngSwitchCase="0">Все домашние задания прорешены. Так держать!</span>
-    <span *ngSwitchDefault>
-        На данный момент <span class="badge badge-warning bg-light-yellow p-2">{{nonFixedPuzzlesCount}}</span> задач из домашних заданий еще не решены Вами.<br>
-        <a routerLink="/p/do-homeworks">Решить оставшиеся задачи</a>      
+<div class="jumbotron" *ngIf="homeworksCount == 0; else homeworks_added">
+  <h1 class="display-4">Привет!</h1>
+  <p class="lead">Здесь будут отображаться твои домашние задания, но на данный момент тренер еще не назначил ни одного.</p>
+</div>
+
+<ng-template #homeworks_added>
+  <p class="lead card card-body bg-light">
+    <span [ngSwitch]="nonFixedPuzzlesCount">
+      <span *ngSwitchCase="0">Все домашние задания прорешены. Так держать! <i class="fas fa-grin text-warning"></i></span>
+      <span *ngSwitchDefault>
+          На данный момент <span class="badge badge-warning bg-light-yellow p-2">{{nonFixedPuzzlesCount}}</span> задач из домашних заданий еще не решены Вами.<br>
+          <a routerLink="/p/do-homeworks">Решить оставшиеся задачи</a>      
+      </span>
     </span>
-  </span>
-</p>
+  </p>
+</ng-template>
 
 <app-pupil-timeline [pupilId]="pupilId"></app-pupil-timeline>
