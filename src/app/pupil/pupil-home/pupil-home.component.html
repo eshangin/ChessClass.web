@@ -6,13 +6,13 @@
       </td>
       <td class="text-right" [ngSwitch]="h.pupilStats[0].fixedPuzzlesCount">
         <span *ngSwitchCase="0">
-          <a routerLink="/p/homeworks/{{h.id}}">решить</a>
+          <a routerLink="/p/do-homeworks/{{h.id}}">решить</a>
         </span>
         <span *ngSwitchCase="h.puzzles.length">
-          задачи решены <i class="fas fa-thumbs-up text-warning"></i>
+          задачи решены <i class="fas fa-thumbs-up text-success"></i>
         </span>
         <span *ngSwitchDefault>
-            <a routerLink="/p/homeworks/{{h.id}}">решить</a> {{h.puzzles.length - h.pupilStats[0].fixedPuzzlesCount}} оставшиеся задачи
+            <a routerLink="/p/do-homeworks/{{h.id}}">решить</a> {{h.puzzles.length - h.pupilStats[0].fixedPuzzlesCount}} оставшиеся задачи
         </span>
       </td>
     </tr>
@@ -20,8 +20,13 @@
 </table>
 
 <p class="lead card card-body bg-light">
-  На данный момент {{nonFixedPuzzlesCount}} задач из домашних заданий еще не решены Вами.<br>
-  <a href="#">Решить оставшиеся задачи</a>
+  <span [ngSwitch]="nonFixedPuzzlesCount">
+    <span *ngSwitchCase="0">Все домашние задания прорешены. Так держать!</span>
+    <span *ngSwitchDefault>
+        На данный момент {{nonFixedPuzzlesCount}} задач из домашних заданий еще не решены Вами.<br>
+        <a routerLink="/p/do-homeworks">Решить оставшиеся задачи</a>      
+    </span>
+  </span>
 </p>
 
 <app-pupil-timeline [pupilId]="pupilId"></app-pupil-timeline>

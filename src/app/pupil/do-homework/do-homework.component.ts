@@ -43,8 +43,11 @@ export class DoHomeworkComponent implements OnInit {
   }
 
   private updateCurrentPuzzle() {
-    this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, this.homeworkId, 1).subscribe(
-      puzzles => {
+    let call = this.homeworkId
+      ? this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, this.homeworkId, 1)
+      : this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, null, 1)
+
+      call.subscribe(puzzles => {
         this.puzzleFixed = false;
         this.currentPuzzle = puzzles[0];
       });

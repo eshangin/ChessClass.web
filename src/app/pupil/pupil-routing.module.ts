@@ -9,8 +9,9 @@ const routes: Routes = [
     path: '', 
     component: PupilAreaComponent,
     children: [
-      { path: '', component: PupilHomeComponent },
-      { path: 'homeworks/:id', component: DoHomeworkComponent },
+      { path: '', component: PupilHomeComponent },      
+      { path: 'do-homeworks', component: DoHomeworkComponent },
+      { path: 'do-homeworks/:id', component: DoHomeworkComponent },
     ]
   }
 ];

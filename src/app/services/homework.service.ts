@@ -30,11 +30,16 @@ export class HomeworkService {
   }
 
   markPuzzleFixed(pupilId: string, homeworkId: string, puzzleId: string): Observable<any> {
-    return this.http.post<Puzzle[]>(`/api/pupils/${pupilId}/homeworks/${homeworkId}/puzzles/${puzzleId}/fixed`, {});
+    const url = homeworkId
+      ? `/api/pupils/${pupilId}/homeworks/${homeworkId}/puzzles/${puzzleId}/fixed`
+      : `/api/pupils/${pupilId}/homeworks/puzzles/${puzzleId}/fixed`;
+    return this.http.post<Puzzle[]>(url, {});
   }
 
-  getNonFixedPuzzles(pupilId: string, homeworkId: string, count: number): Observable<Puzzle[]> {
-    var url = this.router.parseUrl(`api/pupils/${pupilId}/homeworks/${homeworkId}/puzzles/non-fixed`);
+  getNonFixedPuzzles(pupilId: string, homeworkId?: string, count: number = 1): Observable<Puzzle[]> {
+    const url = homeworkId
+      ? this.router.parseUrl(`api/pupils/${pupilId}/homeworks/${homeworkId}/puzzles/non-fixed`)
+      : this.router.parseUrl(`api/pupils/${pupilId}/homeworks/puzzles/non-fixed`)
     if (count) {
       url.queryParams['count'] = count;
     }
