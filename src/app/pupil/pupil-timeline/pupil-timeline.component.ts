@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { _ } from 'underscore';
 import * as moment from 'moment';
 import { PupilService } from 'src/app/services/pupil.service';
-import { PupilActivity } from 'src/app/services/pupil-activity.model';
+import { PupilActivity, PupilActivityType } from 'src/app/services/pupil-activity.model';
 
 class ActivityGroup {
   activityDate: Date;
@@ -18,6 +18,7 @@ export class PupilTimelineComponent implements OnInit {
 
   @Input() pupilId: string;
   activityGroups: ActivityGroup[] = [];
+  PupilActivityType = PupilActivityType;
 
   constructor(
     private pupilService: PupilService) { }
@@ -32,7 +33,7 @@ export class PupilTimelineComponent implements OnInit {
       const groupToDay = function(group, day) {
           return {
               activityDate: day,
-              activities: _(group).sortBy('dateCreated')
+              activities: _(group).sortBy('dateCreated').reverse()
           } as ActivityGroup
       };
       

@@ -23,7 +23,7 @@
   <span [ngSwitch]="nonFixedPuzzlesCount">
     <span *ngSwitchCase="0">Все домашние задания прорешены. Так держать!</span>
     <span *ngSwitchDefault>
-        На данный момент {{nonFixedPuzzlesCount}} задач из домашних заданий еще не решены Вами.<br>
+        На данный момент <span class="badge badge-warning bg-light-yellow p-2">{{nonFixedPuzzlesCount}}</span> задач из домашних заданий еще не решены Вами.<br>
         <a routerLink="/p/do-homeworks">Решить оставшиеся задачи</a>      
     </span>
   </span>

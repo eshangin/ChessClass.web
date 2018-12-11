@@ -218,32 +218,18 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 const homeworks = db.homeworks.filter(_ => _.classId == classId);                
 
                 let allActivities = homeworks.map(h => {
+                    let h2pItems = db.homework2puzzle.filter(h2p => h2p.homeworkId == h.id);
+                    const fixedPuzzles = db.fixedPuzzles.filter(_ => _.pupilId == pupilId && h2pItems.map(h2p => h2p.id).indexOf(_.homework2puzzleId) != -1);
                     const puzzles = db.homework2puzzle.filter(h2p => h2p.homeworkId == h.id).map(h2p => db.puzzles.find(p => p.id == h2p.puzzleId));
                     return {
                         dateCreated: h.dateCreated,
                         data: {
-                            assignedPuzzlesCount: puzzles.length
+                            assignedPuzzlesCount: puzzles.length,
+                            fixedPuzzlesCount: fixedPuzzles.length,
+                            homeworkId: h.id
                         },
-                        activityType: PupilActivityType.HomeworkAdded,
-                        title: `назначен${this.buildNounEnding(puzzles.length, 'а', 'ы')} ${puzzles.length} задач${this.buildNounEnding(puzzles.length, 'а', 'и')}`
+                        activityType: PupilActivityType.HomeworkAdded
                     } as PupilActivity;
-                });
-
-                const occurrenceDay = function(item) {
-                    return moment(item.dateCreated).startOf('day').format();
-                };                    
-
-                let fixesByDay = _.groupBy(db.fixedPuzzles.filter(_ => _.pupilId == pupilId), occurrenceDay);
-
-                _(fixesByDay).map((group, day) => {
-                    allActivities.push({
-                        dateCreated: day,
-                        activityType: PupilActivityType.PuzzleFixed,
-                        data: {
-                            fixesCount: group.length
-                        },
-                        title: `решен${this.buildNounEnding(group.length, 'а', 'ы')} ${group.length} задач${this.buildNounEnding(group.length, 'а', 'и')}`
-                    } as PupilActivity);
                 });
 
                 result = of(new HttpResponse({ status: 200, body: allActivities }));

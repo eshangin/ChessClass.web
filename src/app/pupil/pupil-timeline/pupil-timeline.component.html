@@ -23,8 +23,19 @@
   <li *ngFor="let g of activityGroups" class="mb-4">
     <h4>{{g.activityDate | date:'d MMMM':undefined:'ru' }}</h4>
     <ul class="list-unstyled">
-      <li *ngFor="let a of g.activities">
-        <span class="lead">{{a.title}}</span>
+      <li *ngFor="let a of g.activities" class="mb-2">
+        <span *ngIf="a.activityType == PupilActivityType.HomeworkAdded">
+          <span>Назначены {{a.data.assignedPuzzlesCount}} задачи. </span>
+
+          <span [ngSwitch]="a.data.fixedPuzzlesCount">
+            <span *ngSwitchCase="0"><a routerLink="/p/do-homeworks/{{a.data.homeworkId}}">Решить задачи</a></span>
+            <span *ngSwitchCase="a.data.assignedPuzzlesCount">Все задачи решены <i class="far fa-thumbs-up light-green"></i></span>
+            <span *ngSwitchDefault>
+              Осталось решить <span class="badge badge-warning bg-light-yellow">{{a.data.assignedPuzzlesCount - a.data.fixedPuzzlesCount}}</span> задач.
+              <a routerLink="/p/do-homeworks/{{a.data.homeworkId}}">Решить оставшиеся</a>
+            </span>
+          </span>
+        </span>
       </li>
     </ul>
   </li>
