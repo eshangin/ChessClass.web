@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from 'src/app/services/auth.service';
 import {HomeworkService} from 'src/app/services/homework.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Puzzle} from 'src/app/services/puzzle.model';
 import { PuzzleSolutionStateType } from 'src/app/shared/chess-puzzle/chess-puzzle.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-do-homework',
@@ -17,16 +18,21 @@ export class DoHomeworkComponent implements OnInit {
   puzzleSolutionStateTypes = PuzzleSolutionStateType;
   puzzleFixed: boolean = false;
   private homeworkId: string;
+  private nextPuzzle: Puzzle = null;
 
   constructor(
     private authService: AuthService,
     private homeworkService: HomeworkService,
+    private router: Router,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
     this.homeworkId = this.route.snapshot.paramMap.get('id');
-    this.updateCurrentPuzzle();
+    this.fetchPuzzle().subscribe(p => {
+      this.setNextPuzzle(p);
+      this.updateCurrentPuzzle();
+    });    
   }
 
   goToNextPuzzle() {
@@ -36,21 +42,35 @@ export class DoHomeworkComponent implements OnInit {
   onPuzzleSolutionStageChanged(state: PuzzleSolutionStateType) {
     this.puzzleState = state;
     if (state == PuzzleSolutionStateType.PuzzleDone) {
-      this.homeworkService.markPuzzleFixed(this.authService.currentUser.id, this.homeworkId, this.currentPuzzle.id).subscribe(() => 
-        this.puzzleFixed = true
-      );
+      this.homeworkService.markPuzzleFixed(this.authService.currentUser.id, this.homeworkId, this.currentPuzzle.id).subscribe(() => {
+        this.puzzleFixed = true;
+        this.fetchPuzzle().subscribe(p => this.setNextPuzzle(p));
+      });
     }
   }
 
-  private updateCurrentPuzzle() {
+  private setNextPuzzle(p: Puzzle) {
+    if (!p) {
+      this.router.navigate(['/p']);
+    } else {
+      this.nextPuzzle = p;
+    }
+  }
+
+  private fetchPuzzle(): Observable<Puzzle> {
     let call = this.homeworkId
       ? this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, this.homeworkId, 1)
-      : this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, null, 1)
+      : this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, null, 1);
 
-      call.subscribe(puzzles => {
-        this.puzzleFixed = false;
-        this.currentPuzzle = puzzles[0];
-      });
+    return new Observable<Puzzle>(observer => {
+      return call.subscribe(puzzles => observer.next(puzzles[0]));
+    })
+  }
+
+  private updateCurrentPuzzle() {
+    this.puzzleFixed = false;
+    this.currentPuzzle = this.nextPuzzle;
+    this.nextPuzzle = null;
   }
 
 }
