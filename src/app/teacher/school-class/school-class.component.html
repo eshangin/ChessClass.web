@@ -11,7 +11,7 @@
 </h3>
 <ul class="list-unstyled">
   <li *ngFor="let h of homeworks" class="mb-4">
-    <span>Назначено {{h.dateCreated | date:'d MMMM, h:mm':undefined:'ru' }}</span>
+    <span>Назначено {{h.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}</span>
     <hr>
     <div *ngFor="let p of h.puzzles" class="card mr-3 mb-3 pull-left d-inline-block" style="width: 302px;">
       <div *ngIf="p.fixedPercent == 100" class="b-board-overlay"></div>

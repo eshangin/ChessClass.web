@@ -10,7 +10,7 @@ import {User, Role} from '../services/user.model';
 import {HomeworkPupilStat} from '../services/homework-pupil-stat.model';
 import { PupilActivity, PupilActivityType } from '../services/pupil-activity.model';
 import { _ } from 'underscore';
-import * as moment from 'moment';
+import { AuthService } from '../services/auth.service';
 
 class Db {
     puzzles: Puzzle[];
@@ -20,6 +20,23 @@ class Db {
     homeworks: DbHomework[];
     homework2puzzle: DbHomework2Puzzle[];
     fixedPuzzles: DbFixedPuzzle[];
+    chatMessages: DbChatMessage[];
+}
+
+class DbChatMessage {
+    id: string;
+    text: string;
+    dateCreated: Date;
+    fromId: string;
+
+    constructor(text: string, fromId: string) {
+        this.text = text;
+        this.fromId = fromId;
+    }
+
+    // In case teacher send comment for specific puzzle and pupil
+    homework2puzzleId: string;
+    pupilId: string;
 }
 
 class Pupil2Class {
@@ -51,7 +68,9 @@ class DbHomework {
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
 
-    constructor(private router: Router) { }
+    constructor(
+        private router: Router,
+        private authService: AuthService) { }
 
     //
     // used https://github.com/cornflourblue/angular2-registration-login-example/blob/master/app/_helpers/fake-backend.ts as example
@@ -59,6 +78,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
+        const currentUser = this.authService.currentUser;
         const db = this.getDb();
 
         let result = null;
@@ -258,11 +278,27 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 let statistics = classPupils.map(p => {
                     return {
                         pupil: p,
+                        chatCommentsCount: db.chatMessages.filter(cm => cm.pupilId == p.id && cm.homework2puzzleId == h2p.id).length,
                         fixedByPupil: !!fixedPuzzlesOfHomework.find(fp => fp.pupilId == p.id)
                     };
                 });
-
                 result = of(new HttpResponse({ status: 200, body: { puzzle, class: class_, homework, statistics } }));
+            }
+        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks\/(\w+)\/puzzles\/(\w+)\/chat-messages$/)) {
+            let pupilId = request.url.split('/')[3];
+            let homeworkId = request.url.split('/')[5];
+            let puzzleId = request.url.split('/')[7];
+            if (request.method == "POST") {
+                let m = new DbChatMessage(request.body.text, currentUser.id);
+                m.pupilId = pupilId;
+                m.homework2puzzleId = db.homework2puzzle.find(h2p => h2p.puzzleId == puzzleId && h2p.homeworkId == homeworkId).id;
+                let createdMessage = this.addChatMessage(m);
+
+                result = of(new HttpResponse({ status: 200, body: createdMessage }));
+            } else if (request.method == "GET") {
+                let h2p = db.homework2puzzle.find(h2p => h2p.puzzleId == puzzleId && h2p.homeworkId == homeworkId);
+                let messages = db.chatMessages.filter(m => m.pupilId == pupilId && m.homework2puzzleId == h2p.id);
+                result = of(new HttpResponse({ status: 200, body: messages }));
             }
         }
 
@@ -328,6 +364,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             homeworks: JSON.parse(localStorage.getItem('homeworks')) || [],
             homework2puzzle: JSON.parse(localStorage.getItem('homework2puzzle')) || [],
             fixedPuzzles: JSON.parse(localStorage.getItem('fixedPuzzles')) || [],
+            chatMessages: JSON.parse(localStorage.getItem('chatMessages')) || [],
         } as Db;
     }
 
@@ -346,6 +383,15 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             }
         });        
         localStorage.setItem('fixedPuzzles', JSON.stringify(fixedPuzzles));
+    }
+
+    private addChatMessage(m: DbChatMessage): DbChatMessage {
+        m.id = this.generateId();
+        m.dateCreated = new Date();
+        let messages = this.getDb().chatMessages;
+        messages.push(m);
+        localStorage.setItem('chatMessages', JSON.stringify(messages));
+        return m;
     }
 
     private addHomework(classId: string, puzzleIds: string[]) {

@@ -1,21 +1,67 @@
 <p class="lead">
-  <a routerLink="/my/classes/{{class.id}}">{{class.name}}</a>, домашнее задание от {{homework.dateCreated | date:'d MMMM, h:mm':undefined:'ru' }}
+  <a routerLink="/my/classes/{{class.id}}">{{class.name}}</a>, домашнее задание от {{homework.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}
 </p>
 <div class="row">
   <app-chess-puzzle class="col-4" [pgn]="puzzle.pgn"></app-chess-puzzle>
   <div class="col-8">
-    <ng-container *ngTemplateOutlet="stat_table; context: {pupils: whoNotFixed, title: 'Еще не решили'}"></ng-container>
-    <ng-container *ngTemplateOutlet="stat_table; context: {pupils: whoFixed, title: 'Уже решили'}"></ng-container>
+    <div [ngSwitch]="viewMode">
+      <div *ngSwitchCase="'list'">
+        <ng-container *ngTemplateOutlet="stat_table; context: {statItems: whoNotFixed, title: 'Еще не решили'}"></ng-container>
+        <ng-container *ngTemplateOutlet="stat_table; context: {statItems: whoFixed, title: 'Уже решили'}"></ng-container>
+      </div>
+      <div *ngSwitchCase="'chat'">
+        <ng-container *ngTemplateOutlet="pupil_chat; context: {pupil: selectedPupil}"></ng-container>
+      </div>
+    </div>
   </div>
 </div>
 
-<ng-template #stat_table let-pupils="pupils" let-title="title">
-  <div *ngIf="pupils.length">
+<ng-template #pupil_chat let-pupil="pupil">
+  <div class="card mb-3">
+    <div class="card-header">
+      <div class="row">
+        <div class="col mr-auto">{{pupil.firstName}} {{pupil.lastName}}</div>
+        <div class="col text-right">
+          <button type="button" class="btn btn-secondary btn-sm" (click)="closeChat()"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div *ngFor="let m of chatMessages" class="mb-3 b-comment">
+        <div class="card-title mb-0"><b>Вы</b>, {{m.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}</div>
+        <p class="card-text mb-0">
+          <span class="align-middle">{{m.text}}</span>
+          <button type="button" class="btn btn-link p-0 border-0 ml-2 b-comment__edit-btn" (click)="editChatMessage(m)"><i class="fas fa-edit"></i></button>
+        </p>
+      </div>
+      <form>
+        <div class="form-group">
+          <textarea class="form-control" [(ngModel)]="chatMessage" name="chatMessage"></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" (click)="sendMessage(pupil)">Отправить сообщение</button>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #stat_table let-statItems="statItems" let-title="title">
+  <div *ngIf="statItems.length">
     <h3>{{title}}</h3>
     <table class="table">
+      <thead class="thead-light">
+        <tr>
+          <th>&nbsp;</th>
+          <th class="text-right">Комментарии к задаче</th>
+        </tr>
+      </thead>
       <tbody>
-        <tr *ngFor="let p of pupils">
-          <td>{{p.firstName}} {{p.lastName}}</td>
+        <tr *ngFor="let item of statItems">
+          <td>{{item.pupil.firstName}} {{item.pupil.lastName}}</td>
+          <td class="text-right">
+            <button type="button" class="btn btn-default btn-link p-0" (click)="viewChat(item.pupil)">
+              {{item.chatCommentsCount}} <i class="far fa-comment"></i>
+            </button>            
+          </td>
         </tr>
       </tbody>
     </table>      
