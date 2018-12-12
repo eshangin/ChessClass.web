@@ -15,6 +15,7 @@ import {SharedModule} from '../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { PrintCodesComponent } from './print-codes/print-codes.component';
+import { PuzzleStatComponent } from './puzzle-stat/puzzle-stat.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { PrintCodesComponent } from './print-codes/print-codes.component';
     AddHomeworkComponent,
     SearchPuzzlesComponent,
     PrintCodesComponent,
+    PuzzleStatComponent,
   ],
   imports: [
     CommonModule,

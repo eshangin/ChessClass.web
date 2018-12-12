@@ -22,7 +22,7 @@
           <span *ngSwitchCase="100"><i class="fas fa-check text-success"></i> все ученики решили.</span>
           <span *ngSwitchDefault>{{p.fixedPercent}}% учеников решили</span>
         </div>        
-        <small> <a href="#">Подробнее</a></small>
+        <small> <a routerLink="/my/classes/{{class.id}}/homeworks/{{h.id}}/puzzles/{{p.id}}">Подробнее</a></small>
       </div>
     </div>
     <div class="clearfix"></div>

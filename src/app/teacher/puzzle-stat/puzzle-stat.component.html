@@ -1,0 +1,28 @@
+<p class="lead">
+  <a routerLink="/my/classes/{{class.id}}">{{class.name}}</a>, домашнее задание от {{homework.dateCreated | date:'d MMMM, h:mm':undefined:'ru' }}
+</p>
+<div class="row">
+  <app-chess-puzzle class="col-4" [pgn]="puzzle.pgn"></app-chess-puzzle>
+  <div class="col-8">
+    <div *ngIf="whoFixed.length">
+      <h3>Уже решили</h3>
+      <table class="table">
+        <tbody>
+          <tr *ngFor="let p of whoFixed">
+            <td>{{p.firstName}} {{p.lastName}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="whoNotFixed.length">
+      <h3>Еще не решили</h3>
+      <table class="table">
+        <tbody>
+          <tr *ngFor="let p of whoNotFixed">
+            <td>{{p.firstName}} {{p.lastName}}</td>
+          </tr>
+        </tbody>
+      </table>      
+    </div>
+  </div>
+</div>

@@ -21,6 +21,11 @@ export class PuzzleService {
     return this.http.get<Puzzle[]>(url.toString());
   }
 
+  getPuzzleFixStatistics(homeworkId: string, puzzleId: string): Observable<any> {
+    var url = this.router.parseUrl(`/api/homeworks/${homeworkId}/puzzles/${puzzleId}/statistics`);
+    return this.http.get<any>(url.toString());
+  }
+
   getFavorites(): Observable<Puzzle[]> {
     return this.http.get<Puzzle[]>('api/favorites');
   }

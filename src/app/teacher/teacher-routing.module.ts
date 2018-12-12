@@ -8,6 +8,7 @@ import {TeacherPupilComponent} from './teacher-pupil/teacher-pupil.component';
 import {AddHomeworkComponent} from './add-homework/add-homework.component';
 import {SearchPuzzlesComponent} from './search-puzzles/search-puzzles.component';
 import { PrintCodesComponent } from './print-codes/print-codes.component';
+import { PuzzleStatComponent } from './puzzle-stat/puzzle-stat.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'classes', pathMatch: 'full' },
       { path: 'classes', component: DashboardComponent },
       { path: 'classes/:id', component: SchoolClassComponent },
+      { path: 'classes/:classId/homeworks/:homeworkId/puzzles/:puzzleId', component: PuzzleStatComponent },
       { path: 'pupils/:id', component: TeacherPupilComponent },
       { path: 'classes/:id/add-homework', component: AddHomeworkComponent },      
       { path: 'puzzles', component: SearchPuzzlesComponent },

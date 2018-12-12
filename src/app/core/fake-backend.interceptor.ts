@@ -244,6 +244,26 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
                 result = of(new HttpResponse({ status: 200, body: allActivities }));
             }
+        } else if (request.url.match(/api\/homeworks\/(\w+)\/puzzles\/(\w+)\/statistics$/)) {
+            const homeworkId = request.url.split('/')[3];
+            const puzzleId = request.url.split('/')[5];
+            if (request.method == "GET") {
+                let puzzle = db.puzzles.find(p => p.id == puzzleId);
+                let homework = db.homeworks.find(h => h.id == homeworkId);
+                let class_ = db.classes.find(c => c.id == homework.classId);
+                let h2p = db.homework2puzzle
+                    .find(h2p => h2p.homeworkId == homeworkId && h2p.puzzleId == puzzleId);
+                let fixedPuzzlesOfHomework = db.fixedPuzzles.filter(fp => fp.homework2puzzleId == h2p.id);
+                let classPupils = db.pupil2class.filter(p2c => p2c.classId == homework.classId).map(p2c => db.pupils.find(p => p.id == p2c.pupilId));
+                let statistics = classPupils.map(p => {
+                    return {
+                        pupil: p,
+                        fixedByPupil: !!fixedPuzzlesOfHomework.find(fp => fp.pupilId == p.id)
+                    };
+                });
+
+                result = of(new HttpResponse({ status: 200, body: { puzzle, class: class_, homework, statistics } }));
+            }
         }
 
         if (result) {
