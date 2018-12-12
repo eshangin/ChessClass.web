@@ -147,6 +147,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     h.classId = _.classId;
                     h.puzzles = db.homework2puzzle.filter(h2p => h2p.homeworkId == _.id).map(h2p => db.puzzles.find(p => p.id == h2p.puzzleId));
                     h.dateCreated = _.dateCreated;
+                    let h2pItems = db.homework2puzzle.filter(h2p => h2p.homeworkId == _.id);
+                    h.pupilStats = [];
+                    db.pupil2class.filter(p => p.classId == id).forEach(p2c => {
+                        let fixedPuzzles = db.fixedPuzzles.filter(_ => _.pupilId == p2c.pupilId && h2pItems.map(h2p => h2p.id).indexOf(_.homework2puzzleId) != -1);
+                        h.pupilStats.push({
+                            pupilId: p2c.pupilId,
+                            fixedPuzzleIds: fixedPuzzles.map(fp => h2pItems.find(h2p => h2p.id == fp.homework2puzzleId).puzzleId),
+                            fixedPuzzlesCount: fixedPuzzles.length
+                        } as HomeworkPupilStat);
+                    });
                     return h;
                 }).sort((a, b) => a.dateCreated > b.dateCreated ? -1:1);
                 result = of(new HttpResponse({ status: 200, body: items }));

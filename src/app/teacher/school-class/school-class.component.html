@@ -13,8 +13,17 @@
   <li *ngFor="let h of homeworks" class="mb-4">
     <span>Назначено {{h.dateCreated | date:'d MMMM, h:mm':undefined:'ru' }}</span>
     <hr>
-    <div *ngFor="let q of h.puzzles" class="pull-left d-inline-block mr-3 mb-3">
-      <app-chess-puzzle style="width: 300px" [pgn]="q.pgn"></app-chess-puzzle>
+    <div *ngFor="let p of h.puzzles" class="card mr-3 mb-3 pull-left d-inline-block" style="width: 302px;">
+      <div *ngIf="p.fixedPercent == 100" class="b-board-overlay"></div>
+      <app-chess-puzzle style="width: 300px" [pgn]="p.pgn"></app-chess-puzzle>
+      <div class="card-body">
+        <div [ngSwitch]="p.fixedPercent" class="p-0">
+          <span *ngSwitchCase="0">Никто пока не решил</span>
+          <span *ngSwitchCase="100"><i class="fas fa-check text-success"></i> все ученики решили.</span>
+          <span *ngSwitchDefault>{{p.fixedPercent}}% учеников решили</span>
+        </div>        
+        <small> <a href="#">Подробнее</a></small>
+      </div>
     </div>
     <div class="clearfix"></div>
   </li>
