@@ -4,14 +4,14 @@
 <div class="row">
   <app-chess-puzzle class="col-4" [pgn]="puzzle.pgn"></app-chess-puzzle>
   <div class="col-8">
-    <ng-container *ngTemplateOutlet="stat_table; context: {$implicit: whoFixed}"></ng-container>
-    <ng-container *ngTemplateOutlet="stat_table; context: {$implicit: whoNotFixed}"></ng-container>
+    <ng-container *ngTemplateOutlet="stat_table; context: {pupils: whoNotFixed, title: 'Еще не решили'}"></ng-container>
+    <ng-container *ngTemplateOutlet="stat_table; context: {pupils: whoFixed, title: 'Уже решили'}"></ng-container>
   </div>
 </div>
 
-<ng-template #stat_table let-pupils>
+<ng-template #stat_table let-pupils="pupils" let-title="title">
   <div *ngIf="pupils.length">
-    <h3>Еще не решили</h3>
+    <h3>{{title}}</h3>
     <table class="table">
       <tbody>
         <tr *ngFor="let p of pupils">
