@@ -4,25 +4,20 @@
 <div class="row">
   <app-chess-puzzle class="col-4" [pgn]="puzzle.pgn"></app-chess-puzzle>
   <div class="col-8">
-    <div *ngIf="whoFixed.length">
-      <h3>Уже решили</h3>
-      <table class="table">
-        <tbody>
-          <tr *ngFor="let p of whoFixed">
-            <td>{{p.firstName}} {{p.lastName}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div *ngIf="whoNotFixed.length">
-      <h3>Еще не решили</h3>
-      <table class="table">
-        <tbody>
-          <tr *ngFor="let p of whoNotFixed">
-            <td>{{p.firstName}} {{p.lastName}}</td>
-          </tr>
-        </tbody>
-      </table>      
-    </div>
+    <ng-container *ngTemplateOutlet="stat_table; context: {$implicit: whoFixed}"></ng-container>
+    <ng-container *ngTemplateOutlet="stat_table; context: {$implicit: whoNotFixed}"></ng-container>
   </div>
 </div>
+
+<ng-template #stat_table let-pupils>
+  <div *ngIf="pupils.length">
+    <h3>Еще не решили</h3>
+    <table class="table">
+      <tbody>
+        <tr *ngFor="let p of pupils">
+          <td>{{p.firstName}} {{p.lastName}}</td>
+        </tr>
+      </tbody>
+    </table>      
+  </div>  
+</ng-template>
