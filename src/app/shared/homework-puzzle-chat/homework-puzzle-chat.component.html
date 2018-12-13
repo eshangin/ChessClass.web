@@ -2,7 +2,7 @@
   <div class="mb-0"><b>{{m.from.firstName}} {{m.from.lastName}}</b>, {{m.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}</div>
   <p class="mb-0">
     <span class="align-middle">{{m.text}}</span>
-    <button type="button" class="btn btn-link p-0 border-0 ml-2 b-comment__edit-btn" (click)="editChatMessage(m)"><i class="fas fa-edit"></i></button>
+    <button *ngIf="canEditMessage(m)" type="button" class="btn btn-link p-0 border-0 ml-2 b-comment__edit-btn" (click)="editChatMessage(m)"><i class="fas fa-edit"></i></button>
   </p>
 </div>
 <form>

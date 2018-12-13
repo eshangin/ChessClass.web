@@ -1,0 +1,11 @@
+.b-comment {
+    &__edit-btn {
+        display: none;
+    }
+
+    &:hover {
+        .b-comment__edit-btn {
+            display: inline;
+        }
+    }
+}

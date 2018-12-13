@@ -1,6 +1,7 @@
 <div class="row" *ngIf="currentPuzzle">
   <app-chess-puzzle class="col-6" [pgn]="currentPuzzle.pgn" (puzzleSolutionStageChanged)="onPuzzleSolutionStageChanged($event)"></app-chess-puzzle>
   <div class="col-6">
+    <app-homework-puzzle-chat [pupilId]="currentPupil.id" [homeworkId]="homeworkId" [puzzleId]="currentPuzzle.id"></app-homework-puzzle-chat>
     <div [ngSwitch]="puzzleState">
       <div *ngSwitchCase="puzzleSolutionStateTypes.CorrectMove">
         Верный ход!

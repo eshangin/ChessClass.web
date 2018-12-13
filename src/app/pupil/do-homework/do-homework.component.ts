@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Puzzle} from 'src/app/services/puzzle.model';
 import { PuzzleSolutionStateType } from 'src/app/shared/chess-puzzle/chess-puzzle.component';
 import { Observable } from 'rxjs';
+import { User } from 'src/app/services/user.model';
 
 @Component({
   selector: 'app-do-homework',
@@ -17,6 +18,7 @@ export class DoHomeworkComponent implements OnInit {
   puzzleState: PuzzleSolutionStateType;
   puzzleSolutionStateTypes = PuzzleSolutionStateType;
   puzzleFixed: boolean = false;
+  currentPupil: User;
   private homeworkId: string;
   private nextPuzzle: Puzzle = null;
 
@@ -28,6 +30,7 @@ export class DoHomeworkComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.currentPupil = this.authService.currentUser;
     this.homeworkId = this.route.snapshot.paramMap.get('id');
     this.fetchPuzzle().subscribe(p => {
       this.setNextPuzzle(p);

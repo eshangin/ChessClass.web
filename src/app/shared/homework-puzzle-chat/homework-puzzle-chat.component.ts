@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ChatMessage } from 'src/app/services/chat-message.model';
 import { ChatService } from 'src/app/services/chat.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-homework-puzzle-chat',
@@ -16,7 +17,8 @@ export class HomeworkPuzzleChatComponent implements OnInit {
   @Input() pupilId: string;
 
   constructor(
-    private chatService: ChatService
+    private chatService: ChatService,
+    private authServie: AuthService
   ) { }
 
   ngOnInit() {
@@ -39,6 +41,10 @@ export class HomeworkPuzzleChatComponent implements OnInit {
   editChatMessage(chatMessage: ChatMessage) {
     // TODO :: edit message logic
     console.log(chatMessage);
+  }
+
+  canEditMessage(chatMessage: ChatMessage): boolean {
+    return chatMessage.from.id == this.authServie.currentUser.id;
   }
 
 }
