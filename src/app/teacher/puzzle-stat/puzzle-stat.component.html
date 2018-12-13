@@ -27,19 +27,7 @@
       </div>
     </div>
     <div class="card-body">
-      <div *ngFor="let m of chatMessages" class="mb-3 b-comment">
-        <div class="mb-0"><b>{{m.from.firstName}} {{m.from.lastName}}</b>, {{m.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}</div>
-        <p class="mb-0">
-          <span class="align-middle">{{m.text}}</span>
-          <button type="button" class="btn btn-link p-0 border-0 ml-2 b-comment__edit-btn" (click)="editChatMessage(m)"><i class="fas fa-edit"></i></button>
-        </p>
-      </div>
-      <form>
-        <div class="form-group">
-          <textarea class="form-control" [(ngModel)]="chatMessage" name="chatMessage"></textarea>
-        </div>
-        <button type="button" class="btn btn-primary" (click)="sendMessage(pupil)">Отправить сообщение</button>
-      </form>
+      <app-homework-puzzle-chat [pupilId]="pupil.id" [homeworkId]="homeworkId" [puzzleId]="puzzleId"></app-homework-puzzle-chat>
     </div>
   </div>
 </ng-template>
