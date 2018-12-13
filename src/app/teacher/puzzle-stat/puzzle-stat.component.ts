@@ -50,6 +50,7 @@ export class PuzzleStatComponent implements OnInit {
 
     this.chatService.getHomeworkPuzzleMessages(pupil.id, this.homework.id, this.puzzle.id).subscribe(messages => {
       this.chatMessages = messages;
+      console.log(messages);
     });
   }
 

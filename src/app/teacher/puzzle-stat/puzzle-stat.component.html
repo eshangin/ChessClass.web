@@ -28,8 +28,8 @@
     </div>
     <div class="card-body">
       <div *ngFor="let m of chatMessages" class="mb-3 b-comment">
-        <div class="card-title mb-0"><b>Вы</b>, {{m.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}</div>
-        <p class="card-text mb-0">
+        <div class="mb-0"><b>{{m.from.firstName}} {{m.from.lastName}}</b>, {{m.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}</div>
+        <p class="mb-0">
           <span class="align-middle">{{m.text}}</span>
           <button type="button" class="btn btn-link p-0 border-0 ml-2 b-comment__edit-btn" (click)="editChatMessage(m)"><i class="fas fa-edit"></i></button>
         </p>

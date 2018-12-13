@@ -11,11 +11,14 @@ import {HomeworkPupilStat} from '../services/homework-pupil-stat.model';
 import { PupilActivity, PupilActivityType } from '../services/pupil-activity.model';
 import { _ } from 'underscore';
 import { AuthService } from '../services/auth.service';
+import { ChatMessage } from '../services/chat-message.model';
 
 class Db {
     puzzles: Puzzle[];
     classes: SchoolClass[];
+    users: User[];
     pupils: Pupil[];
+    teachers: User[];    
     pupil2class: Pupil2Class[];
     homeworks: DbHomework[];
     homework2puzzle: DbHomework2Puzzle[];
@@ -91,12 +94,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             if (request.url == 'api/auth/login/pupil') {
                 const pupil = db.pupils.find(_ => _.accessCode.toLowerCase() == request.body.code.toLowerCase());
                 if (pupil) {
-                    result = of(new HttpResponse({ status: 200, body: <User>{ id: pupil.id, firstName: pupil.firstName, lastName: pupil.lastName, role: Role.Pupil } }));
+                    result = of(new HttpResponse({ status: 200, body: pupil }));
                 } else {
                     result = of(new HttpResponse({ status: 404, statusText: 'incorrect access code' }));
                 }
             } else if (request.url == 'api/auth/login/teacher') {
-                result = of(new HttpResponse({ status: 200, body: <User>{ id: this.generateId(), firstName: 'Бобби', lastName: 'Фишер', role: Role.Pupil } }));
+                let firstTeacher = this.getTeachers()[0];
+                result = of(new HttpResponse({ status: 200, body: firstTeacher }));
             }
         } else if (request.url.match(/api\/favorites(\/(\w+))?/)) {
             const id = request.url.split('/')[2];
@@ -297,7 +301,14 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 result = of(new HttpResponse({ status: 200, body: createdMessage }));
             } else if (request.method == "GET") {
                 let h2p = db.homework2puzzle.find(h2p => h2p.puzzleId == puzzleId && h2p.homeworkId == homeworkId);
-                let messages = db.chatMessages.filter(m => m.pupilId == pupilId && m.homework2puzzleId == h2p.id);
+                let messages = db.chatMessages.filter(m => m.pupilId == pupilId && m.homework2puzzleId == h2p.id).map(m => {
+                    return {
+                        id: m.id,
+                        dateCreated: m.dateCreated,
+                        text: m.text,
+                        from: db.users.find(u => u.id == m.fromId)
+                    } as ChatMessage
+                });
                 result = of(new HttpResponse({ status: 200, body: messages }));
             }
         }
@@ -341,11 +352,12 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             this.createPupil('Игорь', 'Петров', './assets/kid-pics/boy-3.png');
             this.createPupil('Лена', 'Никонорова', './assets/kid-pics/girl-2.png');
             const pupils = this.getPupils();
+            this.createTeacher('Бобби', 'Фишер');
 
             this.createClass('Класс 1');
             this.createClass('Класс 2');
             const classes = this.getClasses();
-            localStorage.setItem('pupils', JSON.stringify(pupils));
+            //localStorage.setItem('pupils', JSON.stringify(pupils));
             this.updateStoragePuzzles(this.getPuzzles());
             this.addPupillToClass(pupils[0], classes[0]);
             this.addPupillToClass(pupils[1], classes[0]);
@@ -359,7 +371,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return {
             puzzles: JSON.parse(localStorage.getItem('puzzles')),
             classes: JSON.parse(localStorage.getItem('classes')),
-            pupils: JSON.parse(localStorage.getItem('pupils')),
+            pupils: this.getPupils(),
+            teachers: this.getTeachers(),
+            users: this.getUsers(),
             pupil2class: JSON.parse(localStorage.getItem('pupil2class')),
             homeworks: JSON.parse(localStorage.getItem('homeworks')) || [],
             homework2puzzle: JSON.parse(localStorage.getItem('homework2puzzle')) || [],
@@ -418,16 +432,41 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         return Math.random().toString(36).substr(2, 9);
     };
 
-    private createPupil(firstName: string, lastName: string, picture: string) {
-        const p = { id: this.generateId(), accessCode: this.generatePupilAccessCode(), firstName: firstName, lastName: lastName, picture: picture } as Pupil;
-        const pupils = this.getPupils();
-        pupils.push(p);
-        localStorage.setItem('pupils', JSON.stringify(pupils));
+    private createPupil(firstName: string, lastName: string, picture: string): Pupil {
+        let p = new Pupil();
+        p.id = this.generateId();
+        p.accessCode = this.generatePupilAccessCode();
+        p.firstName = firstName;
+        p.lastName = lastName;
+        p.picture = picture;
+        const users = this.getUsers();
+        users.push(p);
+        localStorage.setItem('users', JSON.stringify(users));
         return p;
     }
 
+    private createTeacher(firstName: string, lastName: string): User {
+        let u = new User();
+        u.role = Role.Teacher;
+        u.id = this.generateId();
+        u.firstName = firstName;
+        u.lastName = lastName;
+        const users = this.getUsers();
+        users.push(u);
+        localStorage.setItem('users', JSON.stringify(users));
+        return u;
+    }
+
+    private getUsers(): User[] {
+        return <User[]>(JSON.parse(localStorage.getItem('users')) || []);
+    }
+
     private getPupils(): Pupil[] {
-        return JSON.parse(localStorage.getItem('pupils')) || [];
+        return <Pupil[]>(this.getUsers().filter(u => u.role == Role.Pupil));
+    }
+
+    private getTeachers(): User[] {
+        return this.getUsers().filter(u => u.role == Role.Teacher);
     }
 
     private createClass(name: string): SchoolClass {

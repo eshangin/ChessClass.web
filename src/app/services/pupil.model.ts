@@ -1,10 +1,11 @@
-export class Pupil {
-    id: string;
-    firstName: string;
-    lastName: string;
-    picture: string;
-    getFullName(): string {
-        return this.firstName + ' ' + this.lastName;
+import { User, Role } from "./user.model";
+
+export class Pupil extends User {
+    constructor() {
+        super();
+        this.role = Role.Pupil;
     }
+
+    picture: string;
     accessCode: string;
 }
