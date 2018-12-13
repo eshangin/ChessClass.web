@@ -298,16 +298,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 m.homework2puzzleId = db.homework2puzzle.find(h2p => h2p.puzzleId == puzzleId && h2p.homeworkId == homeworkId).id;
                 let createdMessage = this.addChatMessage(m);
 
-                result = of(new HttpResponse({ status: 200, body: createdMessage }));
+                result = of(new HttpResponse({ status: 200, body: this.ConvertDbToChatMsgModel(createdMessage) }));
             } else if (request.method == "GET") {
                 let h2p = db.homework2puzzle.find(h2p => h2p.puzzleId == puzzleId && h2p.homeworkId == homeworkId);
                 let messages = db.chatMessages.filter(m => m.pupilId == pupilId && m.homework2puzzleId == h2p.id).map(m => {
-                    return {
-                        id: m.id,
-                        dateCreated: m.dateCreated,
-                        text: m.text,
-                        from: db.users.find(u => u.id == m.fromId)
-                    } as ChatMessage
+                    return this.ConvertDbToChatMsgModel(m);
                 });
                 result = of(new HttpResponse({ status: 200, body: messages }));
             }
@@ -320,6 +315,15 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         // pass through any requests not handled above
         return next.handle(request);
+    }
+
+    private ConvertDbToChatMsgModel(m: DbChatMessage): ChatMessage {
+        return {
+            id: m.id,
+            dateCreated: m.dateCreated,
+            text: m.text,
+            from: this.getUsers().find(u => u.id == m.fromId)
+        } as ChatMessage
     }
 
     private buildNounEnding(num: number, singularEnding: string, pluralEnding: string): string {
