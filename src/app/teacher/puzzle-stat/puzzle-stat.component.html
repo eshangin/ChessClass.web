@@ -39,14 +39,20 @@
       <thead class="thead-light">
         <tr>
           <th>&nbsp;</th>
-          <th class="text-right">Комментарии к задаче</th>
+          <th class="text-right">Попытки</th>
+          <th class="text-right" style="width: 116px">Сообщения</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of statItems">
           <td>{{item.pupil.firstName}} {{item.pupil.lastName}}</td>
           <td class="text-right">
-            <button type="button" class="btn btn-default btn-link p-0" (click)="viewChat(item.pupil)">
+              <button type="button" class="btn btn-link p-0" (click)="viewChat(item.pupil)">
+                {{item.fixAttemptsCount}}
+              </button>
+          </td>
+          <td class="text-right">
+            <button type="button" class="btn btn-link p-0" (click)="viewChat(item.pupil)">
               {{item.chatCommentsCount}} <i class="far fa-comment"></i>
             </button>            
           </td>

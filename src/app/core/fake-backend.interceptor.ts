@@ -291,6 +291,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 let statistics = classPupils.map(p => {
                     return {
                         pupil: p,
+                        fixAttemptsCount: db.puzzleFixAttempts.filter(att => att.pupilId == p.id && att.homework2puzzleId == h2p.id).length,
                         chatCommentsCount: db.chatMessages.filter(cm => cm.pupilId == p.id && cm.homework2puzzleId == h2p.id).length,
                         fixedByPupil: !!fixedPuzzlesOfHomework.find(fp => fp.pupilId == p.id)
                     };
