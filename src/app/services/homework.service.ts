@@ -30,10 +30,18 @@ export class HomeworkService {
   }
 
   markPuzzleFixed(pupilId: string, homeworkId: string, puzzleId: string): Observable<any> {
+    // TODO :: remove pupilId parameter. We should get it on server from auth
     const url = homeworkId
       ? `/api/pupils/${pupilId}/homeworks/${homeworkId}/puzzles/${puzzleId}/fixed`
       : `/api/pupils/${pupilId}/homeworks/puzzles/${puzzleId}/fixed`;
     return this.http.post<Puzzle[]>(url, {});
+  }
+
+  saveAttempt(homeworkId: string, puzzleId: string, moves: string[]): Observable<any> {
+    const url = homeworkId
+      ? `/api/homeworks/${homeworkId}/puzzles/${puzzleId}/attempts`
+      : `/api/homeworks/puzzles/${puzzleId}/attempts`;
+    return this.http.post<Puzzle[]>(url, { moves });
   }
 
   getNonFixedPuzzles(pupilId: string, homeworkId?: string, count: number = 1): Observable<Puzzle[]> {

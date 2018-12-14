@@ -24,6 +24,7 @@ class Db {
     homework2puzzle: DbHomework2Puzzle[];
     fixedPuzzles: DbFixedPuzzle[];
     chatMessages: DbChatMessage[];
+    puzzleFixAttempts: DbPuzzleFixAttempt[]
 }
 
 class DbChatMessage {
@@ -40,6 +41,14 @@ class DbChatMessage {
     // In case teacher send comment for specific puzzle and pupil
     homework2puzzleId: string;
     pupilId: string;
+}
+
+class DbPuzzleFixAttempt {
+    id: string;
+    homework2puzzleId: string;
+    moves: string[];
+    pupilId: string;
+    dateCreated: Date;
 }
 
 class Pupil2Class {
@@ -230,14 +239,14 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
                 result = of(new HttpResponse({ status: 200, body: count ? puzzles.slice(0, count) : puzzles }));
             }
-        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks\/puzzles\/(\w+)\/fixed/)) {
+        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks\/puzzles\/(\w+)\/fixed$/)) {
             const pupilId = request.url.split('/')[3];
             const puzzleId = request.url.split('/')[6];
             if (request.method == "POST") {
                 this.markPuzzleFixed(pupilId, null, puzzleId);
                 result = of(new HttpResponse({ status: 200 }));
             }
-        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks\/(\w+)\/puzzles\/(\w+)\/fixed/)) {
+        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks\/(\w+)\/puzzles\/(\w+)\/fixed$/)) {
             const pupilId = request.url.split('/')[3];
             const homeworkId = request.url.split('/')[5];
             const puzzleId = request.url.split('/')[7];
@@ -305,6 +314,23 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     return this.ConvertDbToChatMsgModel(m);
                 });
                 result = of(new HttpResponse({ status: 200, body: messages }));
+            }
+        } else if (request.url.match(/api\/homeworks\/(\w+)\/puzzles\/(\w+)\/attempts$/)) {
+            let pupilId = currentUser.id;
+            let homeworkId = request.url.split('/')[3];
+            let puzzleId = request.url.split('/')[5];
+            if (request.method == "POST") {
+                this.addPuzzleFixAttempt(pupilId, homeworkId, puzzleId, request.body.moves);
+
+                result = of(new HttpResponse({ status: 200, body: {} }));
+            }
+        } else if (request.url.match(/api\/homeworks\/puzzles\/(\w+)\/attempts$/)) {
+            let pupilId = currentUser.id;
+            let puzzleId = request.url.split('/')[4];
+            if (request.method == "POST") {
+                this.addPuzzleFixAttempt(pupilId, null, puzzleId, request.body.moves);
+
+                result = of(new HttpResponse({ status: 200, body: {} }));
             }
         }
 
@@ -383,7 +409,32 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             homework2puzzle: JSON.parse(localStorage.getItem('homework2puzzle')) || [],
             fixedPuzzles: JSON.parse(localStorage.getItem('fixedPuzzles')) || [],
             chatMessages: JSON.parse(localStorage.getItem('chatMessages')) || [],
+            puzzleFixAttempts: JSON.parse(localStorage.getItem('puzzleFixAttempts')) || [],
         } as Db;
+    }
+
+    private addPuzzleFixAttempt(pupilId: string, homeworkId: string = null, puzzleId: string, moves: string[]) {
+        let allAttempts = this.getDb().puzzleFixAttempts;
+        let h2pItems: DbHomework2Puzzle[] = [];
+        if (homeworkId) {
+            let h2p = this.getDb().homework2puzzle.find(_ => _.homeworkId == homeworkId && _.puzzleId == puzzleId);
+            h2pItems.push(h2p);
+        } else {
+            let classId = this.getDb().pupil2class.find(p2c => p2c.pupilId == pupilId).classId;
+            h2pItems = this.getDb().homework2puzzle.filter(_ => _.puzzleId == puzzleId && !!this.getDb().homeworks.find(h => h.id == _.homeworkId && h.classId == classId));
+        }
+        h2pItems.forEach(h2p => {
+            if (!this.getDb().fixedPuzzles.find(fp => fp.homework2puzzleId == h2p.id && fp.pupilId == pupilId)) {
+                let a = new DbPuzzleFixAttempt();
+                a.id = this.generateId();
+                a.dateCreated = new Date();
+                a.pupilId = pupilId;
+                a.moves = moves;
+                a.homework2puzzleId = h2p.id;
+                allAttempts.push(a);
+            }
+        });
+        localStorage.setItem('puzzleFixAttempts', JSON.stringify(allAttempts));
     }
 
     private markPuzzleFixed(pupilId: string, homeworkId: string, puzzleId: string) {
@@ -393,7 +444,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             let h2p = this.getDb().homework2puzzle.find(_ => _.homeworkId == homeworkId && _.puzzleId == puzzleId);
             h2pItems.push(h2p);
         } else {
-            h2pItems = this.getDb().homework2puzzle.filter(_ => _.puzzleId == puzzleId);
+            let classId = this.getDb().pupil2class.find(p2c => p2c.pupilId == pupilId).classId;
+            h2pItems = this.getDb().homework2puzzle.filter(_ => _.puzzleId == puzzleId && !!this.getDb().homeworks.find(h => h.id == _.homeworkId && h.classId == classId));
         }
         h2pItems.forEach(h2p => {
             if (!fixedPuzzles.find(fp => fp.homework2puzzleId == h2p.id && fp.pupilId == pupilId)) {

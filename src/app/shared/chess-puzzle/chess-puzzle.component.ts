@@ -19,6 +19,7 @@ export class ChessPuzzleComponent implements OnChanges {
   @Input() showBoardNotation: boolean = true;
   puzzleInitialFen: string;
   @Output() private puzzleSolutionStateChanged = new EventEmitter<PuzzleSolutionStateType>();
+  @Output() private pieceMoved = new EventEmitter<MoveInfo>();
   private puzzleInfo: ChessPuzzle;
   private board: ChessBoardComponent;
 
@@ -36,6 +37,8 @@ export class ChessPuzzleComponent implements OnChanges {
   }
 
   onPieceMoved(moveInfo: MoveInfo) {
+    this.pieceMoved.emit(moveInfo);
+
     if (moveInfo.moveType == MoveType.NormalOnDrop) {
       if (this.isCorrectPuzzleMove(this.puzzleInfo, this.board.engine)) {
         console.log('Correct move!!!');

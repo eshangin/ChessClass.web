@@ -1,5 +1,9 @@
 <div class="row" *ngIf="currentPuzzle">
-  <app-chess-puzzle class="col-6" [pgn]="currentPuzzle.pgn" (puzzleSolutionStateChanged)="onPuzzleSolutionStateChanged($event)"></app-chess-puzzle>
+  <app-chess-puzzle 
+    class="col-6" 
+    [pgn]="currentPuzzle.pgn" 
+    (pieceMoved)="onPieceMoved($event)"
+    (puzzleSolutionStateChanged)="onPuzzleSolutionStateChanged($event)"></app-chess-puzzle>
   <div class="col-6">
     <ngb-tabset>
       <ngb-tab title="Задача">

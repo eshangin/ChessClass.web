@@ -7,6 +7,7 @@ import { PuzzleSolutionStateType } from 'src/app/shared/chess-puzzle/chess-puzzl
 import { Observable } from 'rxjs';
 import { User } from 'src/app/services/user.model';
 import { ChatMessage } from 'src/app/services/chat-message.model';
+import { MoveInfo, MoveType } from 'src/app/shared/chess-board/chess-board.component';
 
 @Component({
   selector: 'app-do-homework',
@@ -16,13 +17,14 @@ import { ChatMessage } from 'src/app/services/chat-message.model';
 export class DoHomeworkComponent implements OnInit {
 
   currentPuzzle: Puzzle;
-  puzzleState: PuzzleSolutionStateType;
+  puzzleState?: PuzzleSolutionStateType;
   puzzleSolutionStateTypes = PuzzleSolutionStateType;
   puzzleFixed: boolean = false;
   currentPupil: User;
   initialMessagesCount: number;
   private homeworkId: string;
   private nextPuzzle: Puzzle = null;
+  private movements: ChessJS.Move[] = [];
 
   constructor(
     private authService: AuthService,
@@ -47,6 +49,7 @@ export class DoHomeworkComponent implements OnInit {
   onPuzzleSolutionStateChanged(state: PuzzleSolutionStateType) {
     this.puzzleState = state;
     if (state == PuzzleSolutionStateType.PuzzleDone) {
+      this.saveAttempt(this.movements).subscribe();
       this.homeworkService.markPuzzleFixed(this.authService.currentUser.id, this.homeworkId, this.currentPuzzle.id).subscribe(() => {
         this.puzzleFixed = true;
         this.fetchPuzzle().subscribe(p => this.setNextPuzzle(p));
@@ -58,12 +61,28 @@ export class DoHomeworkComponent implements OnInit {
     this.initialMessagesCount = chatMessages.length;
   }
 
-  private setNextPuzzle(p: Puzzle) {
-    if (!p) {
-      this.router.navigate(['/p']);
-    } else {
-      this.nextPuzzle = p;
+  onPieceMoved(move: MoveInfo) {
+    switch (move.moveType) {
+      case MoveType.NormalOnDrop:
+      case MoveType.NormalProgrammatic:
+        this.movements.push(move.move);
+        break;
+
+      case MoveType.Undo:
+        this.saveAttempt(this.movements).subscribe();
+        this.movements.pop();
+        break;
     }
+    
+    console.log(move, this.movements);
+  }
+
+  private saveAttempt(movements: ChessJS.Move[]): Observable<any> {
+    return this.homeworkService.saveAttempt(this.homeworkId, this.currentPuzzle.id, movements.map(m => m.san));
+  }
+
+  private setNextPuzzle(p: Puzzle) {
+    this.nextPuzzle = p;
   }
 
   private fetchPuzzle(): Observable<Puzzle> {
@@ -77,9 +96,15 @@ export class DoHomeworkComponent implements OnInit {
   }
 
   private updateCurrentPuzzle() {
-    this.puzzleFixed = false;
-    this.currentPuzzle = this.nextPuzzle;
-    this.nextPuzzle = null;
+    if (this.nextPuzzle) {
+      this.puzzleFixed = false;
+      this.movements = [];
+      this.puzzleState = null;
+      this.currentPuzzle = this.nextPuzzle;
+      this.nextPuzzle = null;
+    } else {
+      this.router.navigate(['/p']);
+    }
   }
 
 }
