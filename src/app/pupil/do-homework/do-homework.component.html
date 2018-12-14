@@ -1,20 +1,35 @@
 <div class="row" *ngIf="currentPuzzle">
   <app-chess-puzzle class="col-6" [pgn]="currentPuzzle.pgn" (puzzleSolutionStageChanged)="onPuzzleSolutionStageChanged($event)"></app-chess-puzzle>
   <div class="col-6">
-    <app-homework-puzzle-chat [pupilId]="currentPupil.id" [homeworkId]="homeworkId" [puzzleId]="currentPuzzle.id"></app-homework-puzzle-chat>
-    <div [ngSwitch]="puzzleState">
-      <div *ngSwitchCase="puzzleSolutionStateTypes.CorrectMove">
-        Верный ход!
-      </div>
-      <div *ngSwitchCase="puzzleSolutionStateTypes.PuzzleDone">
-        Задача решена!        
-      </div>
-      <div *ngSwitchCase="puzzleSolutionStateTypes.IncorrectMove">
-        Неверный ход!
-      </div>
-    </div>
-    <div *ngIf="puzzleFixed">
-      <button type="button" class="btn btn-default" (click)="goToNextPuzzle()">Перейти к следующей задаче</button>
-    </div>
+    <ngb-tabset>
+      <ngb-tab title="Задача">
+        <ng-template ngbTabContent>
+          <div class="p-4 bg-light">
+            Белые начинают, и ставят мат в 2 хода TODO
+          </div>
+          <div [ngSwitch]="puzzleState" class="p-4">
+            <div *ngSwitchCase="puzzleSolutionStateTypes.CorrectMove">
+              Верный ход! <i class="far fa-thumbs-up fa-lg"></i><br>
+            </div>
+            <div *ngSwitchCase="puzzleSolutionStateTypes.PuzzleDone">
+              Задача решена! <i class="fas fa-trophy fa-lg text-warning"></i>
+              <div *ngIf="puzzleFixed">
+                <button type="button" class="btn btn-default btn-link p-0" (click)="goToNextPuzzle()">Перейти к следующей</button>
+              </div>
+            </div>
+            <div *ngSwitchCase="puzzleSolutionStateTypes.IncorrectMove">
+              Неверный ход! <i class="far fa-frown fa-lg"></i><br>
+              Попробуй еще раз
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>Сообщения</ng-template>
+        <ng-template ngbTabContent>
+          <app-homework-puzzle-chat [pupilId]="currentPupil.id" [homeworkId]="homeworkId" [puzzleId]="currentPuzzle.id"></app-homework-puzzle-chat>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
   </div>
 </div>
