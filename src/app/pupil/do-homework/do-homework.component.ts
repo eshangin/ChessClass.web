@@ -6,6 +6,7 @@ import {Puzzle} from 'src/app/services/puzzle.model';
 import { PuzzleSolutionStateType } from 'src/app/shared/chess-puzzle/chess-puzzle.component';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/services/user.model';
+import { ChatMessage } from 'src/app/services/chat-message.model';
 
 @Component({
   selector: 'app-do-homework',
@@ -19,6 +20,7 @@ export class DoHomeworkComponent implements OnInit {
   puzzleSolutionStateTypes = PuzzleSolutionStateType;
   puzzleFixed: boolean = false;
   currentPupil: User;
+  initialMessagesCount: number;
   private homeworkId: string;
   private nextPuzzle: Puzzle = null;
 
@@ -50,6 +52,10 @@ export class DoHomeworkComponent implements OnInit {
         this.fetchPuzzle().subscribe(p => this.setNextPuzzle(p));
       });
     }
+  }
+
+  onChatThreadLoaded(chatMessages: ChatMessage[]) {
+    this.initialMessagesCount = chatMessages.length;
   }
 
   private setNextPuzzle(p: Puzzle) {

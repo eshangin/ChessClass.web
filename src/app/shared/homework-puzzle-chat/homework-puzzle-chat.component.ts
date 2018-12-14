@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ChatMessage } from 'src/app/services/chat-message.model';
 import { ChatService } from 'src/app/services/chat.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -15,6 +15,7 @@ export class HomeworkPuzzleChatComponent implements OnInit {
   @Input() homeworkId: string;
   @Input() puzzleId: string;
   @Input() pupilId: string;
+  @Output() private chatThreadLoaded = new EventEmitter<ChatMessage[]>();
 
   constructor(
     private chatService: ChatService,
@@ -25,6 +26,7 @@ export class HomeworkPuzzleChatComponent implements OnInit {
     this.chatService.getHomeworkPuzzleMessages(this.pupilId, this.homeworkId, this.puzzleId).subscribe(messages => {
       this.chatMessages = messages;
       console.log(messages);
+      this.chatThreadLoaded.emit(messages);
     });
   }
 

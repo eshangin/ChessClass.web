@@ -27,7 +27,15 @@
       <ngb-tab>
         <ng-template ngbTabTitle>Сообщения</ng-template>
         <ng-template ngbTabContent>
-          <app-homework-puzzle-chat [pupilId]="currentPupil.id" [homeworkId]="homeworkId" [puzzleId]="currentPuzzle.id"></app-homework-puzzle-chat>
+          <div *ngIf="initialMessagesCount == 0" class="p-4 bg-light">
+            Здесь можно задать вопрос тренеру по данной задаче
+          </div>
+          <app-homework-puzzle-chat
+            class="d-block mt-4" 
+            (chatThreadLoaded)="onChatThreadLoaded($event)"
+            [pupilId]="currentPupil.id" 
+            [homeworkId]="homeworkId" 
+            [puzzleId]="currentPuzzle.id"></app-homework-puzzle-chat>
         </ng-template>
       </ngb-tab>
     </ngb-tabset>
