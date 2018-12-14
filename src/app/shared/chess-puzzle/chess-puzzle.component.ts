@@ -18,7 +18,7 @@ export class ChessPuzzleComponent implements OnChanges {
   @Input() pgn: string;
   @Input() showBoardNotation: boolean = true;
   puzzleInitialFen: string;
-  @Output() private puzzleSolutionStageChanged = new EventEmitter<PuzzleSolutionStateType>();
+  @Output() private puzzleSolutionStateChanged = new EventEmitter<PuzzleSolutionStateType>();
   private puzzleInfo: ChessPuzzle;
   private board: ChessBoardComponent;
 
@@ -44,13 +44,13 @@ export class ChessPuzzleComponent implements OnChanges {
 
         if (this.puzzleInfo.solutionMovements.length == this.board.engine.history().length) {
           console.log('Done!!!');
-          this.puzzleSolutionStageChanged.emit(PuzzleSolutionStateType.PuzzleDone);
+          this.puzzleSolutionStateChanged.emit(PuzzleSolutionStateType.PuzzleDone);
         } else {
-          this.puzzleSolutionStageChanged.emit(PuzzleSolutionStateType.CorrectMove);
+          this.puzzleSolutionStateChanged.emit(PuzzleSolutionStateType.CorrectMove);
           this.makeSolutionMove();
         }
       } else {
-        this.puzzleSolutionStageChanged.emit(PuzzleSolutionStateType.IncorrectMove);
+        this.puzzleSolutionStateChanged.emit(PuzzleSolutionStateType.IncorrectMove);
         this.board.undoMove();
         //this.tryMovePieceIfOnlyOnePossibleMove(board);
       }

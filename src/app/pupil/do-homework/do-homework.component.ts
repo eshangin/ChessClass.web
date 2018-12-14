@@ -42,7 +42,7 @@ export class DoHomeworkComponent implements OnInit {
     this.updateCurrentPuzzle();
   }
 
-  onPuzzleSolutionStageChanged(state: PuzzleSolutionStateType) {
+  onPuzzleSolutionStateChanged(state: PuzzleSolutionStateType) {
     this.puzzleState = state;
     if (state == PuzzleSolutionStateType.PuzzleDone) {
       this.homeworkService.markPuzzleFixed(this.authService.currentUser.id, this.homeworkId, this.currentPuzzle.id).subscribe(() => {
