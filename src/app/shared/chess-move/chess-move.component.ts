@@ -14,7 +14,7 @@ interface IUiMove {
 export class ChessMoveComponent implements OnChanges {
 
   @Input() move: string;
-  @Input() moveColor: string = 'w';
+  @Input() moveColor: 'w' | 'b' = 'w';
   uiMove: IUiMove;
 
   constructor() { }
