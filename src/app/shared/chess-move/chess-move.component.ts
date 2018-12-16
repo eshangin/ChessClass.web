@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 interface IUiMove {
   figureChar: string;
@@ -11,17 +11,17 @@ interface IUiMove {
   templateUrl: './chess-move.component.html',
   styleUrls: ['./chess-move.component.scss']
 })
-export class ChessMoveComponent implements OnInit {
+export class ChessMoveComponent implements OnChanges {
 
   @Input() move: string;
-  @Input() isBlack: boolean;
+  @Input() moveColor: string = 'w';
   uiMove: IUiMove;
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnChanges(changes: SimpleChanges): void {
     this.parseMove();
-  }
+  }  
 
   private parseMove(): any {
     let moveStart = this.move[0];

@@ -22,6 +22,7 @@ export class DoHomeworkComponent implements OnInit {
   puzzleFixed: boolean = false;
   currentPupil: User;
   initialMessagesCount: number;
+  myLastMove: ChessJS.Move;
   private homeworkId: string;
   private nextPuzzle: Puzzle = null;
   private movements: ChessJS.Move[] = [];
@@ -46,9 +47,11 @@ export class DoHomeworkComponent implements OnInit {
     this.updateCurrentPuzzle();
   }
 
-  onPuzzleSolutionStateChanged(state: PuzzleSolutionStateType) {
-    this.puzzleState = state;
-    if (state == PuzzleSolutionStateType.PuzzleDone) {
+  onPuzzleSolutionStateChanged(data: {stateType: PuzzleSolutionStateType, move: ChessJS.Move}) {
+    console.log(data);
+    this.puzzleState = data.stateType;
+    this.myLastMove = data.move;
+    if (data.stateType == PuzzleSolutionStateType.PuzzleDone) {
       this.saveAttempt(this.movements).subscribe();
       this.homeworkService.markPuzzleFixed(this.authService.currentUser.id, this.homeworkId, this.currentPuzzle.id).subscribe(() => {
         this.puzzleFixed = true;
@@ -73,8 +76,6 @@ export class DoHomeworkComponent implements OnInit {
         this.movements.pop();
         break;
     }
-    
-    console.log(move, this.movements);
   }
 
   private saveAttempt(movements: ChessJS.Move[]): Observable<any> {

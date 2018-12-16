@@ -13,7 +13,7 @@
           </div>
           <div [ngSwitch]="puzzleState" class="p-4">
             <div *ngSwitchCase="puzzleSolutionStateTypes.CorrectMove">
-              Верный ход! <i class="far fa-thumbs-up fa-lg"></i><br>
+              <app-chess-move [move]="myLastMove.san"></app-chess-move><span class="align-middle"> верный ход! <i class="far fa-thumbs-up fa-lg"></i></span>
             </div>
             <div *ngSwitchCase="puzzleSolutionStateTypes.PuzzleDone">
               Задача решена! <i class="fas fa-trophy fa-lg text-warning"></i>
@@ -22,8 +22,8 @@
               </div>
             </div>
             <div *ngSwitchCase="puzzleSolutionStateTypes.IncorrectMove">
-              Неверный ход! <i class="far fa-frown fa-lg"></i><br>
-              Попробуй еще раз
+              <app-chess-move [move]="myLastMove.san"></app-chess-move><span class="align-middle"> неверный ход! <i class="far fa-frown fa-lg"></i></span>
+              <br>Попробуй еще раз
             </div>
           </div>
         </ng-template>

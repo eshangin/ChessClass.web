@@ -19,7 +19,7 @@ export class ChessPuzzleComponent implements OnChanges {
   @Input() showBoardNotation: boolean = true;
   puzzleInitialFen: string;
   @Output() private pgnUpdated = new EventEmitter<ChessPuzzle>();
-  @Output() private puzzleSolutionStateChanged = new EventEmitter<PuzzleSolutionStateType>();
+  @Output() private puzzleSolutionStateChanged = new EventEmitter<{stateType: PuzzleSolutionStateType, move: ChessJS.Move}>();
   @Output() private pieceMoved = new EventEmitter<MoveInfo>();
   private puzzleInfo: ChessPuzzle;
   private board: ChessBoardComponent;
@@ -49,13 +49,13 @@ export class ChessPuzzleComponent implements OnChanges {
 
         if (this.puzzleInfo.solutionMovements.length == this.board.engine.history().length) {
           console.log('Done!!!');
-          this.puzzleSolutionStateChanged.emit(PuzzleSolutionStateType.PuzzleDone);
+          this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.PuzzleDone, move: moveInfo.move});
         } else {
-          this.puzzleSolutionStateChanged.emit(PuzzleSolutionStateType.CorrectMove);
+          this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.CorrectMove, move: moveInfo.move});
           this.makeSolutionMove();
         }
       } else {
-        this.puzzleSolutionStateChanged.emit(PuzzleSolutionStateType.IncorrectMove);
+        this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.IncorrectMove, move: moveInfo.move});
         this.board.undoMove();
         //this.tryMovePieceIfOnlyOnePossibleMove(board);
       }
