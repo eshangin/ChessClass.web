@@ -28,17 +28,15 @@
     </div>
     <div class="card-body">
       <div class="row">
-        <div class="col-3">
+        <div class="col-4">
           <h5>Попытки</h5>
           <div *ngFor="let att of puzzleFixAttempts; let index = index" class="mb-2 p-1" [ngClass]="isCorrectAttempt(att) ? 'bg-light-green' : 'bg-light'">
             <small class="d-block">#{{puzzleFixAttempts.length - index}} | {{att.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}</small>
-            <!-- <small *ngFor="let m of att.moves">{{m}}&nbsp;</small> -->
-            <!-- <small *ngFor="let m of att.moves"><app-chess-move [move]="m"></app-chess-move>&nbsp;</small> -->
             <small><app-chess-move-list [moves]="att.moves"></app-chess-move-list></small>
           </div>
           <small *ngIf="puzzleFixAttempts.length == 0">Не было попыток решить задачу</small>
         </div>
-        <div class="col-9">
+        <div class="col-8">
           <h5>Сообщения</h5>
           <app-homework-puzzle-chat [pupilId]="pupil.id" [homeworkId]="homeworkId" [puzzleId]="puzzleId"></app-homework-puzzle-chat>
         </div>
