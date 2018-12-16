@@ -2,7 +2,7 @@
   <a routerLink="/my/classes/{{class.id}}">{{class.name}}</a>, домашнее задание от {{homework.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}
 </p>
 <div class="row">
-  <app-chess-puzzle class="col-4" [pgn]="puzzle.pgn"></app-chess-puzzle>
+  <app-chess-puzzle class="col-4" [pgn]="puzzle.pgn" (pgnUpdated)="onPuzzlePgnUpdated($event)"></app-chess-puzzle>
   <div class="col-8">
     <div [ngSwitch]="viewMode">
       <div *ngSwitchCase="'list'">
@@ -27,7 +27,20 @@
       </div>
     </div>
     <div class="card-body">
-      <app-homework-puzzle-chat [pupilId]="pupil.id" [homeworkId]="homeworkId" [puzzleId]="puzzleId"></app-homework-puzzle-chat>
+      <div class="row">
+        <div class="col-3">
+          <h5>Попытки</h5>
+          <div *ngFor="let att of puzzleFixAttempts; let index = index" class="mb-2 p-1" [ngClass]="isCorrectAttempt(att) ? 'bg-light-green' : 'bg-light'">
+            <small class="d-block">#{{puzzleFixAttempts.length - index}} | {{att.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}</small>
+            <small *ngFor="let m of att.moves">{{m}}&nbsp;</small>
+          </div>
+          <small *ngIf="puzzleFixAttempts.length == 0">Не было попыток решить задачу</small>
+        </div>
+        <div class="col-9">
+          <h5>Сообщения</h5>
+          <app-homework-puzzle-chat [pupilId]="pupil.id" [homeworkId]="homeworkId" [puzzleId]="puzzleId"></app-homework-puzzle-chat>
+        </div>
+      </div>      
     </div>
   </div>
 </ng-template>
@@ -47,9 +60,9 @@
         <tr *ngFor="let item of statItems">
           <td>{{item.pupil.firstName}} {{item.pupil.lastName}}</td>
           <td class="text-right">
-              <button type="button" class="btn btn-link p-0" (click)="viewChat(item.pupil)">
-                {{item.fixAttemptsCount}}
-              </button>
+            <button type="button" class="btn btn-link p-0" (click)="viewChat(item.pupil)">
+              {{item.fixAttemptsCount}}
+            </button>
           </td>
           <td class="text-right">
             <button type="button" class="btn btn-link p-0" (click)="viewChat(item.pupil)">

@@ -12,6 +12,7 @@ import { PupilActivity, PupilActivityType } from '../services/pupil-activity.mod
 import { _ } from 'underscore';
 import { AuthService } from '../services/auth.service';
 import { ChatMessage } from '../services/chat-message.model';
+import { PuzzleFixAttempt } from '../services/puzzle-fix-attempt.model';
 
 class Db {
     puzzles: Puzzle[];
@@ -332,6 +333,23 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 this.addPuzzleFixAttempt(pupilId, null, puzzleId, request.body.moves);
 
                 result = of(new HttpResponse({ status: 200, body: {} }));
+            }
+        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks\/(\w+)\/puzzles\/(\w+)\/attempts$/)) {
+            let pupilId = request.url.split('/')[3];
+            let homeworkId = request.url.split('/')[5];
+            let puzzleId = request.url.split('/')[7];
+            if (request.method == "GET") {
+                let homework2puzzleId = db.homework2puzzle.find(h2p => h2p.puzzleId == puzzleId && h2p.homeworkId == homeworkId).id;
+                let attempts = db.puzzleFixAttempts.filter(att => att.pupilId == pupilId && att.homework2puzzleId == homework2puzzleId)
+                    .map(att => {
+                        return {
+                            id: att.id,
+                            dateCreated: att.dateCreated,
+                            moves: att.moves,
+                            pupilId: att.pupilId
+                        } as PuzzleFixAttempt;
+                    });
+                result = of(new HttpResponse({ status: 200, body: attempts }));
             }
         }
 

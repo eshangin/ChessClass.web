@@ -5,8 +5,10 @@ import { Puzzle } from 'src/app/services/puzzle.model';
 import { Pupil } from 'src/app/services/pupil.model';
 import { SchoolClass } from 'src/app/services/school-class.model';
 import { Homework } from 'src/app/services/homework.model';
-import { ChatService } from 'src/app/services/chat.service';
-import { ChatMessage } from 'src/app/services/chat-message.model';
+import { HomeworkService } from 'src/app/services/homework.service';
+import { PuzzleFixAttempt } from 'src/app/services/puzzle-fix-attempt.model';
+import { ChessPuzzle } from 'src/app/services/chess-helper.service';
+import { _ } from 'underscore';
 
 @Component({
   selector: 'app-puzzle-stat',
@@ -21,13 +23,16 @@ export class PuzzleStatComponent implements OnInit {
   class: SchoolClass;
   homework: Homework;
   puzzle: Puzzle;
+  puzzleInfo: ChessPuzzle;
   whoFixed: any[] = [];
   whoNotFixed: any[] = [];
   selectedPupil: Pupil;
+  puzzleFixAttempts: PuzzleFixAttempt[];
 
   constructor(
     private route: ActivatedRoute,
-    private puzzleService: PuzzleService
+    private puzzleService: PuzzleService,
+    private homeworkService: HomeworkService
   ) { }
 
   ngOnInit() {
@@ -40,12 +45,25 @@ export class PuzzleStatComponent implements OnInit {
   viewChat(pupil: Pupil) {
     this.selectedPupil = pupil;
     this.viewMode = 'chat';
+    console.log(pupil)
+    this.homeworkService.getAttempts(pupil.id, this.homeworkId, this.puzzleId).subscribe(attempts => {
+      this.puzzleFixAttempts = attempts.sort((a, b) => a.dateCreated > b.dateCreated ? -1:1);
+    });
   }
 
   closeChat() {
     this.selectedPupil = null;
     this.viewMode = 'list';
     this.loadStatistics();
+  }
+
+  onPuzzlePgnUpdated(puzzleInfo: ChessPuzzle) {
+    this.puzzleInfo = puzzleInfo;
+    console.log(puzzleInfo);
+  }
+
+  isCorrectAttempt(attempt: PuzzleFixAttempt): boolean {
+    return _(attempt.moves).isEqual(this.puzzleInfo.solutionMovements);
   }
 
   private loadStatistics() {
@@ -55,6 +73,9 @@ export class PuzzleStatComponent implements OnInit {
       this.puzzle = stat.puzzle;
       this.whoFixed = stat.statistics.filter(item => item.fixedByPupil);
       this.whoNotFixed = stat.statistics.filter(item => !item.fixedByPupil);
+
+      // TODO :: remove when attempts view be complete
+      //this.viewChat(stat.statistics[0].pupil);
     });
   }
 }

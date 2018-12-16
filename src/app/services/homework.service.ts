@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Puzzle} from './puzzle.model';
 import {Router} from '@angular/router';
+import { PuzzleFixAttempt } from './puzzle-fix-attempt.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,12 @@ export class HomeworkService {
     const url = homeworkId
       ? `/api/homeworks/${homeworkId}/puzzles/${puzzleId}/attempts`
       : `/api/homeworks/puzzles/${puzzleId}/attempts`;
-    return this.http.post<Puzzle[]>(url, { moves });
+    return this.http.post<any>(url, { moves });
+  }
+
+  getAttempts(pupilId: string, homeworkId: string, puzzleId: string): Observable<PuzzleFixAttempt[]> {
+    const url = `/api/pupils/${pupilId}/homeworks/${homeworkId}/puzzles/${puzzleId}/attempts`;
+    return this.http.get<PuzzleFixAttempt[]>(url);
   }
 
   getNonFixedPuzzles(pupilId: string, homeworkId?: string, count: number = 1): Observable<Puzzle[]> {

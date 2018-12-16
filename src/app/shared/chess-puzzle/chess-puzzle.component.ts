@@ -18,6 +18,7 @@ export class ChessPuzzleComponent implements OnChanges {
   @Input() pgn: string;
   @Input() showBoardNotation: boolean = true;
   puzzleInitialFen: string;
+  @Output() private pgnUpdated = new EventEmitter<ChessPuzzle>();
   @Output() private puzzleSolutionStateChanged = new EventEmitter<PuzzleSolutionStateType>();
   @Output() private pieceMoved = new EventEmitter<MoveInfo>();
   private puzzleInfo: ChessPuzzle;
@@ -33,6 +34,7 @@ export class ChessPuzzleComponent implements OnChanges {
 
   private updatePgn() {
     this.puzzleInfo = this.chessHelperService.parsePuzzle(this.pgn);
+    this.pgnUpdated.emit(this.puzzleInfo);
     this.puzzleInitialFen = this.puzzleInfo.initialFen;
   }
 

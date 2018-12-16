@@ -1,0 +1,6 @@
+@import "./node_modules/bootstrap/scss/_functions";
+@import "./node_modules/bootstrap/scss/_variables";
+
+.bg-light-green {
+    background-color: lighten( $green, 50% )
+}
