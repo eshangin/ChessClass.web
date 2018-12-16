@@ -1,0 +1,4 @@
+<span *ngFor="let m of moves; let index = index; let first = first">
+  <span *ngIf="!isBlackMove(index) || first" class="align-middle mr-1">{{Math.floor((index + (blackIsFirst?1:0))/2)+1}}.</span>
+  <app-chess-move class="mr-1" [move]="m" [isBlack]="isBlackMove(index)"></app-chess-move>
+</span>

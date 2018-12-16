@@ -2,6 +2,20 @@
   <app-chess-puzzle style="width: 250px" [pgn]="pazzlePgn"></app-chess-puzzle>
 </div>
 
+<div class="m-2 bg-light">
+  <h3>Ходы</h3>
+  <app-chess-move [move]="'Rb2'"></app-chess-move>
+  <app-chess-move [move]="'Rb2'" [isBlack]="true"></app-chess-move>
+  <app-chess-move [move]="'Kb2'"></app-chess-move>
+  <app-chess-move [move]="'Qc2'"></app-chess-move>
+  <app-chess-move [move]="'Bc2'"></app-chess-move>
+  <app-chess-move [move]="'Nc2'"></app-chess-move>
+  <div>
+    <app-chess-move-list class="d-block" [moves]="['Rb5', 'Kc1', 'a5', 'Qa7', 'Ba7', 'Ng4', 'b7', 'e8=Q']"></app-chess-move-list>
+    <app-chess-move-list class="d-block" [moves]="['Rb5', 'Kc1', 'a5', 'Qa7', 'Ba7', 'Ng4', 'b7', 'e8=Q']" [blackIsFirst]="true"></app-chess-move-list>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-6" *ngFor="let game of games">
     <app-chess-board 

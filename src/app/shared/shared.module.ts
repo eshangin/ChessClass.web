@@ -5,6 +5,8 @@ import {GameControlsComponent} from './game-controls/game-controls.component';
 import {ChessPuzzleComponent} from './chess-puzzle/chess-puzzle.component';
 import { HomeworkPuzzleChatComponent } from './homework-puzzle-chat/homework-puzzle-chat.component';
 import { FormsModule } from '@angular/forms';
+import { ChessMoveComponent } from './chess-move/chess-move.component';
+import { ChessMoveListComponent } from './chess-move-list/chess-move-list.component';
 
 @NgModule({
   declarations: [    
@@ -12,6 +14,8 @@ import { FormsModule } from '@angular/forms';
     GameControlsComponent,
     ChessPuzzleComponent,
     HomeworkPuzzleChatComponent,
+    ChessMoveComponent,
+    ChessMoveListComponent,
   ],
   imports: [
     CommonModule,
@@ -22,6 +26,8 @@ import { FormsModule } from '@angular/forms';
     GameControlsComponent,
     ChessPuzzleComponent,
     HomeworkPuzzleChatComponent,
+    ChessMoveComponent,
+    ChessMoveListComponent,
   ]
 })
 export class SharedModule { }

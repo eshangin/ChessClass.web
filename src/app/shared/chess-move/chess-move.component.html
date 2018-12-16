@@ -1,0 +1,8 @@
+<span *ngIf="uiMove.end">
+  <img src="./assets/images/chesspieces/{{isBlack?'b':'w'}}{{uiMove.figureChar}}.png" alt="" 
+    style="width: 1.2rem;height: 1.2rem;margin-right:-2px" /><span class="align-middle">{{uiMove.end}}</span>
+</span>
+<span *ngIf="uiMove.start">
+  <span class="align-middle" style="margin-right: -2px">{{uiMove.start}}</span><img *ngIf="uiMove.figureChar" src="./assets/images/chesspieces/{{isBlack?'b':'w'}}{{uiMove.figureChar}}.png" alt="" 
+    style="width: 1.2rem;height: 1.2rem;" />
+</span>
