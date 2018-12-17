@@ -1,4 +1,4 @@
-import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ChessBoardComponent} from './chess-board/chess-board.component';
 import {GameControlsComponent} from './game-controls/game-controls.component';
@@ -9,6 +9,7 @@ import { ChessMoveComponent } from './chess-move/chess-move.component';
 import { ChessMoveListComponent } from './chess-move-list/chess-move-list.component';
 import { CreatePuzzleComponent } from './create-puzzle/create-puzzle.component';
 import { SimpleBoardComponent } from './simple-board/simple-board.component';
+import { CgPieceComponent } from './cg-piece/cg-piece.component';
 
 @NgModule({
   declarations: [    
@@ -20,6 +21,7 @@ import { SimpleBoardComponent } from './simple-board/simple-board.component';
     ChessMoveListComponent,
     CreatePuzzleComponent,
     SimpleBoardComponent,
+    CgPieceComponent,
   ],
   imports: [
     CommonModule,
@@ -34,10 +36,6 @@ import { SimpleBoardComponent } from './simple-board/simple-board.component';
     SimpleBoardComponent,
     ChessMoveListComponent,
     CreatePuzzleComponent
-  ],
-  schemas: [ 
-    // TODO :: we use this just because of <piece> tag and custom chessground pieces. Maybe create angular component like app-cg-piece!?
-    NO_ERRORS_SCHEMA 
   ]
 })
 export class SharedModule { }

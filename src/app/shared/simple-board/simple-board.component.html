@@ -2,6 +2,6 @@
   <div style="width: 224px; height: 224px">Board here!</div>
 </div>
 
-  <div class="is2d d-inline-block" (mousedown)="pieceMouseDown($event)">
-    <piece class="white bishop" style="background-size: cover; width: 30px; height: 30px; display: inline-block; "></piece>
-  </div>
+<div style="background-color:antiquewhite">
+  <app-cg-piece *ngFor="let p of pieces" (mousedown)="pieceMouseDown($event, 'white', p)" [color]="'white'" [piece]="p" class="d-inline-block" style="width: 30px; height: 30px;"></app-cg-piece>
+</div>

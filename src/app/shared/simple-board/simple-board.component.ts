@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, AfterViewInit } from '@angular/core';
 
 import { Chessground } from 'chessground';
 import { dragNewPiece } from 'chessground/drag';
-import { MouchEvent } from 'chessground/types';
+import { MouchEvent, Color, Role } from 'chessground/types';
 import { Api } from 'chessground/api';
 
 @Component({
@@ -13,6 +13,7 @@ import { Api } from 'chessground/api';
 export class SimpleBoardComponent implements OnInit, AfterViewInit {
 
   private cg: Api;
+  pieces: Role[] = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'];
 
   constructor(private elementRef: ElementRef) { }
 
@@ -31,13 +32,10 @@ export class SimpleBoardComponent implements OnInit, AfterViewInit {
         enabled: true
       },
     });
-
-    //dragNewPiece(cg.state, { color: 'white', role: 'bishop', promoted: false }, new MouchEvent(), true);
   }
   
-  pieceMouseDown(event: MouchEvent) {
-    console.log(event)
-    dragNewPiece(this.cg.state, { color: 'white', role: 'bishop', promoted: false }, event, true);
+  pieceMouseDown(event: MouchEvent, color: Color, piece: Role) {
+    dragNewPiece(this.cg.state, { color: color, role: piece, promoted: false }, event, true);
   }
 
 }
