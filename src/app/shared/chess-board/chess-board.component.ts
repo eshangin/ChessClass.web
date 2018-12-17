@@ -39,6 +39,8 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
   }
   
   private updateFen() {
+    this.fen = this.tryFixFen(this.fen);
+
     this.engine.load(this.fen);
 
     const boardConfig: ChessBoardJS.BoardConfig = {
@@ -119,5 +121,23 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
         ((String(turn).toLowerCase() === 'w') && (piece.search(/^b/) !== -1)) ||
         ((String(turn).toLowerCase() === 'b') && (piece.search(/^w/) !== -1))
     );
+  }
+
+  private tryFixFen(fen: string): string {
+    let fenSplit = fen.split(' ');
+    switch (fenSplit.length) {
+      case 1:
+        return fen + ' w - - 0 1';
+      case 2:
+        return fen + ' - - 0 1';
+      case 3:
+        return fen + ' - 0 1';
+      case 4:
+        return fen + ' 0 1';
+      case 5:
+        return fen + ' 1';
+      case 6:
+        return fen;
+    }
   }
 }
