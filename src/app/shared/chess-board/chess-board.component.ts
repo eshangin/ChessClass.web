@@ -125,19 +125,9 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
 
   private tryFixFen(fen: string): string {
     let fenSplit = fen.split(' ');
-    switch (fenSplit.length) {
-      case 1:
-        return fen + ' w - - 0 1';
-      case 2:
-        return fen + ' - - 0 1';
-      case 3:
-        return fen + ' - 0 1';
-      case 4:
-        return fen + ' 0 1';
-      case 5:
-        return fen + ' 1';
-      case 6:
-        return fen;
+    if (fenSplit.length >= 1 && fenSplit.length <= 5) {
+      return fen + ' ' + ['w','-','-','0','1'].slice(fenSplit.length - 1).join(' ');
     }
+    return fen;
   }
 }
