@@ -32,7 +32,8 @@
     "normalize.css": "^8.0.1",
     "rxjs": "~6.3.3",
     "underscore": "^1.9.1",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "chessground": "7.3.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.10.0",

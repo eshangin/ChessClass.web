@@ -34,7 +34,9 @@
               "src/styles/styles.scss",
               "node_modules/chessboardjs/www/css/chessboard.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
-              "node_modules/ngx-toastr/toastr.css"
+              "node_modules/ngx-toastr/toastr.css",
+              "src/assets/chessground/chessground.css",
+              "src/assets/chessground/theme.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

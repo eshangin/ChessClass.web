@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { ChessMoveComponent } from './chess-move/chess-move.component';
 import { ChessMoveListComponent } from './chess-move-list/chess-move-list.component';
 import { CreatePuzzleComponent } from './create-puzzle/create-puzzle.component';
+import { SimpleBoardComponent } from './simple-board/simple-board.component';
 
 @NgModule({
   declarations: [    
@@ -18,6 +19,7 @@ import { CreatePuzzleComponent } from './create-puzzle/create-puzzle.component';
     ChessMoveComponent,
     ChessMoveListComponent,
     CreatePuzzleComponent,
+    SimpleBoardComponent,
   ],
   imports: [
     CommonModule,
@@ -29,6 +31,7 @@ import { CreatePuzzleComponent } from './create-puzzle/create-puzzle.component';
     ChessPuzzleComponent,
     HomeworkPuzzleChatComponent,
     ChessMoveComponent,
+    SimpleBoardComponent,
     ChessMoveListComponent,
     CreatePuzzleComponent
   ]
