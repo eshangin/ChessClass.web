@@ -26,16 +26,39 @@ export class SimpleBoardComponent implements OnInit, AfterViewInit {
       //fen: '2r3k1/pp2Qpbp/4b1p1/3p4/3n1PP1/2N4P/Pq6/R2K1B1R w -',
       //viewOnly: true
       movable: {
-        free: true
+        free: true,
+        color: 'both'
       },
-      draggable: {
+      premovable: {
+        enabled: false
+      },
+      drawable: {
         enabled: true
       },
+      draggable: {
+        showGhost: true,
+        distance: 0,
+        autoDistance: false,
+        deleteOnDropOff: true
+      },
+      highlight: {
+        lastMove: false
+      }
     });
   }
   
-  pieceMouseDown(event: MouchEvent, color: Color, piece: Role) {
-    dragNewPiece(this.cg.state, { color: color, role: piece, promoted: false }, event, true);
+  pieceMouseDown(e: MouchEvent, color: Color, piece: Role) {
+
+    e.preventDefault();
+    // if (e.type === 'touchstart') {
+    //   e.preventDefault();
+    // }
+
+    dragNewPiece(this.cg.state, { color: color, role: piece, promoted: false }, e, true);
+  }
+
+  pieceMouseUp() {
+    console.log('up');
   }
 
 }
