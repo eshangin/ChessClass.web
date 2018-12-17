@@ -111,6 +111,7 @@
   pointer-events: none;
   opacity: 0.8;
   font-size: 9px;
+  user-select: none;
 }
 .cg-board-wrap coords.ranks {
   right: -15px;
