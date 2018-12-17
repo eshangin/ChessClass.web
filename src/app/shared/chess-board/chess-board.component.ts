@@ -23,7 +23,9 @@ export interface MoveInfo {
 export class ChessBoardComponent implements AfterViewInit, OnChanges {
 
   @Input() fen: string;
+  @Output() fenChange = new EventEmitter<string>();
   @Input() showNotation: boolean = true;
+  @Input() editBoardMode: boolean = false;
   @Output() private pieceMoved = new EventEmitter<MoveInfo>();
   @Output() private boardInitiated = new EventEmitter<ChessBoardComponent>();
   engine: ChessInstance = new Chess();
@@ -49,7 +51,9 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
       onDragStart: (source, piece) => this.onDragStart(piece),
       onDrop: (source, target) => this.onDrop(source, target),
       onSnapEnd: () => this.onSnapEndFunc(),
-      showNotation: this.showNotation
+      showNotation: this.showNotation,
+      sparePieces: this.editBoardMode,
+      dropOffBoard: 'trash'
     };
 
     if (!this.board) {
@@ -96,7 +100,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
     };
     const move = this.engine.move(tryMove);
 
-    if (move == null) {
+    if (!this.editBoardMode && move == null) {
         return 'snapback';
     }
 
@@ -104,15 +108,21 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
   };
 
   private onSnapEndFunc() {
-    return this.board.position(this.engine.fen());
+    if (!this.editBoardMode) {
+      this.board.position(this.engine.fen());
+    }
+
+    this.fen = this.board.fen();
+    this.fenChange.emit(this.fen);
   }
 
   // do not pick up pieces if the game is over
   // only pick up pieces for the side to move
   private onDragStart(piece: string): boolean {
     return (
-        !this.engine.game_over() &&
-        this.allowMove(this.engine.turn(), piece)
+      this.editBoardMode ||
+        (!this.engine.game_over() &&
+        this.allowMove(this.engine.turn(), piece))
     );
   };
 

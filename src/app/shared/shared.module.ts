@@ -7,6 +7,7 @@ import { HomeworkPuzzleChatComponent } from './homework-puzzle-chat/homework-puz
 import { FormsModule } from '@angular/forms';
 import { ChessMoveComponent } from './chess-move/chess-move.component';
 import { ChessMoveListComponent } from './chess-move-list/chess-move-list.component';
+import { CreatePuzzleComponent } from './create-puzzle/create-puzzle.component';
 
 @NgModule({
   declarations: [    
@@ -16,6 +17,7 @@ import { ChessMoveListComponent } from './chess-move-list/chess-move-list.compon
     HomeworkPuzzleChatComponent,
     ChessMoveComponent,
     ChessMoveListComponent,
+    CreatePuzzleComponent,
   ],
   imports: [
     CommonModule,
@@ -28,6 +30,7 @@ import { ChessMoveListComponent } from './chess-move-list/chess-move-list.compon
     HomeworkPuzzleChatComponent,
     ChessMoveComponent,
     ChessMoveListComponent,
+    CreatePuzzleComponent
   ]
 })
 export class SharedModule { }

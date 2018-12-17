@@ -1,0 +1,3 @@
+<app-chess-board *ngIf="stepName == 'place-figures'" [(fen)]="fen" [editBoardMode]="true"></app-chess-board>
+<app-chess-board *ngIf="stepName == 'record-solution'" [fen]="fen"></app-chess-board>
+<button type="button" class="btn btn-default btn-sm" (click)="goToStep('record-solution')">Далее</button>
