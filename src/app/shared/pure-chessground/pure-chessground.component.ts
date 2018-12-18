@@ -2,6 +2,7 @@ import { Component, AfterViewInit, ElementRef, Output, EventEmitter, Input, OnCh
 import { Chessground } from 'chessground';
 import { Config } from 'chessground/config';
 import { Api } from 'chessground/api';
+import * as $ from 'jquery'
 
 @Component({
   selector: 'app-pure-chessground',
@@ -24,7 +25,7 @@ export class PureChessgroundComponent implements AfterViewInit, OnChanges, After
   ngAfterViewInit(): void {
     let parentEl = this.elementRef.nativeElement.parentElement;
     if (!this.sizePx) {
-      this.sizePx = parentEl.clientWidth;
+      this.sizePx = $(parentEl).width();
       this.cdRef.detectChanges();
     }
   }
