@@ -1,28 +1,27 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-
+import { Component, OnInit, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { dragNewPiece } from 'chessground/drag';
 import { MouchEvent, Color, Role } from 'chessground/types';
 import { Api } from 'chessground/api';
 import { Config } from 'chessground/config';
 
 @Component({
-  selector: 'app-simple-board',
-  templateUrl: './simple-board.component.html',
-  styleUrls: ['./simple-board.component.scss']
+  selector: 'app-cg-create-puzzle',
+  templateUrl: './cg-create-puzzle.component.html',
+  styleUrls: ['./cg-create-puzzle.component.scss']
 })
-export class SimpleBoardComponent implements OnInit {
+export class CgCreatePuzzleComponent implements OnInit {
 
   private cg: Api;
   cgConfig: Config;
   pieceSize: string;
   pieces: Role[] = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'];
+  @Output() editorInitialized = new EventEmitter<Api>();
 
   constructor(private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.cgConfig = {
-      //fen: '2r3k1/pp2Qpbp/4b1p1/3p4/3n1PP1/2N4P/Pq6/R2K1B1R w -',
-      //viewOnly: true
+      fen: '8/8/8/8/8/8/8/8',
       movable: {
         free: true,
         color: 'both'
@@ -37,7 +36,8 @@ export class SimpleBoardComponent implements OnInit {
         showGhost: true,
         distance: 0,
         autoDistance: false,
-        deleteOnDropOff: true
+        deleteOnDropOff: true,
+        centerPiece: true
       },
       highlight: {
         lastMove: false
@@ -50,6 +50,7 @@ export class SimpleBoardComponent implements OnInit {
     this.cg = cgApi;
     this.pieceSize = (cgApi.state.dom.bounds().width / 8).toString();
     this.cdRef.detectChanges();
+    this.editorInitialized.emit(cgApi);
   }
   
   pieceMouseDown(e: MouchEvent, color: Color, piece: Role) {
@@ -60,10 +61,6 @@ export class SimpleBoardComponent implements OnInit {
     // }
 
     dragNewPiece(this.cg.state, { color: color, role: piece, promoted: false }, e, true);
-  }
-
-  pieceMouseUp() {
-    console.log('up');
   }
 
 }

@@ -16,6 +16,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { LogoutComponent } from './auth/logout/logout.component';
 import {SharedModule} from './shared/shared.module';
 import {ExperimentsComponent} from './home/experiments/experiments.component';
+import { HomeCreatePuzzleComponent } from './home/home-create-puzzle/home-create-puzzle.component';
 
 registerLocaleData(localeRu);
 
@@ -25,7 +26,8 @@ registerLocaleData(localeRu);
     ExperimentsComponent,
     StartPageComponent,
     LoginComponent,
-    LogoutComponent
+    LogoutComponent,
+    HomeCreatePuzzleComponent
   ],
   imports: [
     BrowserModule,
