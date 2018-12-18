@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 
 import { dragNewPiece } from 'chessground/drag';
 import { MouchEvent, Color, Role } from 'chessground/types';
@@ -14,9 +14,10 @@ export class SimpleBoardComponent implements OnInit {
 
   private cg: Api;
   cgConfig: Config;
+  pieceSize: string;
   pieces: Role[] = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'];
 
-  constructor() { }
+  constructor(private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.cgConfig = {
@@ -47,6 +48,8 @@ export class SimpleBoardComponent implements OnInit {
 
   onCgInitialized(cgApi: Api) {
     this.cg = cgApi;
+    this.pieceSize = (cgApi.state.dom.bounds().width / 8).toString();
+    this.cdRef.detectChanges();
   }
   
   pieceMouseDown(e: MouchEvent, color: Color, piece: Role) {

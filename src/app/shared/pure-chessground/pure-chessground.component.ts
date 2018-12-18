@@ -37,10 +37,10 @@ export class PureChessgroundComponent implements AfterViewInit, OnChanges, After
 
   ngAfterViewChecked(): void {
     if (!this.isInitialized) {
+      this.isInitialized = true;
       const container = this.elementRef.nativeElement.children[0].children[0];
       this.cg = Chessground(container, this.config);
       this.initialized.emit(this.cg);
-      this.isInitialized = true;  
     }
     if (this.needRedrawCg) {
       this.cg.redrawAll();

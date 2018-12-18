@@ -1,7 +1,15 @@
-<app-pure-chessground [config]="cgConfig" (initialized)="onCgInitialized($event)"></app-pure-chessground>
-
-<div class="mt-5" style="background-color:antiquewhite;">
-  <app-cg-piece *ngFor="let p of pieces" (mousedown)="pieceMouseDown($event, 'white', p)" [color]="'white'" [piece]="p" 
-    class="d-inline-block mr-2" 
-    style="width: 40px; height: 40px; position: relative;"></app-cg-piece>
+<div *ngFor="let color of ['black', 'white']; let first = first">
+  <div class="text-center" style="background-color:antiquewhite;" [ngClass]="first ? 'mb-3' : 'mt-3'" [style.height.px]="pieceSize">
+    <app-cg-piece 
+      *ngFor="let p of pieces; let last = last" 
+      (mousedown)="pieceMouseDown($event, color, p)" 
+      [color]="color" 
+      [piece]="p" 
+      class="d-inline-block" 
+      [ngClass]="{'mr-2': !last}"
+      [style.width.px]="pieceSize"
+      [style.height.px]="pieceSize"
+      style="position: relative;"></app-cg-piece>
+  </div>
+  <app-pure-chessground *ngIf="first" [config]="cgConfig" (initialized)="onCgInitialized($event)"></app-pure-chessground>
 </div>
