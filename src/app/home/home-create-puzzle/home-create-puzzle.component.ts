@@ -39,13 +39,17 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
       case 1:
         if (!this.editorResized) {
           this.editorResized = true;
-          this.editorCgApi.redrawAll();
+          setTimeout(() => {
+            this.editorCgApi.redrawAll();
+          }, 0);
         }        
         break;
       case 2:
         if (!this.recorderResized) {
           this.recorderResized = true;
-          this.recorderCgApi.redrawAll();
+          setTimeout(() => {
+            this.recorderCgApi.redrawAll();  
+          }, 0);
         }
         break;
     }
