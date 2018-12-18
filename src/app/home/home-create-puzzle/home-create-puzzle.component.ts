@@ -12,7 +12,9 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
   private editorCgApi: Api;
   private recorderCgApi: Api;
   recorderCgConfig: Config;
-  stepNumber: 1 | 2 = 2;
+  stepNumber: 1 | 2 = 1;
+  private editorResized = false;
+  private recorderResized = false;
 
   constructor() { }
 
@@ -35,10 +37,16 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
   ngAfterViewChecked(): void {
     switch (this.stepNumber) {
       case 1:
-        //this.editorCgApi.redrawAll();
+        if (!this.editorResized) {
+          this.editorResized = true;
+          this.editorCgApi.redrawAll();
+        }        
         break;
       case 2:
-        this.recorderCgApi.redrawAll();
+        if (!this.recorderResized) {
+          this.recorderResized = true;
+          this.recorderCgApi.redrawAll();
+        }
         break;
     }
   }
