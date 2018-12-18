@@ -1,28 +1,25 @@
-import { Component, OnInit, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { Chessground } from 'chessground';
 import { dragNewPiece } from 'chessground/drag';
 import { MouchEvent, Color, Role } from 'chessground/types';
 import { Api } from 'chessground/api';
+import { Config } from 'chessground/config';
 
 @Component({
   selector: 'app-simple-board',
   templateUrl: './simple-board.component.html',
   styleUrls: ['./simple-board.component.scss']
 })
-export class SimpleBoardComponent implements OnInit, AfterViewInit {
+export class SimpleBoardComponent implements OnInit {
 
   private cg: Api;
+  cgConfig: Config;
   pieces: Role[] = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'];
 
-  constructor(private elementRef: ElementRef) { }
+  constructor() { }
 
   ngOnInit() {
-  }
-
-  ngAfterViewInit(): void {
-    const container = this.elementRef.nativeElement.children[0].children[0];
-    this.cg = Chessground(container, {
+    this.cgConfig = {
       //fen: '2r3k1/pp2Qpbp/4b1p1/3p4/3n1PP1/2N4P/Pq6/R2K1B1R w -',
       //viewOnly: true
       movable: {
@@ -44,7 +41,11 @@ export class SimpleBoardComponent implements OnInit, AfterViewInit {
       highlight: {
         lastMove: false
       }
-    });
+    };
+  }
+
+  onCgInitialized(cgApi: Api) {
+    this.cg = cgApi;
   }
   
   pieceMouseDown(e: MouchEvent, color: Color, piece: Role) {

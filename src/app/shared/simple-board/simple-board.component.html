@@ -1,6 +1,4 @@
-<div class="is2d" >
-  <div style="width: 224px; height: 224px">Board here!</div>
-</div>
+<app-pure-chessground [config]="cgConfig" (initialized)="onCgInitialized($event)"></app-pure-chessground>
 
 <div class="mt-5" style="background-color:antiquewhite;">
   <app-cg-piece *ngFor="let p of pieces" (mousedown)="pieceMouseDown($event, 'white', p)" [color]="'white'" [piece]="p" 
