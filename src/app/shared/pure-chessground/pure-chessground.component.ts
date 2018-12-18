@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, Output, EventEmitter, Input, OnChanges, SimpleChanges, AfterViewChecked } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, Output, EventEmitter, Input, OnChanges, SimpleChanges, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { Chessground } from 'chessground';
 import { Config } from 'chessground/config';
 import { Api } from 'chessground/api';
@@ -10,20 +10,23 @@ import { Api } from 'chessground/api';
 })
 export class PureChessgroundComponent implements AfterViewInit, OnChanges, AfterViewChecked {
 
-  @Input() sizePx: number;
+  @Input() sizePx: number = null;
   @Input() config: Config;
   @Output() private initialized = new EventEmitter<Api>();
   private cg: Api;
   private isInitialized = false;
   private needRedrawCg = false;
 
-  constructor(private elementRef: ElementRef) { }
+  constructor(
+    private elementRef: ElementRef,
+    private cdRef: ChangeDetectorRef) { }
 
   ngAfterViewInit(): void {
-    const container = this.elementRef.nativeElement.children[0].children[0];
-    this.cg = Chessground(container, this.config);
-    this.initialized.emit(this.cg);
-    this.isInitialized = true;
+    let parentEl = this.elementRef.nativeElement.parentElement;
+    if (!this.sizePx) {
+      this.sizePx = parentEl.clientWidth;
+      this.cdRef.detectChanges();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -33,6 +36,12 @@ export class PureChessgroundComponent implements AfterViewInit, OnChanges, After
   }
 
   ngAfterViewChecked(): void {
+    if (!this.isInitialized) {
+      const container = this.elementRef.nativeElement.children[0].children[0];
+      this.cg = Chessground(container, this.config);
+      this.initialized.emit(this.cg);
+      this.isInitialized = true;  
+    }
     if (this.needRedrawCg) {
       this.cg.redrawAll();
       this.needRedrawCg = false;
