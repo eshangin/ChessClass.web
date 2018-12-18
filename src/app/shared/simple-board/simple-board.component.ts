@@ -13,6 +13,7 @@ import { Config } from 'chessground/config';
 export class SimpleBoardComponent implements OnInit {
 
   private cg: Api;
+  cgSize: number = 512;
   cgConfig: Config;
   pieces: Role[] = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'];
 
@@ -40,12 +41,17 @@ export class SimpleBoardComponent implements OnInit {
       },
       highlight: {
         lastMove: false
-      }
+      },
+      resizable: true
     };
   }
 
   onCgInitialized(cgApi: Api) {
     this.cg = cgApi;
+
+    setTimeout(() => {
+      this.cgSize -= 100;
+    }, 2000);
   }
   
   pieceMouseDown(e: MouchEvent, color: Color, piece: Role) {

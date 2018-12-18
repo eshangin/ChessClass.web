@@ -1,4 +1,4 @@
-<app-pure-chessground [config]="cgConfig" (initialized)="onCgInitialized($event)"></app-pure-chessground>
+<app-pure-chessground [sizePx]="cgSize" [config]="cgConfig" (initialized)="onCgInitialized($event)"></app-pure-chessground>
 
 <div class="mt-5" style="background-color:antiquewhite;">
   <app-cg-piece *ngFor="let p of pieces" (mousedown)="pieceMouseDown($event, 'white', p)" [color]="'white'" [piece]="p" 
