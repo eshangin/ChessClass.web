@@ -1,6 +1,9 @@
 import { Component, OnInit, AfterViewChecked } from '@angular/core';
 import { Api } from 'chessground/api';
 import { Config } from 'chessground/config';
+import * as cgTypes from 'chessground/types';
+import * as Chess from 'chess.js';
+import { ChessHelperService } from 'src/app/services/chess-helper.service';
 
 @Component({
   selector: 'app-home-create-puzzle',
@@ -15,8 +18,11 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
   stepNumber: 1 | 2 = 1;
   private editorResized = false;
   private recorderResized = false;
+  engine: ChessInstance = new Chess();
+  recorderMoves: string[] = [];
+  recorderBlackStartsGame = false;
 
-  constructor() { }
+  constructor(private chessHelperService: ChessHelperService) { }
 
   ngOnInit() {
   }
@@ -55,7 +61,31 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  private onRecorderMove(initialFen: string, orig: cgTypes.Key, dest: cgTypes.Key, capturedPiece?: cgTypes.Piece) {
+    if (this.recorderMoves.length == 0) {
+      let chessColor = this.detectWhoStartGame(initialFen, orig);
+      if (this.engine.load(this.chessHelperService.tryFixFen(initialFen, chessColor))) {
+        this.recorderBlackStartsGame = chessColor == 'b';        
+      } else {
+        console.log('incorrect position', initialFen);
+      }
+    }
+    //console.log(orig, dest, capturedPiece);
+    let move = this.engine.move({from: orig, to: dest});
+    // console.log(move);
+    if (move) {
+       this.recorderMoves.push(move.san);      
+    }
+  }
+
+  private detectWhoStartGame(initialFen: string, orig: cgTypes.Key): ChessJS.Types.ChessColor {
+    let c1 = new Chess();
+    c1.load(initialFen);
+    return c1.get(orig).color;
+  }
+
   private setRecorderConfig(fen: string) {
+    
     this.recorderCgConfig = {
       fen: fen,
       movable: {
@@ -76,9 +106,13 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
         centerPiece: true
       },
       highlight: {
-        lastMove: false
+        lastMove: true
       },
-      resizable: true
+      resizable: true,
+      events: {
+        move: (orig: cgTypes.Key, dest: cgTypes.Key, capturedPiece?: cgTypes.Piece) => 
+          this.onRecorderMove(fen, orig, dest, capturedPiece)
+      }
     };
   }
 

@@ -5,14 +5,15 @@
       <app-pure-chessground *ngIf="stepNumber == 2" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
     </div>
     <div class="col-6">
-      <div [ngSwitch]="stepNumber">
+      <div [ngSwitch]="stepNumber" class="mb-2">
         <div *ngSwitchCase="1">
           <h3>Шаг 1</h3>
           <p>Выставьте начальную позицию задачи</p>
         </div>
         <div *ngSwitchCase="2">
           <h3>Шаг 2</h3>
-          <p>Проделайте ходы решения задачи. Ходы будут записаны</p>
+          <p>Проделайте ходы решения задачи. Ходы решения будут автоматически записаны</p>
+          <app-chess-move-list [moves]="recorderMoves" [blackIsFirst]="recorderBlackStartsGame"></app-chess-move-list>
         </div>
       </div>
       <button type="button" class="btn btn-default btn-sm" (click)="goToStep(2)">Далее</button>
