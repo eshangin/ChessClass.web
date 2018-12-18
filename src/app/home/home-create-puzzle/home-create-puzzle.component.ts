@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewChecked } from '@angular/core';
 import { Api } from 'chessground/api';
 import { Config } from 'chessground/config';
 
@@ -7,11 +7,12 @@ import { Config } from 'chessground/config';
   templateUrl: './home-create-puzzle.component.html',
   styleUrls: ['./home-create-puzzle.component.scss']
 })
-export class HomeCreatePuzzleComponent implements OnInit {
+export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
 
-  cgApi: Api;
+  private editorCgApi: Api;
+  private recorderCgApi: Api;
   recorderCgConfig: Config;
-  stepNumber: 1 | 2 = 1;
+  stepNumber: 1 | 2 = 2;
 
   constructor() { }
 
@@ -20,11 +21,26 @@ export class HomeCreatePuzzleComponent implements OnInit {
 
   goToStep(stepNumber: 1 | 2) {
     this.stepNumber = stepNumber;
-    this.setRecorderConfig(this.cgApi.getFen());
+    this.setRecorderConfig(this.editorCgApi.getFen());
   }
 
   onEditorInitialized(cgApi: Api) {
-    this.cgApi = cgApi;
+    this.editorCgApi = cgApi;
+  }
+
+  onRecorderInitialized(cgApi: Api) {
+    this.recorderCgApi = cgApi;
+  }
+
+  ngAfterViewChecked(): void {
+    switch (this.stepNumber) {
+      case 1:
+        //this.editorCgApi.redrawAll();
+        break;
+      case 2:
+        this.recorderCgApi.redrawAll();
+        break;
+    }
   }
 
   private setRecorderConfig(fen: string) {
@@ -35,7 +51,7 @@ export class HomeCreatePuzzleComponent implements OnInit {
         color: 'both'
       },
       premovable: {
-        enabled: true
+        enabled: false
       },
       drawable: {
         enabled: true
@@ -43,10 +59,12 @@ export class HomeCreatePuzzleComponent implements OnInit {
       draggable: {
         showGhost: true,
         distance: 0,
-        autoDistance: false
+        autoDistance: false,
+        deleteOnDropOff: true,
+        centerPiece: true
       },
       highlight: {
-        lastMove: true
+        lastMove: false
       },
       resizable: true
     };

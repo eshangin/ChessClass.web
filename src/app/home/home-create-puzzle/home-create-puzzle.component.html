@@ -2,7 +2,7 @@
   <div class="row mt-5 mb-3">
     <div class="col-4">
       <app-cg-create-puzzle *ngIf="stepNumber == 1" (editorInitialized)="onEditorInitialized($event)"></app-cg-create-puzzle>
-      <app-pure-chessground *ngIf="stepNumber == 2" [config]="recorderCgConfig"></app-pure-chessground>
+      <app-pure-chessground *ngIf="stepNumber == 2" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
     </div>
     <div class="col-6">
       <div [ngSwitch]="stepNumber">
