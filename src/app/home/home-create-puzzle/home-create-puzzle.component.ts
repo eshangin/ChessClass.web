@@ -11,15 +11,15 @@ export class HomeCreatePuzzleComponent implements OnInit {
 
   cgApi: Api;
   recorderCgConfig: Config;
-  stepName: 'place-figures' | 'record-solution' = 'place-figures';
+  stepNumber: 1 | 2 = 1;
 
   constructor() { }
 
   ngOnInit() {
   }
 
-  goToStep(stepName: 'place-figures' | 'record-solution') {
-    this.stepName = stepName;
+  goToStep(stepNumber: 1 | 2) {
+    this.stepNumber = stepNumber;
     this.setRecorderConfig(this.cgApi.getFen());
   }
 

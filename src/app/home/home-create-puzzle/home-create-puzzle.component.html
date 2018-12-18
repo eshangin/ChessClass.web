@@ -1,21 +1,21 @@
 <div class="container">
   <div class="row mt-5 mb-3">
     <div class="col-4">
-      <app-cg-create-puzzle *ngIf="stepName == 'place-figures'" (editorInitialized)="onEditorInitialized($event)"></app-cg-create-puzzle>
-      <app-pure-chessground *ngIf="stepName == 'record-solution'" [config]="recorderCgConfig"></app-pure-chessground>
+      <app-cg-create-puzzle *ngIf="stepNumber == 1" (editorInitialized)="onEditorInitialized($event)"></app-cg-create-puzzle>
+      <app-pure-chessground *ngIf="stepNumber == 2" [config]="recorderCgConfig"></app-pure-chessground>
     </div>
     <div class="col-6">
-      <div [ngSwitch]="stepName">
-        <div *ngSwitchCase="'place-figures'">
+      <div [ngSwitch]="stepNumber">
+        <div *ngSwitchCase="1">
           <h3>Шаг 1</h3>
           <p>Выставьте начальную позицию задачи</p>
         </div>
-        <div *ngSwitchCase="'record-solution'">
+        <div *ngSwitchCase="2">
           <h3>Шаг 2</h3>
           <p>Проделайте ходы решения задачи. Ходы будут записаны</p>
         </div>
       </div>
-      <button type="button" class="btn btn-default btn-sm" (click)="goToStep('record-solution')">Далее</button>
+      <button type="button" class="btn btn-default btn-sm" (click)="goToStep(2)">Далее</button>
     </div>
   </div>  
 </div>
