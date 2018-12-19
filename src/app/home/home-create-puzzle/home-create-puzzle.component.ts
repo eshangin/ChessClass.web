@@ -4,6 +4,7 @@ import { Config } from 'chessground/config';
 import * as cgTypes from 'chessground/types';
 import * as Chess from 'chess.js';
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
+import _ from 'underscore'
 
 @Component({
   selector: 'app-home-create-puzzle',
@@ -70,18 +71,21 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
         console.log('incorrect position', initialFen);
       }
     }
-    //console.log(orig, dest, capturedPiece);
     let move = this.engine.move({from: orig, to: dest});
-    // console.log(move);
     if (move) {
       this.recorderMoves.push(move.san);
        let nextColorToMove: cgTypes.Color = move.color == 'w' ? 'black' : 'white';
+       let dests = this.chessHelperService.getChessgroundPossibleDests(this.engine);
        this.recorderCgApi.set({
          turnColor: nextColorToMove,
          movable: {
-           color: nextColorToMove
+           color: nextColorToMove,
+           free: false,
+           dests: dests
          }
        })
+    } else {
+      this.recorderCgApi.cancelMove();
     }
   }
 
@@ -97,7 +101,8 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
       fen: fen,
       movable: {
         free: true,
-        color: 'both'
+        color: 'both',
+        showDests: false
       },
       premovable: {
         enabled: false

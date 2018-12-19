@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-
+import _ from 'underscore'
 import * as Chess from 'chess.js';
 
 export interface ChessPuzzle {
@@ -45,5 +45,22 @@ export class ChessHelperService {
       return fen + ' ' + [defaultColor,'-','-','0','1'].slice(fenSplit.length - 1).join(' ');
     }
     return fen;
+  }
+
+  getChessgroundPossibleDests(engine: ChessInstance) {
+    let dests = {};
+    _(engine.moves({verbose: true}))
+     .chain()
+     .groupBy('from')
+     .map((items, key) => {
+       return {
+         from: key,
+         moves: _(items).pluck('to')
+       };
+     })
+     .each(el => {
+       dests[el.from] = el.moves;
+     });
+     return dests;
   }
 }
