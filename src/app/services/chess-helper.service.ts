@@ -41,7 +41,7 @@ export class ChessHelperService {
   tryFixFen(fen: string, defaultColor: 'w' | 'b' = 'w'): string {
     let fenSplit = fen.split(' ');
     if (fenSplit.length >= 1 && fenSplit.length <= 5) {
-      return fen + ' ' + [defaultColor,'-','-','0','1'].slice(fenSplit.length - 1).join(' ');
+      return fen + ' ' + [defaultColor,'KQkq','-','0','1'].slice(fenSplit.length - 1).join(' ');
     }
     return fen;
   }
