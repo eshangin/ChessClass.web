@@ -95,7 +95,7 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
 
   private detectWhoStartGame(initialFen: string, orig: cgTypes.Key): ChessJS.Types.ChessColor {
     let c1 = new Chess();
-    c1.load(initialFen);
+    c1.load(this.chessHelperService.tryFixFen(initialFen));
     return c1.get(orig).color;
   }
 
