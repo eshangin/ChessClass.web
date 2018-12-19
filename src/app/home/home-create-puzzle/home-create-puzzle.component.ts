@@ -69,18 +69,31 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
   cancelLastRecorderMove() {
     this.recorderMoves.pop();
     let move = this.engine.undo();
-    this.undoCgMove(this.recorderCgApi, move.from as cgTypes.Key, move.to as cgTypes.Key);
+    let prevMove: { from: cgTypes.Key, to: cgTypes.Key };
+    let history = this.engine.history({verbose: true});
+    if (history.length > 0) {
+      let lastMove = history[history.length - 1];
+      prevMove = {
+        from: lastMove.from  as cgTypes.Key,
+        to: lastMove.to  as cgTypes.Key
+      };
+    }
+    let cgMove = { from: move.from as cgTypes.Key, to: move.to as cgTypes.Key };
+    this.undoCgMove(this.recorderCgApi, cgMove, prevMove);
     this.prepareCgForNextMove(this.recorderCgApi, this.engine);
   }
 
   private prepareCgForNextMove(cg: Api, engine: ChessInstance) {
-    let nextColorToMove: cgTypes.Color = engine.turn() == 'b' ? 'black' : 'white';
+    let nextColorToMove: cgTypes.Color | 'both' = 
+      engine.history().length == 0
+        ? 'both'
+        : engine.turn() == 'b' ? 'black' : 'white';
     let dests = this.chessHelperService.getChessgroundPossibleDests(engine);
     cg.set({
-      turnColor: nextColorToMove,
+      turnColor: nextColorToMove == 'both' ? undefined : nextColorToMove,
       movable: {
         color: nextColorToMove,
-        free: false,
+        free: nextColorToMove == 'both',
         dests: dests
       }
     });
@@ -103,13 +116,16 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
         this.recorderMoves.push(move.san);
         this.prepareCgForNextMove(this.recorderCgApi, this.engine);
       } else {
-        this.undoCgMove(this.recorderCgApi, orig, dest);
+        this.undoCgMove(this.recorderCgApi, { from: orig, to: dest });
       }
     }
   }
 
-  private undoCgMove(cg: Api, from: cgTypes.Key, to: cgTypes.Key) {
-    cg.move(to, from);
+  private undoCgMove(cg: Api, move: { from: cgTypes.Key, to: cgTypes.Key }, prevMove?: { from: cgTypes.Key, to: cgTypes.Key }) {
+    cg.move(move.to, move.from);
+    cg.set({
+      lastMove: prevMove ? [prevMove.from, prevMove.to] : undefined
+    })
   }
 
   private detectWhoStartGame(initialFen: string, orig: cgTypes.Key): ChessJS.Types.ChessColor {
