@@ -39,6 +39,9 @@ export class CgCreatePuzzleComponent implements OnInit {
         deleteOnDropOff: true,
         centerPiece: true
       },
+      selectable: {
+        enabled: false
+      },
       highlight: {
         lastMove: false
       },
