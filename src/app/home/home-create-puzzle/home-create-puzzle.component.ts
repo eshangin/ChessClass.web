@@ -69,7 +69,7 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
   cancelLastRecorderMove() {
     this.recorderMoves.pop();
     let move = this.engine.undo();
-    this.recorderCgApi.move(move.to as cgTypes.Key, move.from as cgTypes.Key);
+    this.undoCgMove(this.recorderCgApi, move.from as cgTypes.Key, move.to as cgTypes.Key);
     this.prepareCgForNextMove(this.recorderCgApi, this.engine);
   }
 
@@ -87,19 +87,29 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
   }
 
   private onRecorderMove(initialFen: string, orig: cgTypes.Key, dest: cgTypes.Key) {
+    let isCorrectPosition = true;
     if (this.recorderMoves.length == 0) {
       let chessColor = this.detectWhoStartGame(initialFen, orig);
       if (this.engine.load(this.chessHelperService.tryFixFen(initialFen, chessColor))) {
         this.recorderBlackStartsGame = chessColor == 'b';        
       } else {
         console.log('incorrect position', initialFen);
+        isCorrectPosition = false;
       }
     }
-    let move = this.engine.move({from: orig, to: dest});
-    if (move) {
-      this.recorderMoves.push(move.san);
-      this.prepareCgForNextMove(this.recorderCgApi, this.engine);
+    if (isCorrectPosition) {
+      let move = this.engine.move({from: orig, to: dest});
+      if (move) {
+        this.recorderMoves.push(move.san);
+        this.prepareCgForNextMove(this.recorderCgApi, this.engine);
+      } else {
+        this.undoCgMove(this.recorderCgApi, orig, dest);
+      }
     }
+  }
+
+  private undoCgMove(cg: Api, from: cgTypes.Key, to: cgTypes.Key) {
+    cg.move(to, from);
   }
 
   private detectWhoStartGame(initialFen: string, orig: cgTypes.Key): ChessJS.Types.ChessColor {
