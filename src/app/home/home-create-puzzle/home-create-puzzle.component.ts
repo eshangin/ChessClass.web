@@ -74,7 +74,14 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
     let move = this.engine.move({from: orig, to: dest});
     // console.log(move);
     if (move) {
-       this.recorderMoves.push(move.san);      
+      this.recorderMoves.push(move.san);
+       let nextColorToMove: cgTypes.Color = move.color == 'w' ? 'black' : 'white';
+       this.recorderCgApi.set({
+         turnColor: nextColorToMove,
+         movable: {
+           color: nextColorToMove
+         }
+       })
     }
   }
 
