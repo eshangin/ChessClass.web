@@ -3,6 +3,10 @@
     <div class="col-4">
       <app-cg-create-puzzle *ngIf="stepNumber == 1" (editorInitialized)="onEditorInitialized($event)"></app-cg-create-puzzle>
       <app-pure-chessground *ngIf="stepNumber == 2" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
+      <div *ngIf="stepNumber == 3">
+        <app-pure-chessground class="mb-3" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
+        <app-chess-move-list [moves]="recorderMoves" [blackIsFirst]="recorderBlackStartsGame"></app-chess-move-list>
+      </div>
     </div>
     <div class="col-6">
       <div [ngSwitch]="stepNumber" class="mb-2">
@@ -15,8 +19,15 @@
           <p>Проделайте ходы решения задачи. Ходы решения будут автоматически записаны</p>
           <app-chess-move-list [moves]="recorderMoves" [blackIsFirst]="recorderBlackStartsGame"></app-chess-move-list>
         </div>
+        <div *ngSwitchCase="3">
+          <h3>Шаг 3</h3>
+          <p>Добавьте описание задачи (необязятельно)</p>
+          <div class="form-group">
+            <textarea class="form-control" placeholder="Например, белые начинают и ставят мат в 2 хода"></textarea>
+          </div>
+        </div>
       </div>
-      <button type="button" class="btn btn-default btn-sm" (click)="goToStep(2)">Далее</button>
+      <button type="button" class="btn btn-default btn-sm" (click)="goToNextStep()">{{stepNumber ==3 ? 'Готово' : 'Далее'}}</button>
     </div>
   </div>  
 </div>

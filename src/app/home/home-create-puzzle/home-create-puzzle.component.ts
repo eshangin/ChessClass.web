@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, Output, EventEmitter } from '@angular/core';
 import { Api } from 'chessground/api';
 import { Config } from 'chessground/config';
 import * as cgTypes from 'chessground/types';
@@ -16,21 +16,25 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
   private editorCgApi: Api;
   private recorderCgApi: Api;
   recorderCgConfig: Config;
-  stepNumber: 1 | 2 = 1;
+  stepNumber: 1 | 2 | 3 = 1;
   private editorResized = false;
   private recorderResized = false;
   engine: ChessInstance = new Chess();
   recorderMoves: string[] = [];
   recorderBlackStartsGame = false;
+  @Output() puzzleCreated = new EventEmitter<{pgn: string, description: string}>();
 
   constructor(private chessHelperService: ChessHelperService) { }
 
   ngOnInit() {
   }
 
-  goToStep(stepNumber: 1 | 2) {
-    this.stepNumber = stepNumber;
-    this.setRecorderConfig(this.editorCgApi.getFen());
+  goToNextStep() {
+    if (this.stepNumber == 3) {
+      this.puzzleCreated.emit({pgn: this.engine.pgn(), description: 'TODO'});
+    }
+    this.stepNumber++;
+    this.setRecorderConfig(this.editorCgApi.getFen());    
   }
 
   onEditorInitialized(cgApi: Api) {
