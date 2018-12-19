@@ -8,6 +8,9 @@ import { FormsModule } from '@angular/forms';
 import { ChessMoveComponent } from './chess-move/chess-move.component';
 import { ChessMoveListComponent } from './chess-move-list/chess-move-list.component';
 import { CreatePuzzleComponent } from './create-puzzle/create-puzzle.component';
+import { CgPieceComponent } from './cg-piece/cg-piece.component';
+import { PureChessgroundComponent } from './pure-chessground/pure-chessground.component';
+import { CgCreatePuzzleComponent } from './cg-create-puzzle/cg-create-puzzle.component';
 
 @NgModule({
   declarations: [    
@@ -18,6 +21,9 @@ import { CreatePuzzleComponent } from './create-puzzle/create-puzzle.component';
     ChessMoveComponent,
     ChessMoveListComponent,
     CreatePuzzleComponent,
+    CgPieceComponent,
+    PureChessgroundComponent,
+    CgCreatePuzzleComponent,
   ],
   imports: [
     CommonModule,
@@ -30,7 +36,9 @@ import { CreatePuzzleComponent } from './create-puzzle/create-puzzle.component';
     HomeworkPuzzleChatComponent,
     ChessMoveComponent,
     ChessMoveListComponent,
-    CreatePuzzleComponent
+    CreatePuzzleComponent,
+    CgCreatePuzzleComponent,
+    PureChessgroundComponent
   ]
 })
 export class SharedModule { }

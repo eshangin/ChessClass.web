@@ -2,6 +2,7 @@ import { Component, Input, ElementRef, Output, EventEmitter, AfterViewInit, Simp
 
 import * as ChessBoard from 'chessboardjs';
 import * as Chess from 'chess.js';
+import { ChessHelperService } from 'src/app/services/chess-helper.service';
 
 export enum MoveType {
   NormalOnDrop = 1,
@@ -31,7 +32,9 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
   engine: ChessInstance = new Chess();
   private board: ChessBoardInstance;
 
-  constructor(private elementRef: ElementRef) {
+  constructor(
+    private elementRef: ElementRef,
+    private chessHelperService: ChessHelperService) {
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -41,7 +44,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
   }
   
   private updateFen() {
-    this.fen = this.tryFixFen(this.fen);
+    this.fen = this.chessHelperService.tryFixFen(this.fen);
 
     this.engine.load(this.fen);
 
@@ -132,12 +135,5 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges {
         ((String(turn).toLowerCase() === 'b') && (piece.search(/^w/) !== -1))
     );
   }
-
-  private tryFixFen(fen: string): string {
-    let fenSplit = fen.split(' ');
-    if (fenSplit.length >= 1 && fenSplit.length <= 5) {
-      return fen + ' ' + ['w','-','-','0','1'].slice(fenSplit.length - 1).join(' ');
-    }
-    return fen;
-  }
+  
 }
