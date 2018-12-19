@@ -66,7 +66,27 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  private onRecorderMove(initialFen: string, orig: cgTypes.Key, dest: cgTypes.Key, capturedPiece?: cgTypes.Piece) {
+  cancelLastRecorderMove() {
+    this.recorderMoves.pop();
+    let move = this.engine.undo();
+    this.recorderCgApi.move(move.to as cgTypes.Key, move.from as cgTypes.Key);
+    this.prepareCgForNextMove(this.recorderCgApi, this.engine);
+  }
+
+  private prepareCgForNextMove(cg: Api, engine: ChessInstance) {
+    let nextColorToMove: cgTypes.Color = engine.turn() == 'b' ? 'black' : 'white';
+    let dests = this.chessHelperService.getChessgroundPossibleDests(engine);
+    cg.set({
+      turnColor: nextColorToMove,
+      movable: {
+        color: nextColorToMove,
+        free: false,
+        dests: dests
+      }
+    });
+  }
+
+  private onRecorderMove(initialFen: string, orig: cgTypes.Key, dest: cgTypes.Key) {
     if (this.recorderMoves.length == 0) {
       let chessColor = this.detectWhoStartGame(initialFen, orig);
       if (this.engine.load(this.chessHelperService.tryFixFen(initialFen, chessColor))) {
@@ -78,18 +98,7 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
     let move = this.engine.move({from: orig, to: dest});
     if (move) {
       this.recorderMoves.push(move.san);
-       let nextColorToMove: cgTypes.Color = move.color == 'w' ? 'black' : 'white';
-       let dests = this.chessHelperService.getChessgroundPossibleDests(this.engine);
-       this.recorderCgApi.set({
-         turnColor: nextColorToMove,
-         movable: {
-           color: nextColorToMove,
-           free: false,
-           dests: dests
-         }
-       })
-    } else {
-      this.recorderCgApi.cancelMove();
+      this.prepareCgForNextMove(this.recorderCgApi, this.engine);
     }
   }
 
@@ -106,7 +115,11 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
       movable: {
         free: true,
         color: 'both',
-        showDests: false
+        showDests: false,
+        events: {
+          after: (orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) => 
+            this.onRecorderMove(fen, orig, dest)
+        }
       },
       premovable: {
         enabled: false
@@ -124,11 +137,7 @@ export class HomeCreatePuzzleComponent implements OnInit, AfterViewChecked {
       highlight: {
         lastMove: true
       },
-      resizable: true,
-      events: {
-        move: (orig: cgTypes.Key, dest: cgTypes.Key, capturedPiece?: cgTypes.Piece) => 
-          this.onRecorderMove(fen, orig, dest, capturedPiece)
-      }
+      resizable: true
     };
   }
 

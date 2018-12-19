@@ -17,7 +17,10 @@
         <div *ngSwitchCase="2">
           <h3>Шаг 2</h3>
           <p>Проделайте ходы решения задачи. Ходы решения будут автоматически записаны</p>
-          <app-chess-move-list [moves]="recorderMoves" [blackIsFirst]="recorderBlackStartsGame"></app-chess-move-list>
+          <app-chess-move-list class="d-block mb-2" [moves]="recorderMoves" [blackIsFirst]="recorderBlackStartsGame"></app-chess-move-list>
+          <div *ngIf="recorderMoves.length > 0">
+            <button type="button" class="btn btn-sm" (click)="cancelLastRecorderMove()">Отменить последний ход</button>
+          </div>
         </div>
         <div *ngSwitchCase="3">
           <h3>Шаг 3</h3>
@@ -27,7 +30,10 @@
           </div>
         </div>
       </div>
-      <button type="button" class="btn btn-default btn-sm" (click)="goToNextStep()">{{stepNumber ==3 ? 'Готово' : 'Далее'}}</button>
+      <hr>
+      <div class="text-right">
+        <button type="button" class="btn btn-primary btn-sm" (click)="goToNextStep()">{{stepNumber ==3 ? 'Готово' : 'Далее'}}</button>
+      </div>
     </div>
   </div>  
 </div>
