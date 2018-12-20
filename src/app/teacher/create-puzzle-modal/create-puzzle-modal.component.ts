@@ -25,7 +25,7 @@ export class CreatePuzzleModalComponent implements OnInit {
   onPuzzleCreated(data: ICreatePuzzleResult) {
     // TODO :: remove this hack. The problem is that we get error without this
     setTimeout(() => {
-      this.activeModal.close({ data: data });
+      this.activeModal.close(data);
     }, 0);    
   }
 
