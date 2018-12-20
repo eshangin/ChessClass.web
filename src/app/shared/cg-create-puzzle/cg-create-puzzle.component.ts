@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
 import { dragNewPiece } from 'chessground/drag';
 import { MouchEvent, Color, Role } from 'chessground/types';
 import { Api } from 'chessground/api';
@@ -9,10 +9,11 @@ import { Config } from 'chessground/config';
   templateUrl: './cg-create-puzzle.component.html',
   styleUrls: ['./cg-create-puzzle.component.scss']
 })
-export class CgCreatePuzzleComponent implements OnInit {
+export class CgCreatePuzzleComponent implements OnInit, OnDestroy {
 
   private cg: Api;
   cgConfig: Config;
+  @Input() sizePx: number;
   pieceSize: string;
   pieces: Role[] = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'];
   @Output() editorInitialized = new EventEmitter<Api>();
@@ -64,6 +65,10 @@ export class CgCreatePuzzleComponent implements OnInit {
     // }
 
     dragNewPiece(this.cg.state, { color: color, role: piece, promoted: false }, e, true);
+  }
+
+  ngOnDestroy() {
+    this.cdRef.detach();
   }
 
 }

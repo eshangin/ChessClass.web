@@ -10,5 +10,5 @@
       [style.height.px]="pieceSize"
       style="position: relative;"></app-cg-piece>
   </div>
-  <app-pure-chessground *ngIf="first" [config]="cgConfig" (initialized)="onCgInitialized($event)"></app-pure-chessground>
+  <app-pure-chessground *ngIf="first" [sizePx]="sizePx" [config]="cgConfig" (initialized)="onCgInitialized($event)"></app-pure-chessground>
 </div>

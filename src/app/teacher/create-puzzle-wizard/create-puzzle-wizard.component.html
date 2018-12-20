@@ -1,0 +1,33 @@
+<div class="d-flex mb-3">
+  <div class="d-inline-block mr-4">
+    <app-cg-create-puzzle [sizePx]="300" *ngIf="stepNumber == 1" (editorInitialized)="onEditorInitialized($event)"></app-cg-create-puzzle>
+    <app-pure-chessground [sizePx]="300" *ngIf="stepNumber == 2" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
+    <div *ngIf="stepNumber >= 3">
+      <app-pure-chessground class="mb-3" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
+      <app-chess-move-list [moves]="recorderMoves" [blackIsFirst]="recorderBlackStartsGame"></app-chess-move-list>
+    </div>
+  </div>
+  <div class="flex-grow-1">
+    <div [ngSwitch]="stepNumber" class="mb-2">
+      <div *ngSwitchCase="1">
+        <h3>Шаг 1</h3>
+        <p>Выставьте начальную позицию задачи</p>
+      </div>
+      <div *ngSwitchCase="2">
+        <h3>Шаг 2</h3>
+        <p>Проделайте ходы решения задачи. Ходы решения будут автоматически записаны</p>
+        <app-chess-move-list class="d-block mb-2" [moves]="recorderMoves" [blackIsFirst]="recorderBlackStartsGame"></app-chess-move-list>
+        <div *ngIf="recorderMoves.length > 0">
+          <button type="button" class="btn btn-sm" (click)="cancelLastRecorderMove()">Отменить последний ход</button>
+        </div>
+      </div>
+      <div *ngSwitchDefault>
+        <h3>Шаг 3</h3>
+        <p>Добавьте описание задачи (необязятельно)</p>
+        <div class="form-group">
+          <textarea class="form-control" placeholder="Например, белые начинают и ставят мат в 2 хода"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>  

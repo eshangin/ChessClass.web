@@ -1,0 +1,14 @@
+<form>
+  <div class="modal-header">
+    <div class="modal-title">
+      <h4>Создание задачи</h4>
+    </div>
+  </div>
+  <div class="modal-body">
+    <app-create-puzzle-wizard [stepNumber]="wizardStep" (puzzleCreated)="onPuzzleCreated($event)"></app-create-puzzle-wizard>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Отмена</button>
+    <button type="button" class="btn btn-primary" (click)="goToNextStep()">{{wizardStep < 3 ? 'Далее' : 'Готово'}}</button>
+  </div>
+</form>

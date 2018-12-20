@@ -12,6 +12,7 @@ import {FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angul
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {SelectFavoritesModalComponent} from '../select-favorites-modal/select-favorites-modal.component';
 import {HomeworkService} from 'src/app/services/homework.service';
+import { CreatePuzzleModalComponent } from '../create-puzzle-modal/create-puzzle-modal.component';
 
 @Component({
   selector: 'app-add-homework',
@@ -67,6 +68,13 @@ export class AddHomeworkComponent implements OnInit {
     const modalRef = this.modalService.open(SelectFavoritesModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
     modalRef.result.then((result) => {
       this.pushPuzzles(result.puzzles);
+    }, () => {});
+  }
+
+  onCreateNewPuzzleClick() {
+    const modalRef = this.modalService.open(CreatePuzzleModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
+    modalRef.result.then((result) => {
+      console.log(result);
     }, () => {});
   }
 
