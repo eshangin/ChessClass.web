@@ -3,7 +3,7 @@
     <app-cg-create-puzzle [sizePx]="300" *ngIf="stepNumber == 1" (editorInitialized)="onEditorInitialized($event)"></app-cg-create-puzzle>
     <app-pure-chessground [sizePx]="300" *ngIf="stepNumber == 2" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
     <div *ngIf="stepNumber >= 3">
-      <app-pure-chessground class="mb-3" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
+      <app-pure-chessground [sizePx]="300" class="mb-3" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
       <app-chess-move-list [moves]="recorderMoves" [blackIsFirst]="recorderBlackStartsGame"></app-chess-move-list>
     </div>
   </div>
