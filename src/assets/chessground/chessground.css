@@ -23,6 +23,9 @@
   background-size: cover;
   cursor: pointer;
 }
+.cg-board-wrap_view-only .cg-board {
+  cursor: auto;
+}
 .cg-board square {
   position: absolute;
   top: 0;

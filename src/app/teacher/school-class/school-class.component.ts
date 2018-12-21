@@ -15,6 +15,7 @@ class HomeworkViewModel {
 
 class PuzzleViewModel {
   id: string;
+  fen: string;
   pgn: string;
   shortDescr: string;
   fixedPercent: number;
@@ -56,6 +57,7 @@ export class SchoolClassComponent implements OnInit {
             let cp = this.chessHelperService.parsePuzzle(p.pgn);
             return {
               id: p.id,
+              fen: cp.initialFen,
               pgn: p.pgn,
               // TODO :: need shord descr
               shortDescr: p.description,
