@@ -3,7 +3,7 @@ import {AuthService} from 'src/app/services/auth.service';
 import {HomeworkService} from 'src/app/services/homework.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Puzzle} from 'src/app/services/puzzle.model';
-import { PuzzleSolutionStateType } from 'src/app/shared/chess-puzzle/chess-puzzle.component';
+import { PuzzleSolutionStateType } from 'src/app/shared/puzzle-viewers/chess-puzzle/chess-puzzle.component';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/services/user.model';
 import { ChatMessage } from 'src/app/services/chat-message.model';

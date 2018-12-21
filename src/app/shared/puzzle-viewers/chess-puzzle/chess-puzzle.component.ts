@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import {ChessBoardComponent, MoveInfo, MoveType} from '../chess-board/chess-board.component';
 import {ChessPuzzle, ChessHelperService} from 'src/app/services/chess-helper.service';
+import { ChessBoardComponent, MoveInfo, MoveType } from '../../chess-board/chess-board.component';
 
 export enum PuzzleSolutionStateType {
   CorrectMove = 1,
