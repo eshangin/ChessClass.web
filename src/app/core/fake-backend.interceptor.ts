@@ -96,10 +96,15 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         let result = null;
 
-        if (request.url.match(/api\/puzzles/) && request.method === 'GET') {
-            const url = this.router.parseUrl(request.url);
-            const count = url.queryParamMap.get('count');
-            result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(db.puzzles, count) : db.puzzles }));
+        if (request.url.match(/api\/puzzles/)) {
+            if (request.method === 'GET') {
+                const url = this.router.parseUrl(request.url);
+                const count = url.queryParamMap.get('count');
+                result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(db.puzzles, count) : db.puzzles }));
+            } else if (request.method == 'POST') {
+                result = of(new HttpResponse({ status: 200, body: this.addPuzzle(request.body.pgn, request.body.description,
+                    currentUser.id) }));
+            }
         } else if (request.url.match(/api\/auth\/login/)) {
             if (request.url == 'api/auth/login/pupil') {
                 const pupil = db.pupils.find(_ => _.accessCode.toLowerCase() == request.body.code.toLowerCase());
@@ -492,6 +497,15 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         puzzleIds.forEach(id => homework2puzzle.push({ id: this.generateId(), homeworkId: newHomework.id, puzzleId: id, dateCreated: date } as DbHomework2Puzzle));
         localStorage.setItem('homeworks', JSON.stringify(homeworks));
         localStorage.setItem('homework2puzzle', JSON.stringify(homework2puzzle));
+    }
+
+    private addPuzzle(pgn: string, description: string, createdById?: string): Puzzle {
+        const date = new Date();
+        let puzzles = this.getDb().puzzles;
+        let newPuzzle = { id: this.generateId(), dateCreated: date, pgn: pgn, description: description, createdById: createdById } as Puzzle;
+        puzzles.push(newPuzzle);
+        localStorage.setItem('puzzles', JSON.stringify(puzzles));
+        return newPuzzle;
     }
 
     private addPupillToClass(pupil: any, classItem: any) {

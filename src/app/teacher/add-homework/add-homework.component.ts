@@ -5,7 +5,7 @@ import {SchoolClass} from 'src/app/services/school-class.model';
 import {PupilService} from 'src/app/services/pupil.service';
 import {Pupil} from 'src/app/services/pupil.model';
 import {PuzzleService} from 'src/app/services/puzzle.service';
-import {Observable, Subscription} from 'rxjs';
+import {Observable, Subscription, forkJoin, of} from 'rxjs';
 import {Puzzle} from 'src/app/services/puzzle.model';
 import {ToastrService} from 'ngx-toastr';
 import {FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angular/forms';
@@ -100,14 +100,25 @@ export class AddHomeworkComponent implements OnInit {
 
   onApplyHomeworkClick() {
     if (this.form.valid) {
-      // TODO :: save puzzles created by teacher first
-      const puzzleIds = this.selectedPuzzles.map(_ => _.id);
+      this.saveNewPuzzles().subscribe((results) => {
+        const puzzleIds = this.selectedPuzzles.filter(p => !!p.id).map(p => p.id);
+        const newPuzzleIds = results.map(p => p.id);
 
-      this.homeworkService.addHomework(this.classId, puzzleIds).subscribe(() => {
-        this.toastr.success('Домашнее задание назначено!');
-        this.router.navigate(['my/classes', this.classId]);
+        this.homeworkService.addHomework(this.classId, puzzleIds.concat(newPuzzleIds)).subscribe(() => {
+          this.toastr.success('Домашнее задание назначено!');
+          this.router.navigate(['my/classes', this.classId]);
+        });
       });
     }
+  }
+
+  private saveNewPuzzles(): Observable<Puzzle[]> {
+    let newPuzzles = this.selectedPuzzles.filter(p => !p.id);
+    return newPuzzles.length == 0
+      ? of<Puzzle[]>([])
+      : forkJoin(newPuzzles.map(p => {
+      return this.puzzleService.createPuzzle(p.pgn, p.description);
+    }));
   }
 
   private getPuzzles(count: number): Observable<Puzzle[]> {

@@ -3,4 +3,6 @@ export class Puzzle {
     pgn: string;
     isFavorite: boolean;
     description: string;
+    createdById?: string;
+    dateCreated: Date;
 }
