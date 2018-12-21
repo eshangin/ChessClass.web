@@ -593,7 +593,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 [FEN "8/8/8/8/1Q6/1K6/8/2Nk4 w - - 0 1"]
 [SetUp "1"]
 
-1. Qa5 Kxc1 2. Qe1# 1-0`.trim() 
+1. Qa5 Kxc1 2. Qe1# 1-0`.trim(),
+            description: 'Белые выигрывают'
           } as Puzzle,
           {
             id: 'b',
@@ -608,7 +609,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 [FEN "8/8/5R2/8/2P1k3/2K5/5P2/2B5 w - - 0 1"]
 [SetUp "1"]
 
-1. Bb2 Ke5 2. Kd3# 1-0`.trim()
+1. Bb2 Ke5 2. Kd3# 1-0`.trim(),
+            description: 'Белые выигрывают'
           } as Puzzle,
           {
             id: 'c',
@@ -623,7 +625,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 [FEN "2R3N1/3prn2/NP2qp2/3k1B2/R4PPQ/BnP2P2/bK2p3/8 w - - 0 1"]
 [SetUp "1"]
 
-1. Qxf6 Bb1 2. c4# 1-0`.trim()
+1. Qxf6 Bb1 2. c4# 1-0`.trim(),
+            description: 'Белые выигрывают'
           } as Puzzle,
           {
             id: 'd',
@@ -638,7 +641,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 [FEN "K5Q1/3p1R2/3P3p/5N1p/3Pk2P/3p1p2/3B4/7B w - - 0 1"]
 [SetUp "1"]
 
-1. Kb7 Kd5 2. Re7# 1-0`.trim()
+1. Kb7 Kd5 2. Re7# 1-0`.trim(),
+            description: 'Белые выигрывают'
           } as Puzzle
         ];
       }
