@@ -1,6 +1,6 @@
 <div class="d-flex mb-3" [formGroup]="formGroup">
   <div class="d-inline-block mr-4">
-    <app-cg-create-puzzle [sizePx]="300" *ngIf="stepNumber == 1" (editorInitialized)="onEditorInitialized($event)"></app-cg-create-puzzle>
+    <app-cg-board-editor [sizePx]="300" *ngIf="stepNumber == 1" (editorInitialized)="onEditorInitialized($event)"></app-cg-board-editor>
     <app-pure-chessground [sizePx]="300" *ngIf="stepNumber == 2" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
     <div *ngIf="stepNumber >= 3">
       <app-pure-chessground [sizePx]="300" class="mb-3" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>

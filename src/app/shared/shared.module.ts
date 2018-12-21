@@ -10,7 +10,7 @@ import { ChessMoveListComponent } from './chess-move-list/chess-move-list.compon
 import { CreatePuzzleComponent } from './create-puzzle/create-puzzle.component';
 import { CgPieceComponent } from './cg-piece/cg-piece.component';
 import { PureChessgroundComponent } from './pure-chessground/pure-chessground.component';
-import { CgCreatePuzzleComponent } from './cg-create-puzzle/cg-create-puzzle.component';
+import { CgBoardEditorComponent } from './cg-board-editor/cg-board-editor.component';
 
 @NgModule({
   declarations: [    
@@ -23,7 +23,7 @@ import { CgCreatePuzzleComponent } from './cg-create-puzzle/cg-create-puzzle.com
     CreatePuzzleComponent,
     CgPieceComponent,
     PureChessgroundComponent,
-    CgCreatePuzzleComponent,
+    CgBoardEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -37,7 +37,7 @@ import { CgCreatePuzzleComponent } from './cg-create-puzzle/cg-create-puzzle.com
     ChessMoveComponent,
     ChessMoveListComponent,
     CreatePuzzleComponent,
-    CgCreatePuzzleComponent,
+    CgBoardEditorComponent,
     PureChessgroundComponent
   ]
 })

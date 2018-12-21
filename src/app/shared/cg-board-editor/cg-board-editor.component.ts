@@ -5,11 +5,11 @@ import { Api } from 'chessground/api';
 import { Config } from 'chessground/config';
 
 @Component({
-  selector: 'app-cg-create-puzzle',
-  templateUrl: './cg-create-puzzle.component.html',
-  styleUrls: ['./cg-create-puzzle.component.scss']
+  selector: 'app-cg-board-editor',
+  templateUrl: './cg-board-editor.component.html',
+  styleUrls: ['./cg-board-editor.component.scss']
 })
-export class CgCreatePuzzleComponent implements OnInit, OnDestroy {
+export class CgBoardEditorComponent implements OnInit, OnDestroy {
 
   private cg: Api;
   cgConfig: Config;
