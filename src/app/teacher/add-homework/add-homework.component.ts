@@ -5,13 +5,15 @@ import {SchoolClass} from 'src/app/services/school-class.model';
 import {PupilService} from 'src/app/services/pupil.service';
 import {Pupil} from 'src/app/services/pupil.model';
 import {PuzzleService} from 'src/app/services/puzzle.service';
-import {Observable, Subscription} from 'rxjs';
+import {Observable, Subscription, forkJoin, of} from 'rxjs';
 import {Puzzle} from 'src/app/services/puzzle.model';
 import {ToastrService} from 'ngx-toastr';
 import {FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angular/forms';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {SelectFavoritesModalComponent} from '../select-favorites-modal/select-favorites-modal.component';
 import {HomeworkService} from 'src/app/services/homework.service';
+import { CreatePuzzleModalComponent } from '../create-puzzle-modal/create-puzzle-modal.component';
+import { ICreatePuzzleResult } from '../create-puzzle-wizard/create-puzzle-wizard.component';
 
 @Component({
   selector: 'app-add-homework',
@@ -22,7 +24,6 @@ export class AddHomeworkComponent implements OnInit {
 
   classId: string;
   myClasses: SchoolClass[] = [];
-  //selectedPupilId: string = null;
   classPupils: Pupil[] = [];
   selectedPuzzles: Puzzle[] = [];
   addPuzzlesCount: number = 3;
@@ -70,9 +71,25 @@ export class AddHomeworkComponent implements OnInit {
     }, () => {});
   }
 
+  onCreateNewPuzzleClick() {
+    const modalRef = this.modalService.open(CreatePuzzleModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
+    modalRef.result.then((result: ICreatePuzzleResult) => {
+      this.pushPuzzle({
+        pgn: result.pgn,
+        description: result.description
+      } as Puzzle);
+    }, () => {});
+  }
+
   private pushPuzzles(puzzles: Puzzle[]) {
-    this.selectedPuzzles.push(...puzzles);
-    puzzles.forEach(_ => this.formPuzzles.push(new FormControl()));
+    puzzles.forEach(p => {
+      this.pushPuzzle(p);
+    });
+  }
+
+  private pushPuzzle(puzzle: Puzzle) {
+    this.selectedPuzzles.push(puzzle);
+    this.formPuzzles.push(new FormControl());
   }
 
   get formPuzzles(): FormArray {
@@ -81,13 +98,25 @@ export class AddHomeworkComponent implements OnInit {
 
   onApplyHomeworkClick() {
     if (this.form.valid) {
-      const puzzleIds = this.selectedPuzzles.map(_ => _.id);
+      this.saveNewPuzzles().subscribe((results) => {
+        const puzzleIds = this.selectedPuzzles.filter(p => !!p.id).map(p => p.id);
+        const newPuzzleIds = results.map(p => p.id);
 
-      this.homeworkService.addHomework(this.classId, puzzleIds).subscribe(() => {
-        this.toastr.success('Домашнее задание назначено!');
-        this.router.navigate(['my/classes', this.classId]);
+        this.homeworkService.addHomework(this.classId, puzzleIds.concat(newPuzzleIds)).subscribe(() => {
+          this.toastr.success('Домашнее задание назначено!');
+          this.router.navigate(['my/classes', this.classId]);
+        });
       });
     }
+  }
+
+  private saveNewPuzzles(): Observable<Puzzle[]> {
+    let newPuzzles = this.selectedPuzzles.filter(p => !p.id);
+    return newPuzzles.length == 0
+      ? of<Puzzle[]>([])
+      : forkJoin(newPuzzles.map(p => {
+      return this.puzzleService.createPuzzle(p.pgn, p.description);
+    }));
   }
 
   private getPuzzles(count: number): Observable<Puzzle[]> {

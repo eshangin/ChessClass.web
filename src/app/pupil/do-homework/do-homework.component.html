@@ -9,7 +9,7 @@
       <ngb-tab title="Задача">
         <ng-template ngbTabContent>
           <div class="p-4 bg-light">
-            Белые начинают, и ставят мат в 2 хода TODO
+            {{currentPuzzle.description}}
           </div>
           <div [ngSwitch]="puzzleState" class="p-4">
             <div *ngSwitchCase="puzzleSolutionStateTypes.CorrectMove">

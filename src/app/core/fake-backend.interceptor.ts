@@ -96,10 +96,15 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         let result = null;
 
-        if (request.url.match(/api\/puzzles/) && request.method === 'GET') {
-            const url = this.router.parseUrl(request.url);
-            const count = url.queryParamMap.get('count');
-            result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(db.puzzles, count) : db.puzzles }));
+        if (request.url.match(/api\/puzzles/)) {
+            if (request.method === 'GET') {
+                const url = this.router.parseUrl(request.url);
+                const count = url.queryParamMap.get('count');
+                result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(db.puzzles, count) : db.puzzles }));
+            } else if (request.method == 'POST') {
+                result = of(new HttpResponse({ status: 200, body: this.addPuzzle(request.body.pgn, request.body.description,
+                    currentUser.id) }));
+            }
         } else if (request.url.match(/api\/auth\/login/)) {
             if (request.url == 'api/auth/login/pupil') {
                 const pupil = db.pupils.find(_ => _.accessCode.toLowerCase() == request.body.code.toLowerCase());
@@ -494,6 +499,15 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         localStorage.setItem('homework2puzzle', JSON.stringify(homework2puzzle));
     }
 
+    private addPuzzle(pgn: string, description: string, createdById?: string): Puzzle {
+        const date = new Date();
+        let puzzles = this.getDb().puzzles;
+        let newPuzzle = { id: this.generateId(), dateCreated: date, pgn: pgn, description: description, createdById: createdById } as Puzzle;
+        puzzles.push(newPuzzle);
+        localStorage.setItem('puzzles', JSON.stringify(puzzles));
+        return newPuzzle;
+    }
+
     private addPupillToClass(pupil: any, classItem: any) {
         let pupil2class = JSON.parse(localStorage.getItem('pupil2class')) || [];
         pupil2class.push({ id: this.generateId(), pupilId: pupil.id, classId: classItem.id } as Pupil2Class)
@@ -579,7 +593,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 [FEN "8/8/8/8/1Q6/1K6/8/2Nk4 w - - 0 1"]
 [SetUp "1"]
 
-1. Qa5 Kxc1 2. Qe1# 1-0`.trim() 
+1. Qa5 Kxc1 2. Qe1# 1-0`.trim(),
+            description: 'Белые выигрывают'
           } as Puzzle,
           {
             id: 'b',
@@ -594,7 +609,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 [FEN "8/8/5R2/8/2P1k3/2K5/5P2/2B5 w - - 0 1"]
 [SetUp "1"]
 
-1. Bb2 Ke5 2. Kd3# 1-0`.trim()
+1. Bb2 Ke5 2. Kd3# 1-0`.trim(),
+            description: 'Белые выигрывают'
           } as Puzzle,
           {
             id: 'c',
@@ -609,7 +625,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 [FEN "2R3N1/3prn2/NP2qp2/3k1B2/R4PPQ/BnP2P2/bK2p3/8 w - - 0 1"]
 [SetUp "1"]
 
-1. Qxf6 Bb1 2. c4# 1-0`.trim()
+1. Qxf6 Bb1 2. c4# 1-0`.trim(),
+            description: 'Белые выигрывают'
           } as Puzzle,
           {
             id: 'd',
@@ -624,7 +641,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 [FEN "K5Q1/3p1R2/3P3p/5N1p/3Pk2P/3p1p2/3B4/7B w - - 0 1"]
 [SetUp "1"]
 
-1. Kb7 Kd5 2. Re7# 1-0`.trim()
+1. Kb7 Kd5 2. Re7# 1-0`.trim(),
+            description: 'Белые выигрывают'
           } as Puzzle
         ];
       }

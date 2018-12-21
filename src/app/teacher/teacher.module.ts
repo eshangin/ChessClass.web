@@ -16,6 +16,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { PrintCodesComponent } from './print-codes/print-codes.component';
 import { PuzzleStatComponent } from './puzzle-stat/puzzle-stat.component';
+import { CreatePuzzleModalComponent } from './create-puzzle-modal/create-puzzle-modal.component';
+import { CreatePuzzleWizardComponent } from './create-puzzle-wizard/create-puzzle-wizard.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { PuzzleStatComponent } from './puzzle-stat/puzzle-stat.component';
     SearchPuzzlesComponent,
     PrintCodesComponent,
     PuzzleStatComponent,
+    CreatePuzzleModalComponent,
+    CreatePuzzleWizardComponent
   ],
   imports: [
     CommonModule,
@@ -42,7 +46,8 @@ import { PuzzleStatComponent } from './puzzle-stat/puzzle-stat.component';
   entryComponents: [
     SelectFavoritesModalComponent,
     CreateClassModalComponent,
-    AddPupilToClassModalComponent
+    AddPupilToClassModalComponent,
+    CreatePuzzleModalComponent
   ]
 })
 export class TeacherModule { }

@@ -34,6 +34,13 @@ export class PuzzleService {
     return this.http.post(`api/favorites/${puzzleId}`, null);
   }
 
+  createPuzzle(pgn: string, description?: string): Observable<Puzzle> {
+    return this.http.post<Puzzle>(`/api/puzzles`, {
+      pgn: pgn,
+      description: description
+    });
+  }
+
   removeFromFavorites(puzzleId: string): Observable<any> {
     return this.http.delete(`api/favorites/${puzzleId}`);
   }
