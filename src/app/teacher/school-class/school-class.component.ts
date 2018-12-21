@@ -6,6 +6,10 @@ import {SchoolClass} from 'src/app/services/school-class.model';
 import {Homework} from 'src/app/services/homework.model';
 import { forkJoin } from 'rxjs';
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
+import { MoveClickInfo } from 'src/app/shared/chess-move-list/chess-move-list.component';
+import { Config } from 'chessground/config';
+import * as _ from 'underscore'
+import * as Chess from 'chess.js';
 
 class HomeworkViewModel {
   id: string;
@@ -15,14 +19,15 @@ class HomeworkViewModel {
 
 class PuzzleViewModel {
   id: string;
-  fen: string;
+  initialFen: string;
   pgn: string;
   shortDescr: string;
   fixedPercent: number;
   solution: {
     moves: string[];
     blackIsFirst: false;
-  }
+  };
+  cgConfig: Config;
 }
 
 @Component({
@@ -34,6 +39,7 @@ export class SchoolClassComponent implements OnInit {
 
   class: SchoolClass;
   homeworks: HomeworkViewModel[];
+  private revertPositoinTimeouts = new Map<string, any>();
 
   constructor(
     private route: ActivatedRoute,
@@ -57,8 +63,9 @@ export class SchoolClassComponent implements OnInit {
             let cp = this.chessHelperService.parsePuzzle(p.pgn);
             return {
               id: p.id,
-              fen: cp.initialFen,
+              initialFen: cp.initialFen,
               pgn: p.pgn,
+              cgConfig: {fen: cp.initialFen,viewOnly:true,coordinates:false},
               // TODO :: need shord descr
               shortDescr: p.description,
               solution: {
@@ -71,6 +78,29 @@ export class SchoolClassComponent implements OnInit {
         } as HomeworkViewModel;
       });
     });
+  }
+
+  onMoveClick(moveInfo: MoveClickInfo, puzzle: PuzzleViewModel) {
+    let engine = new Chess(puzzle.initialFen);
+    for (let i = 0; i <= moveInfo.moveIndex; i++) {
+      engine.move(moveInfo.moves[i]);
+    }
+    let newFen = engine.fen();
+    puzzle.cgConfig = _.extend({}, puzzle.cgConfig, {fen: newFen});
+    this.scheduleFenReset(puzzle);
+  }
+
+  private scheduleFenReset(puzzle: PuzzleViewModel) {
+    let prevTimer = this.revertPositoinTimeouts.get(puzzle.id);
+    if (prevTimer) {
+      clearTimeout(prevTimer);
+    }
+    this.revertPositoinTimeouts.set(puzzle.id, 
+      setTimeout(() => {
+        this.revertPositoinTimeouts.delete(puzzle.id);
+        puzzle.cgConfig = _.extend({}, puzzle.cgConfig, {fen: puzzle.initialFen});
+      }, 2000)
+    );
   }
 
 }

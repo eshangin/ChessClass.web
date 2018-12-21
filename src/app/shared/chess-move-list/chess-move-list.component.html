@@ -1,4 +1,7 @@
-<span *ngFor="let m of moves; let index = index; let first = first">
+<span *ngFor="let m of moves; let index = index; let first = first;">
   <span *ngIf="!isBlackMove(index) || first" class="align-middle mr-1">{{Math.floor((index + (blackIsFirst?1:0))/2)+1}}.</span>
-  <app-chess-move class="mr-1" [move]="m" [moveColor]="isBlackMove(index)?'b':'w'"></app-chess-move>
+  <app-chess-move *ngIf="!movesClickable" class="mr-1" [move]="m" [moveColor]="isBlackMove(index)?'b':'w'"></app-chess-move>
+  <button type="button" *ngIf="movesClickable" (click)="onMoveClick(index)" [style.cursor]="movesClickable ? 'pointer' : 'auto'" class="mr-1 p-0 border-0 bg-transparent">
+    <app-chess-move [move]="m" [moveColor]="isBlackMove(index)?'b':'w'"></app-chess-move>
+  </button>
 </span>

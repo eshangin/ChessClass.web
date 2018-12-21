@@ -33,8 +33,13 @@ export class PureChessgroundComponent implements AfterViewInit, OnChanges, After
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.isInitialized && changes.sizePx) {
-      this.needRedrawCg = true;
+    if (this.isInitialized) {
+      if (changes.sizePx) {
+        this.needRedrawCg = true;
+      }
+      if (changes.config) {
+        this.cg.set(changes.config.currentValue as Config);
+      }
     }
   }
 

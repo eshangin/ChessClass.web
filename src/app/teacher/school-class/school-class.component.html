@@ -15,11 +15,11 @@
     <hr>
     <div *ngFor="let p of h.puzzles" class="card mr-3 mb-3 pull-left d-inline-block" style="width: 202px;">
       <div *ngIf="p.fixedPercent == 100" class="b-board-overlay"></div>
-      <app-pure-chessground [sizePx]="200" [config]="{fen: p.fen,viewOnly:true,coordinates:false}"></app-pure-chessground>
+      <app-pure-chessground [sizePx]="200" [config]="p.cgConfig"></app-pure-chessground>
       <div class="card-body">
         <small>
           <div><i>{{p.shortDescr}}</i></div>
-          <app-chess-move-list class="d-block" [moves]="p.solution.moves" [blackIsFirst]="p.solution.blackIsFirst"></app-chess-move-list>
+          <app-chess-move-list [movesClickable]="true" (moveClick)="onMoveClick($event, p)" class="d-block" [moves]="p.solution.moves" [blackIsFirst]="p.solution.blackIsFirst"></app-chess-move-list>
           <hr class="my-1">
           <div [ngSwitch]="p.fixedPercent" class="p-0">
             <span *ngSwitchCase="0">Никто пока не решил</span>

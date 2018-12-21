@@ -1,4 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+
+export class MoveClickInfo {
+  moveIndex: number;
+  moves: string[];
+}
 
 @Component({
   selector: 'app-chess-move-list',
@@ -9,11 +14,17 @@ export class ChessMoveListComponent implements OnInit {
 
   @Input() moves: string[];
   @Input() blackIsFirst: boolean;
+  @Input() movesClickable: boolean = false;
+  @Output() moveClick = new EventEmitter<MoveClickInfo>();
   Math = Math;
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onMoveClick(moveIndex: number) {
+    this.moveClick.emit({moveIndex: moveIndex, moves:this.moves})
   }
 
   isBlackMove(index: number) {
