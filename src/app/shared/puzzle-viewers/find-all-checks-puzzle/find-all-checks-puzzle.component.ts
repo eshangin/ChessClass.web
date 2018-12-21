@@ -20,8 +20,14 @@ export class FindAllChecksPuzzleComponent implements OnInit {
       fen: this.fen
     };
 
+    let checkMoves = this.findAllChecks(this.fen);
+    console.log('check moves', checkMoves);
+    this.viewNextCheck(this.fen, checkMoves);
+  }
+
+  private findAllChecks(fen: string): string[] {
     let checkMoves = [];
-    let engine = new Chess(this.fen);
+    let engine = new Chess(fen);
     (engine.moves() as string[]).forEach(m => {
       engine.move(m);
       if (engine.in_check()) {
@@ -29,8 +35,7 @@ export class FindAllChecksPuzzleComponent implements OnInit {
       }
       engine.undo();
     });
-    console.log('check moves', checkMoves);
-    this.viewNextCheck(this.fen, checkMoves);
+    return checkMoves;
   }
 
   private viewNextCheck(initialFen: string, moves: string[]) {
