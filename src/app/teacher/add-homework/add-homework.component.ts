@@ -24,7 +24,6 @@ export class AddHomeworkComponent implements OnInit {
 
   classId: string;
   myClasses: SchoolClass[] = [];
-  //selectedPupilId: string = null;
   classPupils: Pupil[] = [];
   selectedPuzzles: Puzzle[] = [];
   addPuzzlesCount: number = 3;
@@ -79,7 +78,6 @@ export class AddHomeworkComponent implements OnInit {
         pgn: result.pgn,
         description: result.description
       } as Puzzle);
-      console.log(result);
     }, () => {});
   }
 

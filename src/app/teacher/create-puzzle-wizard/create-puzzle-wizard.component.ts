@@ -4,6 +4,7 @@ import { Config } from 'chessground/config';
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
 import * as cgTypes from 'chessground/types';
 import * as Chess from 'chess.js';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 export interface ICreatePuzzleResult {
   pgn: string;
@@ -17,29 +18,38 @@ export interface ICreatePuzzleResult {
 })
 export class CreatePuzzleWizardComponent implements OnInit, AfterViewChecked, OnChanges {
 
+  @Input() stepNumber: 1 | 2 | 3 | 4 = 1;
+  @Input() formGroup: FormGroup;
   private editorCgApi: Api;
   private recorderCgApi: Api;
   recorderCgConfig: Config;
-  @Input() stepNumber: 1 | 2 | 3 | 4 = 1;
   private editorResized = false;
   private recorderResized = false;
   engine: ChessInstance = new Chess();
   recorderMoves: string[] = [];
   recorderBlackStartsGame = false;
   @Output() puzzleCreated = new EventEmitter<ICreatePuzzleResult>();
+  private PUZZLE_DESCRIPTION_CONROL_NAME = "puzzleDescr";
 
   constructor(private chessHelperService: ChessHelperService) { }
 
-  ngOnInit() {
+  ngOnInit() {    
   }
+
+  get puzzleDescr() { return this.formGroup.get(this.PUZZLE_DESCRIPTION_CONROL_NAME); }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.stepNumber) {
-      if (this.stepNumber == 4) {
-        this.puzzleCreated.emit({pgn: this.engine.pgn(), description: 'TODO'} as ICreatePuzzleResult);
-      }
-      if (this.stepNumber == 2) {
-        this.setRecorderConfig(this.editorCgApi.getFen());
+      switch (this.stepNumber) {
+        case 2:
+          this.setRecorderConfig(this.editorCgApi.getFen());
+          break;
+        case 3:
+          this.formGroup.addControl(this.PUZZLE_DESCRIPTION_CONROL_NAME, new FormControl('', Validators.required));
+          break;
+        case 4:
+          this.puzzleCreated.emit({pgn: this.engine.pgn(), description: this.puzzleDescr.value} as ICreatePuzzleResult);
+          break;
       }
     }
   }

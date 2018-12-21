@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ICreatePuzzleResult } from '../create-puzzle-wizard/create-puzzle-wizard.component';
+import { ICreatePuzzleResult, CreatePuzzleWizardComponent } from '../create-puzzle-wizard/create-puzzle-wizard.component';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormHelperService } from 'src/app/services/form-helper.service';
 
 @Component({
   selector: 'app-create-puzzle-modal',
@@ -10,16 +12,24 @@ import { ICreatePuzzleResult } from '../create-puzzle-wizard/create-puzzle-wizar
 export class CreatePuzzleModalComponent implements OnInit {
 
   wizardStep: number = 1;
+  form: FormGroup;
+  @ViewChild(CreatePuzzleWizardComponent) wizard: CreatePuzzleWizardComponent;
 
   constructor(
-    public activeModal: NgbActiveModal
+    public activeModal: NgbActiveModal,
+    private formHelperService: FormHelperService
   ) { }
 
   ngOnInit() {
+    this.form = new FormGroup({});
   }
 
   goToNextStep() {
-    this.wizardStep++;
+    if (this.form.valid) {      
+      this.wizardStep++;
+    } else {
+      this.formHelperService.validateAllFormFields(this.form);
+    }
   }
 
   onPuzzleCreated(data: ICreatePuzzleResult) {

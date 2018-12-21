@@ -1,4 +1,4 @@
-<div class="d-flex mb-3">
+<div class="d-flex mb-3" [formGroup]="formGroup">
   <div class="d-inline-block mr-4">
     <app-cg-create-puzzle [sizePx]="300" *ngIf="stepNumber == 1" (editorInitialized)="onEditorInitialized($event)"></app-cg-create-puzzle>
     <app-pure-chessground [sizePx]="300" *ngIf="stepNumber == 2" [config]="recorderCgConfig" (initialized)="onRecorderInitialized($event)"></app-pure-chessground>
@@ -23,9 +23,12 @@
       </div>
       <div *ngSwitchDefault>
         <h3>Шаг 3</h3>
-        <p>Добавьте описание задачи (необязятельно)</p>
+        <p>Добавьте описание задачи</p>
         <div class="form-group">
-          <textarea class="form-control" placeholder="Например, белые начинают и ставят мат в 2 хода"></textarea>
+          <textarea class="form-control" placeholder="Например, белые начинают и ставят мат в 2 хода" formControlName="puzzleDescr" required></textarea>
+          <div *ngIf="puzzleDescr.invalid && (puzzleDescr.dirty || puzzleDescr.touched)">
+            <div class="text-danger" *ngIf="puzzleDescr.errors.required">Поле не заполнено</div>
+          </div>          
         </div>
       </div>
     </div>
