@@ -17,12 +17,17 @@
       <div *ngIf="p.fixedPercent == 100" class="b-board-overlay"></div>
       <app-chess-puzzle style="width: 300px" [pgn]="p.pgn"></app-chess-puzzle>
       <div class="card-body">
-        <div [ngSwitch]="p.fixedPercent" class="p-0">
-          <span *ngSwitchCase="0">Никто пока не решил</span>
-          <span *ngSwitchCase="100"><i class="fas fa-check text-success"></i> все ученики решили.</span>
-          <span *ngSwitchDefault>{{p.fixedPercent}}% учеников решили</span>
-        </div>        
-        <small> <a routerLink="/my/classes/{{class.id}}/homeworks/{{h.id}}/puzzles/{{p.id}}">Подробнее</a></small>
+        <small>
+          <div><i>{{p.shortDescr}}</i></div>
+          <app-chess-move-list class="d-block" [moves]="p.solution.moves" [blackIsFirst]="p.solution.blackIsFirst"></app-chess-move-list>
+          <hr class="my-1">
+          <div [ngSwitch]="p.fixedPercent" class="p-0">
+            <span *ngSwitchCase="0">Никто пока не решил</span>
+            <span *ngSwitchCase="100"><i class="fas fa-check text-success"></i> все ученики решили.</span>
+            <span *ngSwitchDefault>{{p.fixedPercent}}% учеников решили</span>
+          </div>
+        <a routerLink="/my/classes/{{class.id}}/homeworks/{{h.id}}/puzzles/{{p.id}}">Подробнее</a>
+        </small>
       </div>
     </div>
     <div class="clearfix"></div>

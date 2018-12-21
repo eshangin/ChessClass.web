@@ -5,6 +5,7 @@ import {SchoolClassService} from 'src/app/services/school-class.service';
 import {SchoolClass} from 'src/app/services/school-class.model';
 import {Homework} from 'src/app/services/homework.model';
 import { forkJoin } from 'rxjs';
+import { ChessHelperService } from 'src/app/services/chess-helper.service';
 
 class HomeworkViewModel {
   id: string;
@@ -15,7 +16,12 @@ class HomeworkViewModel {
 class PuzzleViewModel {
   id: string;
   pgn: string;
+  shortDescr: string;
   fixedPercent: number;
+  solution: {
+    moves: string[];
+    blackIsFirst: false;
+  }
 }
 
 @Component({
@@ -31,6 +37,7 @@ export class SchoolClassComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private homeworkService: HomeworkService,
+    private chessHelperService: ChessHelperService,
     private classService: SchoolClassService) { }
 
   ngOnInit() {
@@ -46,9 +53,16 @@ export class SchoolClassComponent implements OnInit {
           id: h.id,
           dateCreated: h.dateCreated,
           puzzles: h.puzzles.map(p => {
+            let cp = this.chessHelperService.parsePuzzle(p.pgn);
             return {
               id: p.id,
               pgn: p.pgn,
+              // TODO :: need shord descr
+              shortDescr: p.description,
+              solution: {
+                moves: cp.solutionMovements,
+                blackIsFirst: cp.turn == 'b'
+              },
               fixedPercent: Math.ceil(h.pupilStats.filter(ps => ps.fixedPuzzleIds.indexOf(p.id) != -1).length / pupilsCount * 100)
             } as PuzzleViewModel
           })

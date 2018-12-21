@@ -116,7 +116,7 @@ interface ChessInstance {
 
     ascii(): string;
 
-    turn(): string;
+    turn(): ChessJS.Types.ChessColor;
 
     move(move: string | ChessJS.Move, options?: ChessJS.Options.Move): ChessJS.Move;
 

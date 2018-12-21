@@ -4,6 +4,7 @@ import * as Chess from 'chess.js';
 export interface ChessPuzzle {
   initialFen: string;
   solutionMovements: string[];
+  turn: ChessJS.Types.ChessColor;
 }
 
 @Injectable({
@@ -34,6 +35,7 @@ export class ChessHelperService {
     }
 
     puzzle.initialFen = engine.fen();
+    puzzle.turn = engine.turn();
 
     return puzzle;
   }
