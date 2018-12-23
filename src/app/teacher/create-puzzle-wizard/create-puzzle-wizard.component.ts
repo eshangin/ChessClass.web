@@ -105,7 +105,7 @@ export class CreatePuzzleWizardComponent implements OnInit, AfterViewChecked, On
       engine.history().length == 0
         ? 'both'
         : engine.turn() == 'b' ? 'black' : 'white';
-    let dests = this.chessHelperService.getChessgroundPossibleDests(engine);
+    let dests = this.chessHelperService.getChessgroundPossibleDests(engine.fen());
     cg.set({
       turnColor: nextColorToMove == 'both' ? undefined : nextColorToMove,
       movable: {
