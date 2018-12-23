@@ -19,7 +19,7 @@
           <div class="p-4 bg-light">
             {{currentPuzzle.description}}
           </div>
-          <div class="px-4 pt-4">
+          <div class="px-4 pt-4" *ngIf="findAllChecksPuzzleInfo">
             Всего в данной позиции {{findAllChecksPuzzleInfo.turn == 'w' ? 'белые' : 'черные'}} могут поставить <span class="badge badge-info">{{findAllChecksPuzzleInfo.allChecks.length}}</span> вариантов рызных шахов
             <div *ngIf="findAllChecksPuzzleInfo.foundChecks.length > 0">
               Найденные варианты шахов: 
