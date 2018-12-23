@@ -12,7 +12,7 @@
         [moves]="puzzleSolution.moves" 
         [blackIsFirst]="puzzleSolution.blackIsFirst"></app-chess-move-list>
       <div *ngSwitchCase="PuzzleType.FindAllChecks">
-        Всего вариантов шаха: <span>{{puzzleSolution.totalChecks}}</span>
+        Всего вариантов шаха: <span>{{puzzleSolution.allChecks.length}}</span>
       </div>
     </div>
   </div>

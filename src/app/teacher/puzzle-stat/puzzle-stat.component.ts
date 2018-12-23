@@ -60,7 +60,12 @@ export class PuzzleStatComponent implements OnInit {
   }
 
   isCorrectAttempt(attempt: PuzzleFixAttempt): boolean {
-    return _(attempt.moves).isEqual(this.puzzleSolution.moves);
+    switch (this.puzzle.puzzleType) {
+      case PuzzleType.Standard:
+        return _(attempt.moves).isEqual(this.puzzleSolution.moves);
+      case PuzzleType.FindAllChecks:
+        return this.puzzleSolution.allChecks.map(m => m.san).indexOf(attempt.moves[0]) != -1;
+    }    
   }
 
   private loadStatistics() {
@@ -80,7 +85,7 @@ export class PuzzleStatComponent implements OnInit {
         case PuzzleType.FindAllChecks:
           this.puzzleFen = this.puzzle.fen;
           this.puzzleSolution = {
-            totalChecks: this.chessHelperService.findAllChecks(this.puzzle.fen).length
+            allChecks: this.chessHelperService.findAllChecks(this.puzzle.fen)
           }
           break;
       }
