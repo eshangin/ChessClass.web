@@ -5,13 +5,15 @@ import * as _ from 'underscore'
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
 import * as cgTypes from 'chessground/types';
 import { Api } from 'chessground/api';
+import { PuzzleSolutionStateType } from '../chess-puzzle/chess-puzzle.component';
 
 export interface IMoveInfo {
-  isCheck: boolean,
+  stateType: PuzzleSolutionStateType,
   move: ChessJS.Move
 }
 
 export interface IInitializedInfo {
+  fen: string;
   allChecks: ChessJS.Move[];
 }
 
@@ -34,6 +36,7 @@ export class FindAllChecksPuzzleComponent implements OnInit {
     turn: 'white' | 'black',
     allChecks: ChessJS.Move[];
   };
+  private foundChecks: string[] = [];
 
   constructor(
     private chessHelperService: ChessHelperService
@@ -65,7 +68,7 @@ export class FindAllChecksPuzzleComponent implements OnInit {
         enabled: false
       }
     };
-    this.initialized.emit({ allChecks: this.initialFenInfo.allChecks });
+    this.initialized.emit({ fen: this.fen, allChecks: this.initialFenInfo.allChecks });
 
     //this.viewNextCheck();
   }
@@ -75,11 +78,19 @@ export class FindAllChecksPuzzleComponent implements OnInit {
   }
 
   private onMove(orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) {
-    let move = (new Chess(this.fen).moves() as ChessJS.Move[]).find(m => m.from == orig && m.to == dest);
+    let move = (new Chess(this.fen).moves({verbose:true}) as ChessJS.Move[]).find(m => m.from == orig && m.to == dest);
     const isCheck = this.initialFenInfo.allChecks.some(m => {
       return m.from == orig && m.to == dest;
     });
-    this.moveMade.emit({ isCheck: isCheck, move: move } as IMoveInfo);
+    if (isCheck && this.foundChecks.indexOf(move.san) == -1) {
+      this.foundChecks.push(move.san);
+    }
+    let status = isCheck 
+                  ? this.foundChecks.length == this.initialFenInfo.allChecks.length
+                      ? PuzzleSolutionStateType.PuzzleDone
+                      : PuzzleSolutionStateType.CorrectMove
+                  : PuzzleSolutionStateType.IncorrectMove;
+    this.moveMade.emit({ stateType: status, move: move } as IMoveInfo);
     this.cgApi.set({
       draggable: {enabled: false}
     });

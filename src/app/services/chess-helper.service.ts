@@ -73,7 +73,6 @@ export class ChessHelperService {
       }
       engine.undo();
     });
-    console.log(fen, checkMoves)
     return checkMoves;
   }
 }
