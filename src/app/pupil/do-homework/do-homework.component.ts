@@ -22,7 +22,7 @@ export class DoHomeworkComponent implements OnInit {
   puzzleState?: PuzzleSolutionStateType;
   puzzleSolutionStateTypes = PuzzleSolutionStateType;
   currentPupil: User;
-  initialMessagesCount: number;
+  initialMessagesCount: number = 0;
   myLastMove: ChessJS.Move;
   private homeworkId: string;
   private nextPuzzle: Puzzle = null;
@@ -89,7 +89,9 @@ export class DoHomeworkComponent implements OnInit {
   }
 
   onChatThreadLoaded(chatMessages: ChatMessage[]) {
-    this.initialMessagesCount = chatMessages.length;
+    setTimeout(() => {
+      this.initialMessagesCount = chatMessages.length;
+    }, 0);    
   }
 
   onPieceMoved(move: MoveInfo) {
