@@ -13,20 +13,23 @@
   <li *ngFor="let h of homeworks" class="mb-4">
     <span>Назначено {{h.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}</span>
     <hr>
-    <div *ngFor="let p of h.puzzles" class="card mr-3 mb-3 pull-left d-inline-block" style="width: 202px;">
+    <div *ngFor="let p of h.puzzles" class="card align-top mr-3 mb-3 pull-left d-inline-block" style="width: 202px;">
       <div *ngIf="p.fixedPercent == 100" class="b-board-overlay"></div>
       <app-pure-chessground [sizePx]="200" [config]="p.cgConfig"></app-pure-chessground>
       <div class="card-body">
         <small>
-          <div><i>{{p.shortDescr}}</i></div>
-          <app-chess-move-list [movesClickable]="true" (moveClick)="onMoveClick($event, p)" class="d-block" [moves]="p.solution.moves" [blackIsFirst]="p.solution.blackIsFirst"></app-chess-move-list>
+          <div class="text-truncate"><i>{{p.description}}</i></div>
+          <app-chess-move-list *ngIf="p.standardPuzzleSolution" [movesClickable]="true" (moveClick)="onMoveClick($event, p)" class="d-block" [moves]="p.standardPuzzleSolution.moves" [blackIsFirst]="p.standardPuzzleSolution.blackIsFirst"></app-chess-move-list>
+          <div *ngIf="p.findAllChecksPuzzleSolution">
+            Всего вариантов шаха: <span>{{p.findAllChecksPuzzleSolution.totalChecks}}</span>
+          </div>
           <hr class="my-1">
           <div [ngSwitch]="p.fixedPercent" class="p-0">
             <span *ngSwitchCase="0">Никто пока не решил</span>
             <span *ngSwitchCase="100"><i class="fas fa-check text-success"></i> все ученики решили.</span>
             <span *ngSwitchDefault>{{p.fixedPercent}}% учеников решили</span>
           </div>
-        <a routerLink="/my/classes/{{class.id}}/homeworks/{{h.id}}/puzzles/{{p.id}}">Подробнее</a>
+          <a routerLink="/my/classes/{{class.id}}/homeworks/{{h.id}}/puzzles/{{p.id}}">Подробнее</a>
         </small>
       </div>
     </div>

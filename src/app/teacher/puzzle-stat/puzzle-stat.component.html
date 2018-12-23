@@ -2,7 +2,20 @@
   <a routerLink="/my/classes/{{class.id}}">{{class.name}}</a>, домашнее задание от {{homework.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}
 </p>
 <div class="row">
-  <app-chess-puzzle class="col-4" [pgn]="puzzle.pgn" (pgnUpdated)="onPuzzlePgnUpdated($event)"></app-chess-puzzle>
+  <div class="col-4">
+    <app-pure-chessground class="mb-3" [config]="{fen:puzzleFen,viewOnly:true}"></app-pure-chessground>
+    <p class="mb-1"><i>{{puzzle.description}}</i></p>
+    <div [ngSwitch]="puzzle.puzzleType">
+      <app-chess-move-list *ngSwitchCase="PuzzleType.Standard" 
+        [movesClickable]="false" 
+        class="d-block" 
+        [moves]="puzzleSolution.moves" 
+        [blackIsFirst]="puzzleSolution.blackIsFirst"></app-chess-move-list>
+      <div *ngSwitchCase="PuzzleType.FindAllChecks">
+        Всего вариантов шаха: <span>{{puzzleSolution.totalChecks}}</span>
+      </div>
+    </div>
+  </div>
   <div class="col-8">
     <div [ngSwitch]="viewMode">
       <div *ngSwitchCase="'list'">

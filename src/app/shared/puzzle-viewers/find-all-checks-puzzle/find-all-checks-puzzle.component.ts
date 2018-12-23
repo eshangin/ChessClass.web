@@ -43,7 +43,7 @@ export class FindAllChecksPuzzleComponent implements OnInit {
     this.initialFenInfo = {
       dests: this.chessHelperService.getChessgroundPossibleDests(this.fen),
       turn: new Chess(this.fen).turn() == 'w' ? 'white' : 'black',
-      allChecks: this.findAllChecks(this.fen)
+      allChecks: this.chessHelperService.findAllChecks(this.fen)
     };
     this.boardConfig = { 
       fen: this.fen,
@@ -95,19 +95,6 @@ export class FindAllChecksPuzzleComponent implements OnInit {
         draggable: {enabled: true}
       });
     }, 1000);
-  }
-
-  private findAllChecks(fen: string): ChessJS.Move[] {
-    let checkMoves = [];
-    let engine = new Chess(fen);
-    (engine.moves({verbose: true}) as ChessJS.Move[]).forEach(m => {
-      engine.move(m);
-      if (engine.in_check()) {
-        checkMoves.push(m);
-      }
-      engine.undo();
-    });
-    return checkMoves;
   }
 
   private viewNextCheck(moves?: ChessJS.Move[]) {

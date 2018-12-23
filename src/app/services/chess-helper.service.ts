@@ -62,4 +62,18 @@ export class ChessHelperService {
     });
     return dests;
   }
+
+  findAllChecks(fen: string): ChessJS.Move[] {
+    let checkMoves = [];
+    let engine = new Chess(fen);
+    (engine.moves({verbose: true}) as ChessJS.Move[]).forEach(m => {
+      engine.move(m);
+      if (engine.in_check()) {
+        checkMoves.push(m);
+      }
+      engine.undo();
+    });
+    console.log(fen, checkMoves)
+    return checkMoves;
+  }
 }
