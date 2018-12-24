@@ -30,8 +30,14 @@
     </div>
   </div>
 </div>
-<div class="modal-footer">
-  <span *ngIf="selectedPuzzles.length > 0"><small>Выбрано {{selectedPuzzles.length}} задач</small></span>
-  <button type="button" class="btn btn-light" (click)="onCancelClick()">Отмена</button>
-  <button type="button" class="btn btn-primary" (click)="onOkClick()">Добавить</button>
+<div class="modal-footer d-block">
+  <div class="row">
+    <div class="col-auto mr-auto">
+      <span *ngIf="selectedPuzzles.length > 0">Выбрано задач: {{selectedPuzzles.length}}</span>
+    </div>
+    <div class="col-auto">
+      <button type="button" class="btn btn-light" (click)="onCancelClick()">Отмена</button>&nbsp;
+      <button type="button" class="btn btn-primary" (click)="onOkClick()">Добавить</button>
+    </div>
+  </div>  
 </div>
