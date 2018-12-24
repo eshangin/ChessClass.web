@@ -29,7 +29,7 @@ export class SearchPuzzlesModalComponent implements OnInit {
     private chessHelperService: ChessHelperService) { }
 
   ngOnInit() {
-    this.puzzleService.getFavorites().subscribe(puzzles => {
+    this.puzzleService.getPuzzles().subscribe(puzzles => {
       this.selectablePuzzles = puzzles.map(p => {
         let fen = '';
         let solution: any;
