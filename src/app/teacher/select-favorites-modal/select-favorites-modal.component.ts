@@ -1,12 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {PuzzleService} from 'src/app/services/puzzle.service';
-import {Puzzle} from 'src/app/services/puzzle.model';
+import {Puzzle, PuzzleType} from 'src/app/services/puzzle.model';
+import { ChessHelperService } from 'src/app/services/chess-helper.service';
 
-class SelectablePuzzle {
+interface ISelectablePuzzle {
   puzzle: Puzzle;
-  isSelected: false;
-  constructor(p: Puzzle) { this.puzzle = p; }
+  isSelected: boolean;
+  fen: string;
 }
 
 @Component({
@@ -17,15 +18,31 @@ class SelectablePuzzle {
 export class SelectFavoritesModalComponent implements OnInit {
 
   isLoading: boolean = true;
-  selectablePuzzles: SelectablePuzzle[];
+  selectablePuzzles: ISelectablePuzzle[];
 
   constructor(
     public activeModal: NgbActiveModal,
-    private puzzleService: PuzzleService) { }
+    private puzzleService: PuzzleService,
+    private chessHelperService: ChessHelperService) { }
 
   ngOnInit() {
     this.puzzleService.getFavorites().subscribe(puzzles => {
-      this.selectablePuzzles = puzzles.map(_ => new SelectablePuzzle(_));
+      this.selectablePuzzles = puzzles.map(p => {
+        let fen = '';
+        switch (p.puzzleType) {
+          case PuzzleType.Standard:
+            let cp = this.chessHelperService.parsePuzzle(p.pgn);
+            fen = cp.initialFen;
+            break;
+          case PuzzleType.FindAllChecks:
+            fen = p.fen;
+            break;
+        }        
+        return {
+          puzzle: p,
+          fen: fen
+        } as ISelectablePuzzle
+      });
       this.isLoading = false;
     });
   }
