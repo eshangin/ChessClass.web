@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {PuzzleService} from 'src/app/services/puzzle.service';
-import {Puzzle} from 'src/app/services/puzzle.model';
+import {Puzzle, PuzzleType} from 'src/app/services/puzzle.model';
+import { ChessHelperService } from 'src/app/services/chess-helper.service';
+
+interface PuzzleViewModel {
+  puzzle: Puzzle;
+  fen: string;
+}
 
 @Component({
   selector: 'app-search-puzzles',
@@ -9,12 +15,31 @@ import {Puzzle} from 'src/app/services/puzzle.model';
 })
 export class SearchPuzzlesComponent implements OnInit {
 
-  searchItems: Puzzle[] = [];
+  searchItems: PuzzleViewModel[] = [];
 
-  constructor(private puzzleService: PuzzleService) { }
+  constructor(
+    private puzzleService: PuzzleService,
+    private chessHelperService: ChessHelperService) { }
 
   ngOnInit() {
-    this.puzzleService.getPuzzles().subscribe(puzzles => this.searchItems = puzzles);
+    this.puzzleService.getPuzzles().subscribe(puzzles => {      
+      this.searchItems = puzzles.map(p => {
+        let fen = '';
+        switch (p.puzzleType) {
+          case PuzzleType.Standard:
+            let cp = this.chessHelperService.parsePuzzle(p.pgn);
+            fen = cp.initialFen;
+            break;
+          case PuzzleType.FindAllChecks:
+            fen = p.fen;
+            break;
+        }
+        return {
+          puzzle: p,
+          fen: fen
+        } as PuzzleViewModel
+      });
+    });
   }
 
   onAddToFavoriteClick(puzzle: Puzzle) {
