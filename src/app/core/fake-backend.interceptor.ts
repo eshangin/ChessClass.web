@@ -100,7 +100,14 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             if (request.method === 'GET') {
                 const url = this.router.parseUrl(request.url);
                 const count = url.queryParamMap.get('count');
-                result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(db.puzzles, count) : db.puzzles }));
+                const forClassId = url.queryParamMap.get('forClassId');
+                let puzzles = db.puzzles;
+                if (forClassId) {
+                    let classHomeworkIds = db.homeworks.filter(h => h.classId == forClassId).map(h => h.id);
+                    let puzzlesAssignedToClass = db.homework2puzzle.filter(h2p => classHomeworkIds.includes(h2p.homeworkId)).map(h2p => h2p.puzzleId);
+                    puzzles = puzzles.sort((p1, p2) => puzzlesAssignedToClass.includes(p1.id) && !puzzlesAssignedToClass.includes(p2.id) ? 1:-1);
+                }
+                result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(puzzles, count) : puzzles }));
             } else if (request.method == 'POST') {
                 result = of(new HttpResponse({ status: 200, body: this.addPuzzle(request.body.pgn, request.body.description,
                     currentUser.id) }));

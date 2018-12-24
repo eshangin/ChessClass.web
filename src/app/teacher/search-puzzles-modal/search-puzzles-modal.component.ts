@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {PuzzleService} from 'src/app/services/puzzle.service';
+import {PuzzleService, IPuzzlesFilter} from 'src/app/services/puzzle.service';
 import {Puzzle, PuzzleType} from 'src/app/services/puzzle.model';
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
 
@@ -19,6 +19,7 @@ interface ISelectablePuzzle {
 })
 export class SearchPuzzlesModalComponent implements OnInit {
 
+  @Input() forClassId: string;
   isLoading: boolean = true;
   selectablePuzzles: ISelectablePuzzle[];
   PuzzleType = PuzzleType;
@@ -29,7 +30,10 @@ export class SearchPuzzlesModalComponent implements OnInit {
     private chessHelperService: ChessHelperService) { }
 
   ngOnInit() {
-    this.puzzleService.getPuzzles().subscribe(puzzles => {
+    let filter = {
+      forClassId: this.forClassId
+    } as IPuzzlesFilter;
+    this.puzzleService.getPuzzles(filter).subscribe(puzzles => {
       this.selectablePuzzles = puzzles.map(p => {
         let fen = '';
         let solution: any;

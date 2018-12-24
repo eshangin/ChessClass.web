@@ -4,6 +4,11 @@ import {Observable} from 'rxjs';
 import {Puzzle} from './puzzle.model';
 import {Router} from '@angular/router';
 
+export interface IPuzzlesFilter {
+  count?: number;
+  forClassId?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,10 +18,14 @@ export class PuzzleService {
     private http: HttpClient,
     private router: Router) { }
 
-  getPuzzles(count?: number): Observable<Puzzle[]> {
+  getPuzzles(filter?: IPuzzlesFilter): Observable<Puzzle[]> {
+    filter = filter || {};
     var url = this.router.parseUrl('api/puzzles');
-    if (count) {
-      url.queryParams['count'] = count;
+    if (filter.count) {
+      url.queryParams['count'] = filter.count;
+    }
+    if (filter.forClassId) {
+      url.queryParams['forClassId'] = filter.forClassId;
     }
     return this.http.get<Puzzle[]>(url.toString());
   }

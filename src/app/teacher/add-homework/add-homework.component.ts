@@ -4,7 +4,7 @@ import {SchoolClassService} from 'src/app/services/school-class.service';
 import {SchoolClass} from 'src/app/services/school-class.model';
 import {PupilService} from 'src/app/services/pupil.service';
 import {Pupil} from 'src/app/services/pupil.model';
-import {PuzzleService} from 'src/app/services/puzzle.service';
+import {PuzzleService, IPuzzlesFilter} from 'src/app/services/puzzle.service';
 import {Observable, Subscription, forkJoin, of} from 'rxjs';
 import {Puzzle} from 'src/app/services/puzzle.model';
 import {ToastrService} from 'ngx-toastr';
@@ -74,6 +74,7 @@ export class AddHomeworkComponent implements OnInit {
 
   onAddFromFavoriteClick() {
     const modalRef = this.modalService.open(SearchPuzzlesModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
+    modalRef.componentInstance.forClassId = this.classId;
     modalRef.result.then((result) => {
       this.pushPuzzles(result.puzzles);
     }, () => {});
@@ -140,7 +141,7 @@ export class AddHomeworkComponent implements OnInit {
 
   private getPuzzles(count: number): Observable<Puzzle[]> {
     // TODO :: take X puzzles of specific type (checkmate in 2 moves/3 moves/etc.)
-    return this.puzzleService.getPuzzles(count);
+    return this.puzzleService.getPuzzles({ count: count } as IPuzzlesFilter);
   }
 
   private loadPupils(): Subscription {
