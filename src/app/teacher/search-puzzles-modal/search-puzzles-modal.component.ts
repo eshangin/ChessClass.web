@@ -6,7 +6,6 @@ import { ChessHelperService } from 'src/app/services/chess-helper.service';
 
 interface ISelectablePuzzle {
   puzzle: Puzzle;
-  isSelected: boolean;
   fen: string;
   turn: 'w' | 'b';
   solution: any;
@@ -23,6 +22,9 @@ export class SearchPuzzlesModalComponent implements OnInit {
   isLoading: boolean = true;
   selectablePuzzles: ISelectablePuzzle[];
   PuzzleType = PuzzleType;
+  currentPage: number = 1;
+  totalRecords: number;
+  selectedPuzzles: Puzzle[] = [];
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -30,11 +32,43 @@ export class SearchPuzzlesModalComponent implements OnInit {
     private chessHelperService: ChessHelperService) { }
 
   ngOnInit() {
-    let filter = {
-      forClassId: this.forClassId
+    this.loadPuzzles(1);
+  }
+
+  onPageChange(page: number) {
+    this.loadPuzzles(page);
+  }
+
+  onPuzzleSelectToggle(puzzle: Puzzle, isSelected: boolean) {
+    if (isSelected) {
+      this.selectedPuzzles.push(puzzle);
+    } else {
+      this.selectedPuzzles = this.selectedPuzzles.filter(p => p.id != puzzle.id);
+    }
+  }
+
+  isSelected(puzzle: Puzzle): boolean {
+    return this.selectedPuzzles.some(p => p.id == puzzle.id);
+  }
+
+  onOkClick() {
+    this.activeModal.close({ puzzles: this.selectedPuzzles });
+  }
+
+  onCancelClick() {
+    this.activeModal.dismiss();
+  }
+
+  private loadPuzzles(page: number) {
+    let request = {
+      forClassId: this.forClassId,
+      count: 8,
+      page: page
     } as IPuzzlesFilter;
-    this.puzzleService.getPuzzles(filter).subscribe(puzzles => {
-      this.selectablePuzzles = puzzles.map(p => {
+    this.puzzleService.getPuzzles(request).subscribe(result => {
+      console.log(result);
+      this.totalRecords = result.totalRecords;
+      this.selectablePuzzles = result.items.map(p => {
         let fen = '';
         let solution: any;
         switch (p.puzzleType) {
@@ -62,10 +96,6 @@ export class SearchPuzzlesModalComponent implements OnInit {
       });
       this.isLoading = false;
     });
-  }
-
-  get getSelectedPuzzles(): Puzzle[] {
-    return this.selectablePuzzles.filter(_ => _.isSelected).map(_ => _.puzzle);
   }
 
 }

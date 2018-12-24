@@ -15,6 +15,7 @@ import { CreatePuzzleModalComponent } from '../create-puzzle-modal/create-puzzle
 import { ICreatePuzzleResult } from '../create-puzzle-wizard/create-puzzle-wizard.component';
 import * as Chess from 'chess.js';
 import { SearchPuzzlesModalComponent } from '../search-puzzles-modal/search-puzzles-modal.component';
+import { IPaging } from 'src/app/services/paging';
 
 interface ISelectedPuzzle {
   id: string;
@@ -62,8 +63,8 @@ export class AddHomeworkComponent implements OnInit {
   }
 
   onAddPuzzles() {
-    this.getPuzzles(this.addPuzzlesCount).subscribe(puzzles => {
-      this.pushPuzzles(puzzles);
+    this.getPuzzles(this.addPuzzlesCount).subscribe(result => {
+      this.pushPuzzles(result.items);
     });    
   }
 
@@ -139,9 +140,9 @@ export class AddHomeworkComponent implements OnInit {
     }));
   }
 
-  private getPuzzles(count: number): Observable<Puzzle[]> {
+  private getPuzzles(count: number): Observable<IPaging<Puzzle>> {
     // TODO :: take X puzzles of specific type (checkmate in 2 moves/3 moves/etc.)
-    return this.puzzleService.getPuzzles({ count: count } as IPuzzlesFilter);
+    return this.puzzleService.getPuzzles({ count: count, sort: 'random' } as IPuzzlesFilter);
   }
 
   private loadPupils(): Subscription {

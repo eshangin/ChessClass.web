@@ -3,10 +3,11 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Puzzle} from './puzzle.model';
 import {Router} from '@angular/router';
+import { IPagingRequest, PagingHelper, IPaging } from './paging';
 
-export interface IPuzzlesFilter {
-  count?: number;
+export interface IPuzzlesFilter extends IPagingRequest {
   forClassId?: string;
+  sort?: 'random' | undefined;
 }
 
 @Injectable({
@@ -16,18 +17,20 @@ export class PuzzleService {
 
   constructor(
     private http: HttpClient,
-    private router: Router) { }
+    private router: Router,
+    private pagingHelper: PagingHelper) { }
 
-  getPuzzles(filter?: IPuzzlesFilter): Observable<Puzzle[]> {
+  getPuzzles(filter?: IPuzzlesFilter): Observable<IPaging<Puzzle>> {
     filter = filter || {};
     var url = this.router.parseUrl('api/puzzles');
-    if (filter.count) {
-      url.queryParams['count'] = filter.count;
-    }
+    this.pagingHelper.setPagingParams(url.queryParams, filter);
     if (filter.forClassId) {
       url.queryParams['forClassId'] = filter.forClassId;
     }
-    return this.http.get<Puzzle[]>(url.toString());
+    if (filter.sort) {
+      url.queryParams['sort'] = filter.sort;
+    }
+    return this.http.get<IPaging<Puzzle>>(url.toString());
   }
 
   getPuzzleFixStatistics(homeworkId: string, puzzleId: string): Observable<any> {

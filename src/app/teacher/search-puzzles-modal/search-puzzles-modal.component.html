@@ -7,6 +7,7 @@
 <div class="modal-body">
   <div *ngIf="isLoading" class="text-center m-5">Пожалуйста подождите <i class="fas fa-circle-notch fa-spin"></i></div>
 
+  <ngb-pagination [collectionSize]="totalRecords" [pageSize]="8" (pageChange)="onPageChange($event)"></ngb-pagination>
   <div *ngIf="!isLoading" class="card-columns">
     <div *ngFor="let item of selectablePuzzles; let i = index" class="card d-inline-block" style="width: 175px;">
       <app-pure-chessground [sizePx]="173" [config]="{fen: item.fen,viewOnly:true,coordinates:false}"></app-pure-chessground>
@@ -22,14 +23,15 @@
         </small>
         <hr class="my-1">
         <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="customCheck{{i}}" [(ngModel)]="item.isSelected">
+          <input type="checkbox" class="custom-control-input" id="customCheck{{i}}" [checked]="isSelected(item.puzzle)" (change)="onPuzzleSelectToggle(item.puzzle, $event.target.checked)">
           <label class="custom-control-label" for="customCheck{{i}}"><small>выбрать</small></label>
         </div>
       </div>
     </div>
-  </div>  
+  </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Отмена</button>
-  <button type="button" class="btn btn-primary" (click)="activeModal.close({ puzzles: getSelectedPuzzles })">Добавить</button>
+  <span *ngIf="selectedPuzzles.length > 0"><small>Выбрано {{selectedPuzzles.length}} задач</small></span>
+  <button type="button" class="btn btn-light" (click)="onCancelClick()">Отмена</button>
+  <button type="button" class="btn btn-primary" (click)="onOkClick()">Добавить</button>
 </div>

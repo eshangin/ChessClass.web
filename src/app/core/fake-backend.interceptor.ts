@@ -13,6 +13,7 @@ import { _ } from 'underscore';
 import { AuthService } from '../services/auth.service';
 import { ChatMessage } from '../services/chat-message.model';
 import { PuzzleFixAttempt } from '../services/puzzle-fix-attempt.model';
+import { IPaging } from '../services/paging';
 
 class Db {
     puzzles: Puzzle[];
@@ -99,7 +100,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         if (request.url.match(/api\/puzzles/)) {
             if (request.method === 'GET') {
                 const url = this.router.parseUrl(request.url);
-                const count = url.queryParamMap.get('count');
+                const page = +url.queryParamMap.get('page') || 1;
+                const count = +url.queryParamMap.get('count') || 10;
+                const useRandomOrder = url.queryParamMap.get('sort') == 'random';
                 const forClassId = url.queryParamMap.get('forClassId');
                 let puzzles = db.puzzles;
                 if (forClassId) {
@@ -109,7 +112,24 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                         puzzles = puzzles.sort((p1, p2) => puzzlesAssignedToClass.includes(p2.id) || p1.dateCreated < p2.dateCreated ? -1:1);
                     }
                 }
-                result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(puzzles, count) : puzzles }));
+                let records: Puzzle[];
+                let totalPages = 1;
+                let totalRecords = 1;
+                if (useRandomOrder) {
+                    records = this.getRandom(puzzles, count);
+                } else {
+                    let paginageResult = this.paginate(puzzles, count, page);
+                    records = paginageResult.items;
+                    totalPages = paginageResult.totalPages;
+                    totalRecords = paginageResult.totalRecords;
+                }
+                let body: IPaging<Puzzle> = {
+                    items: records,
+                    page: page,
+                    totalPages: totalPages,
+                    totalRecords: totalRecords
+                };
+                result = of(new HttpResponse({ status: 200, body: body }));
             } else if (request.method == 'POST') {
                 result = of(new HttpResponse({ status: 200, body: this.addPuzzle(request.body.pgn, request.body.description,
                     currentUser.id) }));
@@ -393,7 +413,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         localStorage.setItem('puzzles', JSON.stringify(puzzles));
     }
 
-    private getRandom(arr, n) {
+    private paginate<T>(array: Array<T>, pageSize: number, pageNumber: number): {items:Array<T>, totalRecords: number, totalPages:number} {
+        --pageNumber; // because pages logically start with 1, but technically with 0
+        return {
+            items: array.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize),
+            totalPages: Math.ceil(array.length / pageSize),
+            totalRecords: array.length
+        }
+    }
+
+    private getRandom(arr, n: number) {
         var result = new Array(n),
             len = arr.length,
             taken = new Array(len);
