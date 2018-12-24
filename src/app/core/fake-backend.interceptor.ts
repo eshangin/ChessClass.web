@@ -105,7 +105,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 if (forClassId) {
                     let classHomeworkIds = db.homeworks.filter(h => h.classId == forClassId).map(h => h.id);
                     let puzzlesAssignedToClass = db.homework2puzzle.filter(h2p => classHomeworkIds.includes(h2p.homeworkId)).map(h2p => h2p.puzzleId);
-                    puzzles = puzzles.sort((p1, p2) => puzzlesAssignedToClass.includes(p1.id) && !puzzlesAssignedToClass.includes(p2.id) ? 1:-1);
+                    if (puzzlesAssignedToClass.length > 0) {
+                        puzzles = puzzles.sort((p1, p2) => puzzlesAssignedToClass.includes(p2.id) || p1.dateCreated < p2.dateCreated ? -1:1);
+                    }
                 }
                 result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(puzzles, count) : puzzles }));
             } else if (request.method == 'POST') {
@@ -606,6 +608,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             description: 'Белые выигрывают'
           } as Puzzle,
           {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за белых',
+              fen: '8/2k5/8/1PKP4/8/8/2R5/8 w - - 0 1'              
+          } as Puzzle,
+          {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за белых',
+              fen: '8/4k3/2K5/2p5/8/8/2R2B2/8 w - - 0 1'              
+          } as Puzzle,
+          {
             id: this.generateId(),
             dateCreated: new Date(),
             puzzleType: PuzzleType.Standard,
@@ -665,6 +681,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
               puzzleType: PuzzleType.FindAllChecks,
               description: 'Найти все шахи за белых',
               fen: '1k6/6Q1/8/8/2K5/8/8/8 w - - 0 1'              
+          } as Puzzle,
+          {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за черных',
+              fen: '8/1K6/4n3/3kp3/2pp4/8/8/7b b - - 0 1'              
+          } as Puzzle,
+          {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за черных',
+              fen: '8/1K6/8/3kp3/2ppq3/8/8/8 b - - 0 1'              
           } as Puzzle,
           {
               id: this.generateId(),
