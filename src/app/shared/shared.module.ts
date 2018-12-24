@@ -11,6 +11,7 @@ import { CreatePuzzleComponent } from './create-puzzle/create-puzzle.component';
 import { CgPieceComponent } from './cg-piece/cg-piece.component';
 import { PureChessgroundComponent } from './pure-chessground/pure-chessground.component';
 import { CgBoardEditorComponent } from './cg-board-editor/cg-board-editor.component';
+import { FindAllChecksPuzzleComponent } from './puzzle-viewers/find-all-checks-puzzle/find-all-checks-puzzle.component';
 
 @NgModule({
   declarations: [    
@@ -24,6 +25,7 @@ import { CgBoardEditorComponent } from './cg-board-editor/cg-board-editor.compon
     CgPieceComponent,
     PureChessgroundComponent,
     CgBoardEditorComponent,
+    FindAllChecksPuzzleComponent,
   ],
   imports: [
     CommonModule,
@@ -38,7 +40,8 @@ import { CgBoardEditorComponent } from './cg-board-editor/cg-board-editor.compon
     ChessMoveListComponent,
     CreatePuzzleComponent,
     CgBoardEditorComponent,
-    PureChessgroundComponent
+    PureChessgroundComponent,
+    FindAllChecksPuzzleComponent
   ]
 })
 export class SharedModule { }

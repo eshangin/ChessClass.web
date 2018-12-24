@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as Chess from 'chess.js';
+import * as cgTypes from 'chessground/types';
 
 export interface ChessPuzzle {
   initialFen: string;
@@ -48,8 +49,11 @@ export class ChessHelperService {
     return fen;
   }
 
-  getChessgroundPossibleDests(engine: ChessInstance) {
+  getChessgroundPossibleDests(fen: string): {
+    [key: string]: cgTypes.Key[];
+  } {
     let dests = {};
+    let engine = new Chess(fen);
     (engine.moves({verbose: true}) as Array<ChessJS.Move>).forEach(m => {
       if (!dests[m.from]) {
         dests[m.from] = [];
@@ -57,5 +61,18 @@ export class ChessHelperService {
       dests[m.from].push(m.to);
     });
     return dests;
+  }
+
+  findAllChecks(fen: string): ChessJS.Move[] {
+    let checkMoves = [];
+    let engine = new Chess(fen);
+    (engine.moves({verbose: true}) as ChessJS.Move[]).forEach(m => {
+      engine.move(m);
+      if (engine.in_check()) {
+        checkMoves.push(m);
+      }
+      engine.undo();
+    });
+    return checkMoves;
   }
 }

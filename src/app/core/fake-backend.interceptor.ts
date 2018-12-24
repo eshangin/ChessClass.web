@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import {Puzzle} from '../services/puzzle.model';
+import {Puzzle, PuzzleType} from '../services/puzzle.model';
 import {Router} from '@angular/router';
 import {Pupil} from '../services/pupil.model';
 import {SchoolClass} from '../services/school-class.model';
@@ -584,7 +584,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     private getPuzzles(): Puzzle[] {
         return [
           {
-            id: 'a',
+            id: this.generateId(),
+            dateCreated: new Date(),
+            puzzleType: PuzzleType.Standard,
             pgn: `
 [Round "-"]
 [White "9 AUTHORS"]
@@ -597,7 +599,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             description: 'Белые выигрывают'
           } as Puzzle,
           {
-            id: 'b',
+            id: this.generateId(),
+            dateCreated: new Date(),
+            puzzleType: PuzzleType.Standard,
             pgn: `
 [Event "Illustrated London News"]
 [Site "?"]
@@ -613,7 +617,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             description: 'Белые выигрывают'
           } as Puzzle,
           {
-            id: 'c',
+            id: this.generateId(),
+            dateCreated: new Date(),
+            puzzleType: PuzzleType.Standard,
             pgn: `
 [Event "Probleemblad"]
 [Site "?"]
@@ -629,7 +635,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             description: 'Белые выигрывают'
           } as Puzzle,
           {
-            id: 'd',
+            id: this.generateId(),
+            dateCreated: new Date(),
+            puzzleType: PuzzleType.Standard,
             pgn: `
 [Event "The Chess Players' Quarterly Chronicle"]
 [Site "?"]
@@ -643,6 +651,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
 1. Kb7 Kd5 2. Re7# 1-0`.trim(),
             description: 'Белые выигрывают'
+          } as Puzzle,
+          {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за белых',
+              fen: '1k6/6Q1/8/8/2K5/8/8/8 w - - 0 1'              
+          } as Puzzle,
+          {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за черных',
+              fen: '1K6/8/8/2k5/6r1/8/8/8 b - - 0 1'              
           } as Puzzle
         ];
       }

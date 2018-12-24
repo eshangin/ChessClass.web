@@ -14,6 +14,14 @@ import {SelectFavoritesModalComponent} from '../select-favorites-modal/select-fa
 import {HomeworkService} from 'src/app/services/homework.service';
 import { CreatePuzzleModalComponent } from '../create-puzzle-modal/create-puzzle-modal.component';
 import { ICreatePuzzleResult } from '../create-puzzle-wizard/create-puzzle-wizard.component';
+import * as Chess from 'chess.js';
+
+interface ISelectedPuzzle {
+  id: string;
+  fen: string;
+  pgn?: string;
+  description: string;
+}
 
 @Component({
   selector: 'app-add-homework',
@@ -25,7 +33,7 @@ export class AddHomeworkComponent implements OnInit {
   classId: string;
   myClasses: SchoolClass[] = [];
   classPupils: Pupil[] = [];
-  selectedPuzzles: Puzzle[] = [];
+  selectedPuzzles: ISelectedPuzzle[] = [];
   addPuzzlesCount: number = 3;
   form: FormGroup;
 
@@ -88,7 +96,18 @@ export class AddHomeworkComponent implements OnInit {
   }
 
   private pushPuzzle(puzzle: Puzzle) {
-    this.selectedPuzzles.push(puzzle);
+    let fen = puzzle.fen;
+    if (!fen) {
+      let engine = new Chess();
+      engine.load_pgn(puzzle.pgn);
+      fen = engine.fen()
+    }
+    this.selectedPuzzles.push({
+      id: puzzle.id,
+      fen: fen,
+      description: puzzle.description,
+      pgn: puzzle.pgn
+    });
     this.formPuzzles.push(new FormControl());
   }
 

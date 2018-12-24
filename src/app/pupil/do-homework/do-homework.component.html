@@ -1,29 +1,49 @@
 <div class="row" *ngIf="currentPuzzle">
-  <app-chess-puzzle 
-    class="col-6" 
-    [pgn]="currentPuzzle.pgn" 
-    (pieceMoved)="onPieceMoved($event)"
-    (puzzleSolutionStateChanged)="onPuzzleSolutionStateChanged($event)"></app-chess-puzzle>
-  <div class="col-6">
+  <div class="col-4" [ngSwitch]="currentPuzzle.puzzleType">
+    <app-chess-puzzle 
+      *ngSwitchCase="PuzzleType.Standard"       
+      [pgn]="currentPuzzle.pgn" 
+      (pieceMoved)="onPieceMoved($event)"
+      (puzzleSolutionStateChanged)="onPuzzleSolutionStateChanged($event)"></app-chess-puzzle>
+    <app-find-all-checks-puzzle 
+      *ngSwitchCase="PuzzleType.FindAllChecks" 
+      [fen]="currentPuzzle.fen" 
+      (initialized)="findAllChecksPuzzleOnInitialized($event)"
+      (moveMade)="findAllChecksPuzzleOnMoveMade($event)"
+      class="d-block"></app-find-all-checks-puzzle>
+  </div>
+  <div class="col-8">
     <ngb-tabset>
       <ngb-tab title="Задача">
         <ng-template ngbTabContent>
           <div class="p-4 bg-light">
             {{currentPuzzle.description}}
           </div>
-          <div [ngSwitch]="puzzleState" class="p-4">
+          <div class="px-4 pt-4" *ngIf="findAllChecksPuzzleInfo">
+            Всего в данной позиции {{findAllChecksPuzzleInfo.turn == 'w' ? 'белые' : 'черные'}} могут поставить <span class="badge badge-info">{{findAllChecksPuzzleInfo.allChecks.length}}</span> вариантов рызных шахов
+            <div *ngIf="findAllChecksPuzzleInfo.foundChecks.length > 0">
+              Найденные варианты шахов: 
+              <span *ngFor="let m of findAllChecksPuzzleInfo.foundChecks">
+                <app-chess-move class="badge badge-light" [move]="m" [moveColor]="findAllChecksPuzzleInfo.turn"></app-chess-move>
+              </span>
+              <div *ngIf="findAllChecksPuzzleInfo.checksLeft != 0">
+                Осталось найти <span class="badge badge-warning">{{findAllChecksPuzzleInfo.checksLeft}}</span> вариантов
+              </div>
+            </div>
+          </div>
+          <div *ngIf="puzzleState" [ngSwitch]="puzzleState" class="px-4 pt-4">
             <div *ngSwitchCase="puzzleSolutionStateTypes.CorrectMove">
               <app-chess-move [move]="myLastMove.san" [moveColor]="myLastMove.color"></app-chess-move><span class="align-middle"> верный ход! <i class="far fa-thumbs-up fa-lg"></i></span>
             </div>
             <div *ngSwitchCase="puzzleSolutionStateTypes.PuzzleDone">
               Задача решена! <i class="fas fa-trophy fa-lg text-warning"></i>
-              <div *ngIf="puzzleFixed">
+              <div>
                 <button type="button" class="btn btn-default btn-link p-0" (click)="goToNextPuzzle()">Перейти к следующей</button>
               </div>
             </div>
             <div *ngSwitchCase="puzzleSolutionStateTypes.IncorrectMove">
               <app-chess-move [move]="myLastMove.san" [moveColor]="myLastMove.color"></app-chess-move><span class="align-middle"> неверный ход! <i class="far fa-frown fa-lg"></i></span>
-              <br>Попробуй еще раз
+              <br>Попробуй еще
             </div>
           </div>
         </ng-template>

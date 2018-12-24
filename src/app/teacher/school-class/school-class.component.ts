@@ -10,6 +10,7 @@ import { MoveClickInfo } from 'src/app/shared/chess-move-list/chess-move-list.co
 import { Config } from 'chessground/config';
 import * as _ from 'underscore'
 import * as Chess from 'chess.js';
+import { PuzzleType } from 'src/app/services/puzzle.model';
 
 class HomeworkViewModel {
   id: string;
@@ -21,11 +22,14 @@ class PuzzleViewModel {
   id: string;
   initialFen: string;
   pgn: string;
-  shortDescr: string;
+  description: string;
   fixedPercent: number;
-  solution: {
+  standardPuzzleSolution?: {
     moves: string[];
-    blackIsFirst: false;
+    blackIsFirst: boolean;
+  };
+  findAllChecksPuzzleSolution: {
+    totalChecks: number;
   };
   cgConfig: Config;
 }
@@ -60,20 +64,32 @@ export class SchoolClassComponent implements OnInit {
           id: h.id,
           dateCreated: h.dateCreated,
           puzzles: h.puzzles.map(p => {
-            let cp = this.chessHelperService.parsePuzzle(p.pgn);
-            return {
+            let model = {
               id: p.id,
-              initialFen: cp.initialFen,
               pgn: p.pgn,
-              cgConfig: {fen: cp.initialFen,viewOnly:true,coordinates:false},
-              // TODO :: need shord descr
-              shortDescr: p.description,
-              solution: {
-                moves: cp.solutionMovements,
-                blackIsFirst: cp.turn == 'b'
-              },
+              description: p.description,
               fixedPercent: Math.ceil(h.pupilStats.filter(ps => ps.fixedPuzzleIds.indexOf(p.id) != -1).length / pupilsCount * 100)
-            } as PuzzleViewModel
+            } as PuzzleViewModel;
+            let fen = '';
+            switch (p.puzzleType) {
+              case PuzzleType.Standard:
+                let cp = this.chessHelperService.parsePuzzle(p.pgn);
+                fen = cp.initialFen;
+                model.standardPuzzleSolution = {
+                  moves: cp.solutionMovements,
+                  blackIsFirst: cp.turn == 'b'
+                };
+                break;
+              case PuzzleType.FindAllChecks:
+                fen = p.fen;
+                model.findAllChecksPuzzleSolution = {
+                  totalChecks: this.chessHelperService.findAllChecks(p.fen).length
+                }
+                break;
+            }
+            model.initialFen = fen;
+            model.cgConfig = {fen: fen, viewOnly: true, coordinates: false};
+            return model;
           })
         } as HomeworkViewModel;
       });
