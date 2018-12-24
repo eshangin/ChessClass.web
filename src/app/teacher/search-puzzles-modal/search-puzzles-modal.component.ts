@@ -13,11 +13,11 @@ interface ISelectablePuzzle {
 }
 
 @Component({
-  selector: 'app-select-favorites-modal',
-  templateUrl: './select-favorites-modal.component.html',
-  styleUrls: ['./select-favorites-modal.component.scss']
+  selector: 'app-search-puzzles-modal',
+  templateUrl: './search-puzzles-modal.component.html',
+  styleUrls: ['./search-puzzles-modal.component.scss']
 })
-export class SelectFavoritesModalComponent implements OnInit {
+export class SearchPuzzlesModalComponent implements OnInit {
 
   isLoading: boolean = true;
   selectablePuzzles: ISelectablePuzzle[];

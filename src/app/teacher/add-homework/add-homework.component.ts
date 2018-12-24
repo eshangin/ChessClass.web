@@ -10,11 +10,11 @@ import {Puzzle} from 'src/app/services/puzzle.model';
 import {ToastrService} from 'ngx-toastr';
 import {FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angular/forms';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {SelectFavoritesModalComponent} from '../select-favorites-modal/select-favorites-modal.component';
 import {HomeworkService} from 'src/app/services/homework.service';
 import { CreatePuzzleModalComponent } from '../create-puzzle-modal/create-puzzle-modal.component';
 import { ICreatePuzzleResult } from '../create-puzzle-wizard/create-puzzle-wizard.component';
 import * as Chess from 'chess.js';
+import { SearchPuzzlesModalComponent } from '../search-puzzles-modal/search-puzzles-modal.component';
 
 interface ISelectedPuzzle {
   id: string;
@@ -73,7 +73,7 @@ export class AddHomeworkComponent implements OnInit {
   }
 
   onAddFromFavoriteClick() {
-    const modalRef = this.modalService.open(SelectFavoritesModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
+    const modalRef = this.modalService.open(SearchPuzzlesModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
     modalRef.result.then((result) => {
       this.pushPuzzles(result.puzzles);
     }, () => {});
