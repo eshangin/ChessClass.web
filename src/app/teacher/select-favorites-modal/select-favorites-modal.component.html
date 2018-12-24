@@ -8,12 +8,22 @@
   <div *ngIf="isLoading" class="text-center m-5">Пожалуйста подождите <i class="fas fa-circle-notch fa-spin"></i></div>
 
   <div *ngIf="!isLoading">
-    <div *ngFor="let item of selectablePuzzles; let i = index" class="card mr-3 mb-3 pull-left d-inline-block" style="width: 182px;">
+    <div *ngFor="let item of selectablePuzzles; let i = index" class="card mr-3 mb-3 align-top pull-left d-inline-block" style="width: 182px;">
       <app-pure-chessground [sizePx]="180" [config]="{fen: item.fen,viewOnly:true,coordinates:false}"></app-pure-chessground>
       <div class="card-body">
+        <small>
+          <div class="text-truncate"><i>{{item.puzzle.description}}</i></div>
+          <app-chess-move-list *ngIf="item.puzzle.puzzleType == PuzzleType.Standard" class="d-block" [moves]="item.solution.moves" [blackIsFirst]="item.solution.turn == 'b'"></app-chess-move-list>
+          <div *ngIf="item.puzzle.puzzleType == PuzzleType.FindAllChecks">
+            <span *ngFor="let m of item.solution.allChecks">
+              <app-chess-move class="badge badge-light" [move]="m.san" [moveColor]="item.solution.turn"></app-chess-move>
+            </span>
+          </div>
+        </small>
+        <hr class="my-1">
         <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input" id="customCheck{{i}}" [(ngModel)]="item.isSelected">
-          <label class="custom-control-label" for="customCheck{{i}}">&nbsp;</label>
+          <label class="custom-control-label" for="customCheck{{i}}"><small>выбрать</small></label>
         </div>
       </div>
     </div>

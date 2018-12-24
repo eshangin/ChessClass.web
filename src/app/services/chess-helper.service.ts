@@ -63,6 +63,10 @@ export class ChessHelperService {
     return dests;
   }
 
+  getTurn(fen: string): ChessJS.Types.ChessColor {
+    return new Chess(fen).turn();
+  }
+
   findAllChecks(fen: string): ChessJS.Move[] {
     let checkMoves = [];
     let engine = new Chess(fen);
