@@ -19,7 +19,24 @@
   </div>
 
   <div>
-    <h3>Выбор задач</h3>
+    <h3 class="mb-3">Выбор задач</h3>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="form-inline">
+          <button type="button" class="btn btn-link p-1" (click)="onAddPuzzles()">Добавить</button>
+          <select [(ngModel)]="addPuzzlesCount" class="form-control form-control-sm mr-2" name="addPuzzlesCount" [ngModelOptions]="{standalone: true}">
+            <option *ngFor="let i of [2, 3, 4]" [ngValue]="i">{{i}}</option>
+          </select>
+          <span class="align-middle">случайных задачи</span>
+        </div>
+        <div>
+          <button (click)="onAddFromFavoriteClick()" type="button" class="btn btn-link p-1">Добавить</button> <span class="align-middle">задачи из избранного</span>
+        </div>
+        <div>
+          <button (click)="onCreateNewPuzzleClick()" type="button" class="btn btn-link p-1">Создать новую задачу</button>
+        </div>
+      </div>
+    </div>
     <div class="text-danger mb-3" *ngIf="formPuzzles.invalid && ngForm.submitted">Необходимо добавить хотя бы одну задачу</div>
 
     <div class="mb-2" *ngIf="selectedPuzzles.length">
@@ -35,26 +52,6 @@
         </div>
       </div>
       <div class="clearfix"></div>
-    </div>
-
-    <div class="mb-2">
-      <div class="mb-2 p-2 mr-2 border d-inline-block align-top">
-        <div class="form-inline">
-          <button type="button" class="btn btn-link p-1" (click)="onAddPuzzles()">Добавить</button>
-          <select [(ngModel)]="addPuzzlesCount" class="form-control form-control-sm mr-2" name="addPuzzlesCount" [ngModelOptions]="{standalone: true}">
-            <option *ngFor="let i of [2, 3, 4]" [ngValue]="i">{{i}}</option>
-          </select>
-          <span class="align-middle">случайных задачи</span>
-        </div>
-      </div>
-
-      <div class="mb-2 p-2 mr-2 border d-inline-block align-top">
-        <button (click)="onAddFromFavoriteClick()" type="button" class="btn btn-link p-1">Добавить</button> <span class="align-middle">задачи из избранного</span>
-      </div>
-
-      <div class="mb-2 p-2 border d-inline-block align-top">
-        <button (click)="onCreateNewPuzzleClick()" type="button" class="btn btn-link p-1">Создать новую задачу</button>
-      </div>
     </div>
   </div>
 
