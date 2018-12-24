@@ -13,9 +13,9 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HomeworkService} from 'src/app/services/homework.service';
 import { CreatePuzzleModalComponent } from '../create-puzzle-modal/create-puzzle-modal.component';
 import { ICreatePuzzleResult } from '../create-puzzle-wizard/create-puzzle-wizard.component';
-import * as Chess from 'chess.js';
 import { SearchPuzzlesModalComponent } from '../search-puzzles-modal/search-puzzles-modal.component';
 import { IPaging } from 'src/app/services/paging';
+import { ChessHelperService } from 'src/app/services/chess-helper.service';
 
 interface ISelectedPuzzle {
   id: string;
@@ -47,7 +47,8 @@ export class AddHomeworkComponent implements OnInit {
     private toastr: ToastrService,
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
-    private homeworkService: HomeworkService) { }
+    private homeworkService: HomeworkService,
+    private chessHelperService: ChessHelperService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -100,9 +101,8 @@ export class AddHomeworkComponent implements OnInit {
   private pushPuzzle(puzzle: Puzzle) {
     let fen = puzzle.fen;
     if (!fen) {
-      let engine = new Chess();
-      engine.load_pgn(puzzle.pgn);
-      fen = engine.fen()
+      let cp = this.chessHelperService.parsePuzzle(puzzle.pgn);
+      fen = cp.initialFen;
     }
     this.selectedPuzzles.push({
       id: puzzle.id,
