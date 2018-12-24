@@ -131,7 +131,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 };
                 result = of(new HttpResponse({ status: 200, body: body }));
             } else if (request.method == 'POST') {
-                result = of(new HttpResponse({ status: 200, body: this.addPuzzle(request.body.pgn, request.body.description,
+                result = of(new HttpResponse({ status: 200, body: this.addPuzzle(request.body.pgn, request.body.description, PuzzleType.Standard,
                     currentUser.id) }));
             }
         } else if (request.url.match(/api\/auth\/login/)) {
@@ -537,10 +537,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         localStorage.setItem('homework2puzzle', JSON.stringify(homework2puzzle));
     }
 
-    private addPuzzle(pgn: string, description: string, createdById?: string): Puzzle {
+    private addPuzzle(pgn: string, description: string, puzzleType: PuzzleType, createdById?: string): Puzzle {
         const date = new Date();
         let puzzles = this.getDb().puzzles;
-        let newPuzzle = { id: this.generateId(), dateCreated: date, pgn: pgn, description: description, createdById: createdById } as Puzzle;
+        let newPuzzle = { id: this.generateId(), dateCreated: date, pgn: pgn, description: description, createdById: createdById, puzzleType: puzzleType } as Puzzle;
         puzzles.push(newPuzzle);
         localStorage.setItem('puzzles', JSON.stringify(puzzles));
         return newPuzzle;
