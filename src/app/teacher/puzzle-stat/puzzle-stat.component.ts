@@ -9,6 +9,7 @@ import { HomeworkService } from 'src/app/services/homework.service';
 import { PuzzleFixAttempt } from 'src/app/services/puzzle-fix-attempt.model';
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
 import { _ } from 'underscore';
+import * as Chess from 'chess.js';
 
 @Component({
   selector: 'app-puzzle-stat',
@@ -27,6 +28,7 @@ export class PuzzleStatComponent implements OnInit {
   whoNotFixed: any[] = [];
   selectedPupil: Pupil;
   puzzleFixAttempts: PuzzleFixAttempt[];
+  puzzleCorrectFixAttempts: PuzzleFixAttempt[];
   PuzzleType = PuzzleType;
   puzzleSolution: any;
   puzzleFen: string;
@@ -50,6 +52,7 @@ export class PuzzleStatComponent implements OnInit {
     this.viewMode = 'chat';
     this.homeworkService.getAttempts(pupil.id, this.homeworkId, this.puzzleId).subscribe(attempts => {
       this.puzzleFixAttempts = attempts.sort((a, b) => a.dateCreated > b.dateCreated ? -1:1);
+      this.puzzleCorrectFixAttempts = this.puzzleFixAttempts.filter(a => this.isCorrectAttempt(a));
     });
   }
 
@@ -66,6 +69,14 @@ export class PuzzleStatComponent implements OnInit {
       case PuzzleType.FindAllChecks:
         return this.puzzleSolution.allChecks.map(m => m.san).indexOf(attempt.moves[0]) != -1;
     }    
+  }
+
+  isCorrectFixAttemptsContanMove(move: string): boolean {
+    return this.puzzleCorrectFixAttempts.findIndex(a => a.moves.indexOf(move) != -1) != -1;
+  }
+
+  currentPuzzleIsFixedByPupil(pupil: Pupil): boolean {
+    return this.whoFixed.findIndex(wf => wf.pupil.id == pupil.id) != -1;
   }
 
   private loadStatistics() {
@@ -85,7 +96,8 @@ export class PuzzleStatComponent implements OnInit {
         case PuzzleType.FindAllChecks:
           this.puzzleFen = this.puzzle.fen;
           this.puzzleSolution = {
-            allChecks: this.chessHelperService.findAllChecks(this.puzzle.fen)
+            allChecks: this.chessHelperService.findAllChecks(this.puzzle.fen),
+            turn: new Chess(this.puzzle.fen).turn()
           }
           break;
       }
