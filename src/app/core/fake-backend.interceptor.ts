@@ -13,6 +13,7 @@ import { _ } from 'underscore';
 import { AuthService } from '../services/auth.service';
 import { ChatMessage } from '../services/chat-message.model';
 import { PuzzleFixAttempt } from '../services/puzzle-fix-attempt.model';
+import { IPaging } from '../services/paging';
 
 class Db {
     puzzles: Puzzle[];
@@ -99,8 +100,36 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         if (request.url.match(/api\/puzzles/)) {
             if (request.method === 'GET') {
                 const url = this.router.parseUrl(request.url);
-                const count = url.queryParamMap.get('count');
-                result = of(new HttpResponse({ status: 200, body: count ? this.getRandom(db.puzzles, count) : db.puzzles }));
+                const page = +url.queryParamMap.get('page') || 1;
+                const count = +url.queryParamMap.get('count') || 10;
+                const useRandomOrder = url.queryParamMap.get('sort') == 'random';
+                const forClassId = url.queryParamMap.get('forClassId');
+                let puzzles = db.puzzles;
+                if (forClassId) {
+                    let classHomeworkIds = db.homeworks.filter(h => h.classId == forClassId).map(h => h.id);
+                    let puzzlesAssignedToClass = db.homework2puzzle.filter(h2p => classHomeworkIds.includes(h2p.homeworkId)).map(h2p => h2p.puzzleId);
+                    if (puzzlesAssignedToClass.length > 0) {
+                        puzzles = puzzles.sort((p1, p2) => puzzlesAssignedToClass.includes(p2.id) || p1.dateCreated < p2.dateCreated ? -1:1);
+                    }
+                }
+                let records: Puzzle[];
+                let totalPages = 1;
+                let totalRecords = 1;
+                if (useRandomOrder) {
+                    records = this.getRandom(puzzles, count);
+                } else {
+                    let paginageResult = this.paginate(puzzles, count, page);
+                    records = paginageResult.items;
+                    totalPages = paginageResult.totalPages;
+                    totalRecords = paginageResult.totalRecords;
+                }
+                let body: IPaging<Puzzle> = {
+                    items: records,
+                    page: page,
+                    totalPages: totalPages,
+                    totalRecords: totalRecords
+                };
+                result = of(new HttpResponse({ status: 200, body: body }));
             } else if (request.method == 'POST') {
                 result = of(new HttpResponse({ status: 200, body: this.addPuzzle(request.body.pgn, request.body.description,
                     currentUser.id) }));
@@ -384,7 +413,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         localStorage.setItem('puzzles', JSON.stringify(puzzles));
     }
 
-    private getRandom(arr, n) {
+    private paginate<T>(array: Array<T>, pageSize: number, pageNumber: number): {items:Array<T>, totalRecords: number, totalPages:number} {
+        --pageNumber; // because pages logically start with 1, but technically with 0
+        return {
+            items: array.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize),
+            totalPages: Math.ceil(array.length / pageSize),
+            totalRecords: array.length
+        }
+    }
+
+    private getRandom(arr, n: number) {
         var result = new Array(n),
             len = arr.length,
             taken = new Array(len);
@@ -599,6 +637,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             description: 'Белые выигрывают'
           } as Puzzle,
           {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за белых',
+              fen: '8/2k5/8/1PKP4/8/8/2R5/8 w - - 0 1'              
+          } as Puzzle,
+          {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за белых',
+              fen: '8/4k3/2K5/2p5/8/8/2R2B2/8 w - - 0 1'              
+          } as Puzzle,
+          {
             id: this.generateId(),
             dateCreated: new Date(),
             puzzleType: PuzzleType.Standard,
@@ -658,6 +710,20 @@ export class FakeBackendInterceptor implements HttpInterceptor {
               puzzleType: PuzzleType.FindAllChecks,
               description: 'Найти все шахи за белых',
               fen: '1k6/6Q1/8/8/2K5/8/8/8 w - - 0 1'              
+          } as Puzzle,
+          {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за черных',
+              fen: '8/1K6/4n3/3kp3/2pp4/8/8/7b b - - 0 1'              
+          } as Puzzle,
+          {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за черных',
+              fen: '8/1K6/8/3kp3/2ppq3/8/8/8 b - - 0 1'              
           } as Puzzle,
           {
               id: this.generateId(),

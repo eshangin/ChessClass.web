@@ -4,17 +4,18 @@ import {SchoolClassService} from 'src/app/services/school-class.service';
 import {SchoolClass} from 'src/app/services/school-class.model';
 import {PupilService} from 'src/app/services/pupil.service';
 import {Pupil} from 'src/app/services/pupil.model';
-import {PuzzleService} from 'src/app/services/puzzle.service';
+import {PuzzleService, IPuzzlesFilter} from 'src/app/services/puzzle.service';
 import {Observable, Subscription, forkJoin, of} from 'rxjs';
 import {Puzzle} from 'src/app/services/puzzle.model';
 import {ToastrService} from 'ngx-toastr';
 import {FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angular/forms';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {SelectFavoritesModalComponent} from '../select-favorites-modal/select-favorites-modal.component';
 import {HomeworkService} from 'src/app/services/homework.service';
 import { CreatePuzzleModalComponent } from '../create-puzzle-modal/create-puzzle-modal.component';
 import { ICreatePuzzleResult } from '../create-puzzle-wizard/create-puzzle-wizard.component';
-import * as Chess from 'chess.js';
+import { SearchPuzzlesModalComponent } from '../search-puzzles-modal/search-puzzles-modal.component';
+import { IPaging } from 'src/app/services/paging';
+import { ChessHelperService } from 'src/app/services/chess-helper.service';
 
 interface ISelectedPuzzle {
   id: string;
@@ -46,7 +47,8 @@ export class AddHomeworkComponent implements OnInit {
     private toastr: ToastrService,
     private formBuilder: FormBuilder,
     private modalService: NgbModal,
-    private homeworkService: HomeworkService) { }
+    private homeworkService: HomeworkService,
+    private chessHelperService: ChessHelperService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -62,8 +64,8 @@ export class AddHomeworkComponent implements OnInit {
   }
 
   onAddPuzzles() {
-    this.getPuzzles(this.addPuzzlesCount).subscribe(puzzles => {
-      this.pushPuzzles(puzzles);
+    this.getPuzzles(this.addPuzzlesCount).subscribe(result => {
+      this.pushPuzzles(result.items);
     });    
   }
 
@@ -73,7 +75,8 @@ export class AddHomeworkComponent implements OnInit {
   }
 
   onAddFromFavoriteClick() {
-    const modalRef = this.modalService.open(SelectFavoritesModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
+    const modalRef = this.modalService.open(SearchPuzzlesModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
+    modalRef.componentInstance.forClassId = this.classId;
     modalRef.result.then((result) => {
       this.pushPuzzles(result.puzzles);
     }, () => {});
@@ -98,9 +101,8 @@ export class AddHomeworkComponent implements OnInit {
   private pushPuzzle(puzzle: Puzzle) {
     let fen = puzzle.fen;
     if (!fen) {
-      let engine = new Chess();
-      engine.load_pgn(puzzle.pgn);
-      fen = engine.fen()
+      let cp = this.chessHelperService.parsePuzzle(puzzle.pgn);
+      fen = cp.initialFen;
     }
     this.selectedPuzzles.push({
       id: puzzle.id,
@@ -138,9 +140,9 @@ export class AddHomeworkComponent implements OnInit {
     }));
   }
 
-  private getPuzzles(count: number): Observable<Puzzle[]> {
+  private getPuzzles(count: number): Observable<IPaging<Puzzle>> {
     // TODO :: take X puzzles of specific type (checkmate in 2 moves/3 moves/etc.)
-    return this.puzzleService.getPuzzles(count);
+    return this.puzzleService.getPuzzles({ count: count, sort: 'random' } as IPuzzlesFilter);
   }
 
   private loadPupils(): Subscription {

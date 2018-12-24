@@ -5,7 +5,6 @@ import { TeacherRoutingModule } from './teacher-routing.module';
 import {TeacherAreaComponent} from './teacher-area/teacher-area.component';
 import {SchoolClassComponent} from './school-class/school-class.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
-import {SelectFavoritesModalComponent} from './select-favorites-modal/select-favorites-modal.component';
 import {CreateClassModalComponent} from './create-class-modal/create-class-modal.component';
 import {AddPupilToClassModalComponent} from './add-pupil-to-class-modal/add-pupil-to-class-modal.component';
 import {TeacherPupilComponent} from './teacher-pupil/teacher-pupil.component';
@@ -18,10 +17,11 @@ import { PrintCodesComponent } from './print-codes/print-codes.component';
 import { PuzzleStatComponent } from './puzzle-stat/puzzle-stat.component';
 import { CreatePuzzleModalComponent } from './create-puzzle-modal/create-puzzle-modal.component';
 import { CreatePuzzleWizardComponent } from './create-puzzle-wizard/create-puzzle-wizard.component';
+import { SearchPuzzlesModalComponent } from './search-puzzles-modal/search-puzzles-modal.component';
 
 @NgModule({
   declarations: [
-    SelectFavoritesModalComponent,
+    SearchPuzzlesModalComponent,
     CreateClassModalComponent,
     AddPupilToClassModalComponent,
     SchoolClassComponent,
@@ -44,7 +44,7 @@ import { CreatePuzzleWizardComponent } from './create-puzzle-wizard/create-puzzl
     SharedModule
   ],
   entryComponents: [
-    SelectFavoritesModalComponent,
+    SearchPuzzlesModalComponent,
     CreateClassModalComponent,
     AddPupilToClassModalComponent,
     CreatePuzzleModalComponent

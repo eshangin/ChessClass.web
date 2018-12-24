@@ -22,8 +22,8 @@ export class SearchPuzzlesComponent implements OnInit {
     private chessHelperService: ChessHelperService) { }
 
   ngOnInit() {
-    this.puzzleService.getPuzzles().subscribe(puzzles => {      
-      this.searchItems = puzzles.map(p => {
+    this.puzzleService.getPuzzles().subscribe(result => {      
+      this.searchItems = result.items.map(p => {
         let fen = '';
         switch (p.puzzleType) {
           case PuzzleType.Standard:
