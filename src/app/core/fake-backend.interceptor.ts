@@ -658,6 +658,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
               puzzleType: PuzzleType.FindAllChecks,
               description: 'Найти все шахи за белых',
               fen: '1k6/6Q1/8/8/2K5/8/8/8 w - - 0 1'              
+          } as Puzzle,
+          {
+              id: this.generateId(),
+              dateCreated: new Date(),
+              puzzleType: PuzzleType.FindAllChecks,
+              description: 'Найти все шахи за черных',
+              fen: '1K6/8/8/2k5/6r1/8/8/8 b - - 0 1'              
           } as Puzzle
         ];
       }
