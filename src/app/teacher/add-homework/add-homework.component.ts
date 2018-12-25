@@ -32,6 +32,7 @@ interface ISelectedPuzzle {
 export class AddHomeworkComponent implements OnInit {
 
   classId: string;
+  className: string;
   myClasses: SchoolClass[] = [];
   classPupils: Pupil[] = [];
   selectedPuzzles: ISelectedPuzzle[] = [];
@@ -55,7 +56,10 @@ export class AddHomeworkComponent implements OnInit {
       formPuzzles: this.formBuilder.array([], Validators.required)
     });
     this.classId = this.route.snapshot.paramMap.get('id');
-    this.classService.getClasses().subscribe(classes => this.myClasses = classes);
+    this.classService.getClasses().subscribe(classes => { 
+      this.myClasses = classes;
+      this.className = classes.find(c => c.id == this.classId).name;
+    });
     this.loadPupils();
   }
 

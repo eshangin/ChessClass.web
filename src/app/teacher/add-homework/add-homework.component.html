@@ -1,15 +1,15 @@
-<h2>Назначить домашнее задание</h2>
+<h2><a routerLink="/my/classes/{{classId}}">{{className}}</a>, назначить домашнее задание</h2>
 
-<form class="mt-4" (ngSubmit)="onApplyHomeworkClick()" [formGroup]="form" #ngForm="ngForm">
+<form class="mt-2" (ngSubmit)="onApplyHomeworkClick()" [formGroup]="form" #ngForm="ngForm">
   <div class="form-inline mb-2">
-    <label class="mr-2" for="classInput">Класс</label>
+    <!-- <label class="mr-2" for="classInput">Класс</label>
     <select [(ngModel)]="classId" 
           name="classId" 
           class="form-control mr-sm-4" 
           id="classInput"
           (ngModelChange)="onClassChange()" [ngModelOptions]="{standalone: true}">
       <option *ngFor="let c of myClasses" [ngValue]="c.id">{{c.name}}</option>
-    </select>
+    </select> -->
 
     <!-- <label class="mr-2" for="forWho">Кому?</label>
     <select [(ngModel)]="selectedPupilId" name="assignToPupilId" class="form-control mr-sm-2" id="forWho" [ngModelOptions]="{standalone: true}">
