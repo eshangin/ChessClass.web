@@ -7,7 +7,6 @@ import { ChessHelperService } from 'src/app/services/chess-helper.service';
 interface ISelectablePuzzle {
   puzzle: Puzzle;
   fen: string;
-  turn: 'w' | 'b';
   solution: any;
 }
 

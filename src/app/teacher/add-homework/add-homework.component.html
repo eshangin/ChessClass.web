@@ -40,14 +40,20 @@
     <div class="text-danger mb-3" *ngIf="formPuzzles.invalid && ngForm.submitted">Необходимо добавить хотя бы одну задачу</div>
 
     <div class="mb-2" *ngIf="selectedPuzzles.length">
-      <div *ngFor="let p of selectedPuzzles; let i = index" class="pull-left d-inline-block mr-2 mb-2 b-homework-puzzle card">
+      <div *ngFor="let p of selectedPuzzles; let i = index" class="card d-inline-block mr-3 mb-3 b-homework-puzzle align-top" style="width:182px">
         <app-pure-chessground [sizePx]="180" [config]="{fen: p.fen, coordinates: false,viewOnly: true}"></app-pure-chessground>
         <div class="card-body p-2">
           <small>
-            <div class="text-truncate"><i>{{p.description}}</i></div>
+            <div class="text-truncate"><i>{{p.puzzle.description}}</i></div>
+            <app-chess-move-list *ngIf="p.puzzle.puzzleType == PuzzleType.Standard" class="d-block" [moves]="p.solution.moves" [blackIsFirst]="p.solution.turn == 'b'"></app-chess-move-list>
+            <div *ngIf="p.puzzle.puzzleType == PuzzleType.FindAllChecks">
+              <span *ngFor="let m of p.solution.allChecks">
+                <app-chess-move class="badge badge-light" [move]="m.san" [moveColor]="p.solution.turn"></app-chess-move>
+              </span>
+            </div>
           </small>
           <hr class="mt-1 mb-2">
-          <button (click)="removePuzzle(i)" type="button" class="btn btn-secondary btn-sm">исключить</button>
+          <button (click)="removePuzzle(i)" type="button" class="btn btn-light btn-sm">исключить</button>
         </div>
       </div>
       <div class="clearfix"></div>

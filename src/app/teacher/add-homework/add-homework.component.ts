@@ -6,7 +6,7 @@ import {PupilService} from 'src/app/services/pupil.service';
 import {Pupil} from 'src/app/services/pupil.model';
 import {PuzzleService, IPuzzlesFilter} from 'src/app/services/puzzle.service';
 import {Observable, Subscription, forkJoin, of} from 'rxjs';
-import {Puzzle} from 'src/app/services/puzzle.model';
+import {Puzzle, PuzzleType} from 'src/app/services/puzzle.model';
 import {ToastrService} from 'ngx-toastr';
 import {FormGroup, FormBuilder, FormControl, Validators, FormArray} from '@angular/forms';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -18,10 +18,10 @@ import { IPaging } from 'src/app/services/paging';
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
 
 interface ISelectedPuzzle {
-  id: string;
+  puzzle: Puzzle;
   fen: string;
   pgn?: string;
-  description: string;
+  solution: any;
 }
 
 @Component({
@@ -38,6 +38,7 @@ export class AddHomeworkComponent implements OnInit {
   selectedPuzzles: ISelectedPuzzle[] = [];
   addPuzzlesCount: number = 3;
   form: FormGroup;
+  PuzzleType = PuzzleType;
 
   constructor(
     private route: ActivatedRoute,
@@ -103,16 +104,30 @@ export class AddHomeworkComponent implements OnInit {
   }
 
   private pushPuzzle(puzzle: Puzzle) {
-    let fen = puzzle.fen;
-    if (!fen) {
-      let cp = this.chessHelperService.parsePuzzle(puzzle.pgn);
-      fen = cp.initialFen;
-    }
+    let fen = '';
+    let solution: any;
+    switch (puzzle.puzzleType) {
+      case PuzzleType.Standard:
+        let cp = this.chessHelperService.parsePuzzle(puzzle.pgn);
+        fen = cp.initialFen;
+        solution = {
+          moves: cp.solutionMovements,
+          turn: cp.turn
+        };
+        break;
+      case PuzzleType.FindAllChecks:
+        fen = puzzle.fen;
+        solution = {
+          allChecks: this.chessHelperService.findAllChecks(puzzle.fen),
+          turn: this.chessHelperService.getTurn(puzzle.fen)
+        };
+        break;
+    }    
     this.selectedPuzzles.push({
-      id: puzzle.id,
+      puzzle: puzzle,
       fen: fen,
-      description: puzzle.description,
-      pgn: puzzle.pgn
+      pgn: puzzle.pgn,
+      solution: solution
     });
     this.formPuzzles.push(new FormControl());
   }
@@ -124,7 +139,7 @@ export class AddHomeworkComponent implements OnInit {
   onApplyHomeworkClick() {
     if (this.form.valid) {
       this.saveNewPuzzles().subscribe((results) => {
-        const puzzleIds = this.selectedPuzzles.filter(p => !!p.id).map(p => p.id);
+        const puzzleIds = this.selectedPuzzles.filter(p => !!p.puzzle.id).map(p => p.puzzle.id);
         const newPuzzleIds = results.map(p => p.id);
 
         this.homeworkService.addHomework(this.classId, puzzleIds.concat(newPuzzleIds)).subscribe(() => {
@@ -136,11 +151,11 @@ export class AddHomeworkComponent implements OnInit {
   }
 
   private saveNewPuzzles(): Observable<Puzzle[]> {
-    let newPuzzles = this.selectedPuzzles.filter(p => !p.id);
+    let newPuzzles = this.selectedPuzzles.filter(p => !p.puzzle.id);
     return newPuzzles.length == 0
       ? of<Puzzle[]>([])
       : forkJoin(newPuzzles.map(p => {
-      return this.puzzleService.createPuzzle(p.pgn, p.description);
+      return this.puzzleService.createPuzzle(p.pgn, p.puzzle.description);
     }));
   }
 
