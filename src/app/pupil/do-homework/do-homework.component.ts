@@ -74,15 +74,17 @@ export class DoHomeworkComponent implements OnInit {
   }
 
   findAllChecksPuzzleOnMoveMade(moveInfo: IMoveInfo) {
-    this.puzzleState = moveInfo.stateType;
-    this.myLastMove = moveInfo.move;
-    this.saveAttempt([moveInfo.move]).subscribe();
-    if (moveInfo.stateType == PuzzleSolutionStateType.CorrectMove || moveInfo.stateType == PuzzleSolutionStateType.PuzzleDone) {
-      if (this.findAllChecksPuzzleInfo.foundChecks.indexOf(moveInfo.move.san) == -1) {
-        this.findAllChecksPuzzleInfo.foundChecks.push(moveInfo.move.san);
-        this.findAllChecksPuzzleInfo.checksLeft--;
-        if (moveInfo.stateType == PuzzleSolutionStateType.PuzzleDone) {
-          this.markPuzzleFixed();
+    if (this.puzzleState != PuzzleSolutionStateType.PuzzleDone) {
+      this.puzzleState = moveInfo.stateType;
+      this.myLastMove = moveInfo.move;
+      this.saveAttempt([moveInfo.move]).subscribe();
+      if (moveInfo.stateType == PuzzleSolutionStateType.CorrectMove || moveInfo.stateType == PuzzleSolutionStateType.PuzzleDone) {
+        if (this.findAllChecksPuzzleInfo.foundChecks.indexOf(moveInfo.move.san) == -1) {
+          this.findAllChecksPuzzleInfo.foundChecks.push(moveInfo.move.san);
+          this.findAllChecksPuzzleInfo.checksLeft--;
+          if (moveInfo.stateType == PuzzleSolutionStateType.PuzzleDone) {
+            this.markPuzzleFixed();
+          }
         }
       }
     }
@@ -138,6 +140,7 @@ export class DoHomeworkComponent implements OnInit {
       this.puzzleState = null;
       this.currentPuzzle = this.nextPuzzle;
       this.nextPuzzle = null;
+      this.findAllChecksPuzzleInfo = null;
     } else {
       this.router.navigate(['/p']);
     }
