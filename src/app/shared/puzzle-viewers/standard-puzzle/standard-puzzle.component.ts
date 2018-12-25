@@ -56,7 +56,9 @@ export class StandardPuzzleComponent implements OnChanges {
         }
       } else {
         this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.IncorrectMove, move: moveInfo.move});
-        this.board.undoMove();
+        setTimeout(() => {
+          this.board.undoMove();
+        }, 1000);        
         //this.tryMovePieceIfOnlyOnePossibleMove(board);
       }
     }
