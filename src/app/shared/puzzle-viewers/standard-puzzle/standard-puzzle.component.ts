@@ -9,11 +9,11 @@ export enum PuzzleSolutionStateType {
 }
 
 @Component({
-  selector: 'app-chess-puzzle',
-  templateUrl: './chess-puzzle.component.html',
-  styleUrls: ['./chess-puzzle.component.scss']
+  selector: 'app-standard-puzzle',
+  templateUrl: './standard-puzzle.component.html',
+  styleUrls: ['./standard-puzzle.component.scss']
 })
-export class ChessPuzzleComponent implements OnChanges {
+export class StandardPuzzleComponent implements OnChanges {
 
   @Input() pgn: string;
   @Input() showBoardNotation: boolean = true;

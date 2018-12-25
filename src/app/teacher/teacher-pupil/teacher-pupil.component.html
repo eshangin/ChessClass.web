@@ -6,7 +6,7 @@
     <span>Назначено {{h.dateCreated | date:'d MMMM, h:mm':undefined:'ru' }}</span>
     <hr>
     <div *ngFor="let q of h.puzzles" class="pull-left d-inline-block mr-3 mb-3">
-      <app-chess-puzzle style="width: 300px" [pgn]="q.pgn"></app-chess-puzzle>
+      <app-standard-puzzle style="width: 300px" [pgn]="q.pgn"></app-standard-puzzle>
     </div>
     <div class="clearfix"></div>
   </div>

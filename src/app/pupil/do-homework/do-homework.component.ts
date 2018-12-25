@@ -3,13 +3,13 @@ import {AuthService} from 'src/app/services/auth.service';
 import {HomeworkService} from 'src/app/services/homework.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Puzzle, PuzzleType} from 'src/app/services/puzzle.model';
-import { PuzzleSolutionStateType } from 'src/app/shared/puzzle-viewers/chess-puzzle/chess-puzzle.component';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/services/user.model';
 import { ChatMessage } from 'src/app/services/chat-message.model';
 import { MoveInfo, MoveType } from 'src/app/shared/chess-board/chess-board.component';
 import { IInitializedInfo, IMoveInfo } from 'src/app/shared/puzzle-viewers/find-all-checks-puzzle/find-all-checks-puzzle.component';
 import * as Chess from 'chess.js';
+import { PuzzleSolutionStateType } from 'src/app/shared/puzzle-viewers/standard-puzzle/standard-puzzle.component';
 
 @Component({
   selector: 'app-do-homework',

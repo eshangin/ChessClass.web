@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ChessBoardComponent} from './chess-board/chess-board.component';
 import {GameControlsComponent} from './game-controls/game-controls.component';
-import {ChessPuzzleComponent} from './puzzle-viewers/chess-puzzle/chess-puzzle.component';
 import { HomeworkPuzzleChatComponent } from './homework-puzzle-chat/homework-puzzle-chat.component';
 import { FormsModule } from '@angular/forms';
 import { ChessMoveComponent } from './chess-move/chess-move.component';
@@ -12,12 +11,13 @@ import { CgPieceComponent } from './cg-piece/cg-piece.component';
 import { PureChessgroundComponent } from './pure-chessground/pure-chessground.component';
 import { CgBoardEditorComponent } from './cg-board-editor/cg-board-editor.component';
 import { FindAllChecksPuzzleComponent } from './puzzle-viewers/find-all-checks-puzzle/find-all-checks-puzzle.component';
+import { StandardPuzzleComponent } from './puzzle-viewers/standard-puzzle/standard-puzzle.component';
 
 @NgModule({
   declarations: [    
     ChessBoardComponent,
     GameControlsComponent,
-    ChessPuzzleComponent,
+    StandardPuzzleComponent,
     HomeworkPuzzleChatComponent,
     ChessMoveComponent,
     ChessMoveListComponent,
@@ -34,7 +34,7 @@ import { FindAllChecksPuzzleComponent } from './puzzle-viewers/find-all-checks-p
   exports: [
     ChessBoardComponent,
     GameControlsComponent,
-    ChessPuzzleComponent,
+    StandardPuzzleComponent,
     HomeworkPuzzleChatComponent,
     ChessMoveComponent,
     ChessMoveListComponent,

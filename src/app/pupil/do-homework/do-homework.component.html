@@ -1,10 +1,10 @@
 <div class="row" *ngIf="currentPuzzle">
   <div class="col-4" [ngSwitch]="currentPuzzle.puzzleType">
-    <app-chess-puzzle 
+    <app-standard-puzzle 
       *ngSwitchCase="PuzzleType.Standard"       
       [pgn]="currentPuzzle.pgn" 
       (pieceMoved)="onPieceMoved($event)"
-      (puzzleSolutionStateChanged)="onPuzzleSolutionStateChanged($event)"></app-chess-puzzle>
+      (puzzleSolutionStateChanged)="onPuzzleSolutionStateChanged($event)"></app-standard-puzzle>
     <app-find-all-checks-puzzle 
       *ngSwitchCase="PuzzleType.FindAllChecks" 
       [fen]="currentPuzzle.fen" 
