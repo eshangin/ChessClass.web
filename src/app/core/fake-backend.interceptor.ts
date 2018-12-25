@@ -97,7 +97,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         let result = null;
 
-        if (request.url.match(/api\/puzzles/)) {
+        if (request.url.match(/api\/puzzles\/(\w+)$/)) {
+            const puzzleId = request.url.split('/')[3];
+            const puzzle = db.puzzles.find(p => p.id == puzzleId);
+            result = of(new HttpResponse({ status: 200, body: puzzle }));
+        } else if (request.url.match(/api\/puzzles/)) {
             if (request.method === 'GET') {
                 const url = this.router.parseUrl(request.url);
                 const page = +url.queryParamMap.get('page') || 1;

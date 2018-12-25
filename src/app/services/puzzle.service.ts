@@ -33,6 +33,10 @@ export class PuzzleService {
     return this.http.get<IPaging<Puzzle>>(url.toString());
   }
 
+  getPuzzle(puzzleId: string): Observable<Puzzle> {
+    return this.http.get<Puzzle>(`/api/puzzles/${puzzleId}`);
+  }
+
   getPuzzleFixStatistics(homeworkId: string, puzzleId: string): Observable<any> {
     var url = this.router.parseUrl(`/api/homeworks/${homeworkId}/puzzles/${puzzleId}/statistics`);
     return this.http.get<any>(url.toString());

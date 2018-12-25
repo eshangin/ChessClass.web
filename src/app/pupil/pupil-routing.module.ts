@@ -11,7 +11,8 @@ const routes: Routes = [
     children: [
       { path: '', component: PupilHomeComponent },      
       { path: 'do-homeworks', component: DoHomeworkComponent },
-      { path: 'do-homeworks/:id', component: DoHomeworkComponent },
+      { path: 'do-homeworks/:homeworkId', component: DoHomeworkComponent },
+      { path: 'do-homeworks/:homeworkId/puzzles/:puzzleId', component: DoHomeworkComponent },
     ]
   }
 ];

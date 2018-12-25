@@ -11,6 +11,7 @@ import { IInitializedInfo, IMoveInfo } from 'src/app/shared/puzzle-viewers/find-
 import * as Chess from 'chess.js';
 import { PuzzleSolutionStateType } from 'src/app/shared/puzzle-viewers/standard-puzzle/standard-puzzle.component';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { PuzzleService } from 'src/app/services/puzzle.service';
 
 @Component({
   selector: 'app-do-homework',
@@ -26,7 +27,7 @@ export class DoHomeworkComponent implements OnInit {
   initialMessagesCount: number = 0;
   myLastMove: ChessJS.Move;
   private homeworkId: string;
-  private nextPuzzle: Puzzle = null;
+  private puzzleId: string;
   private movements: ChessJS.Move[] = [];
   PuzzleType = PuzzleType;
   findAllChecksPuzzleInfo: {
@@ -41,20 +42,40 @@ export class DoHomeworkComponent implements OnInit {
     private authService: AuthService,
     private homeworkService: HomeworkService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private puzzleService: PuzzleService
   ) { }
 
   ngOnInit() {
     this.currentPupil = this.authService.currentUser;
-    this.homeworkId = this.route.snapshot.paramMap.get('id');
-    this.fetchPuzzle().subscribe(p => {
-      this.setNextPuzzle(p);
-      this.updateCurrentPuzzle();
-    });    
+    this.homeworkId = this.route.snapshot.paramMap.get('homeworkId');
+    this.puzzleId = this.route.snapshot.paramMap.get('puzzleId');
+    this.route.params.subscribe(
+      params => {
+        console.log('params change', params);
+        this.homeworkId = params['homeworkId'];
+        this.puzzleId = params['puzzleId'];
+        if (!this.puzzleId) {
+          this.fetchNextPuzzle().subscribe(p => {
+            this.redirectToPuzzle(this.homeworkId, p.id, true);
+          });
+        } else {
+          this.getPuzzle(this.puzzleId).subscribe(p => {
+            this.updateCurrentPuzzle(p);
+          });    
+        }
+      }
+    );
   }
 
   goToNextPuzzle() {
-    this.updateCurrentPuzzle();
+    this.fetchNextPuzzle().subscribe(p => {
+      if (p) {
+        this.redirectToPuzzle(this.homeworkId, p.id);
+      } else {
+        this.router.navigate(['/p']);
+      }      
+    });
   }
 
   onPuzzleSolutionStateChanged(data: {stateType: PuzzleSolutionStateType, move: ChessJS.Move}) {
@@ -118,17 +139,18 @@ export class DoHomeworkComponent implements OnInit {
     return this.homeworkService.saveAttempt(this.homeworkId, this.currentPuzzle.id, movements.map(m => m.san));
   }
 
-  private setNextPuzzle(p: Puzzle) {
-    this.nextPuzzle = p;
+  private redirectToPuzzle(homeworkId: string, puzzleId: string, replaceUrl: boolean = false) {
+    this.router.navigate(['/p/do-homeworks/' + homeworkId + '/puzzles/' + puzzleId], {replaceUrl: replaceUrl});
   }
 
   private markPuzzleFixed() {
     this.homeworkService.markPuzzleFixed(this.authService.currentUser.id, this.homeworkId, this.currentPuzzle.id).subscribe(() => {
-      this.fetchPuzzle().subscribe(p => this.setNextPuzzle(p));
+      //this.fetchNextPuzzle().subscribe(p => this.setNextPuzzle(p));
+      // TODO
     });
   }
 
-  private fetchPuzzle(): Observable<Puzzle> {
+  private fetchNextPuzzle(): Observable<Puzzle> {
     let call = this.homeworkId
       ? this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, this.homeworkId, 1)
       : this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, null, 1);
@@ -138,16 +160,15 @@ export class DoHomeworkComponent implements OnInit {
     })
   }
 
-  private updateCurrentPuzzle() {
-    if (this.nextPuzzle) {
-      this.movements = [];
-      this.puzzleState = null;
-      this.currentPuzzle = this.nextPuzzle;
-      this.nextPuzzle = null;
-      this.findAllChecksPuzzleInfo = null;
-    } else {
-      this.router.navigate(['/p']);
-    }
+  private getPuzzle(puzzleId: string): Observable<Puzzle> {
+    return this.puzzleService.getPuzzle(puzzleId);
+  }
+
+  private updateCurrentPuzzle(puzzle: Puzzle) {
+    this.movements = [];
+    this.puzzleState = null;
+    this.currentPuzzle = puzzle;
+    this.findAllChecksPuzzleInfo = null;
   }
 
 }
