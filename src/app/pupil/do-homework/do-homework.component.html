@@ -13,8 +13,8 @@
       class="d-block"></app-find-all-checks-puzzle>
   </div>
   <div class="col-8">
-    <ngb-tabset>
-      <ngb-tab title="Задача">
+    <ngb-tabset #tabs>
+      <ngb-tab title="Задача" id="tabPuzzleTask">
         <ng-template ngbTabContent>
           <div class="p-4 bg-light">
             {{currentPuzzle.description}}

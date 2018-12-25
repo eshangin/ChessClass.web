@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {AuthService} from 'src/app/services/auth.service';
 import {HomeworkService} from 'src/app/services/homework.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -10,6 +10,7 @@ import { MoveInfo, MoveType } from 'src/app/shared/chess-board/chess-board.compo
 import { IInitializedInfo, IMoveInfo } from 'src/app/shared/puzzle-viewers/find-all-checks-puzzle/find-all-checks-puzzle.component';
 import * as Chess from 'chess.js';
 import { PuzzleSolutionStateType } from 'src/app/shared/puzzle-viewers/standard-puzzle/standard-puzzle.component';
+import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-do-homework',
@@ -34,6 +35,7 @@ export class DoHomeworkComponent implements OnInit {
     foundChecks: string[];
     checksLeft: number;
   };
+  @ViewChild('tabs') tabset: NgbTabset;
 
   constructor(
     private authService: AuthService,
@@ -56,6 +58,7 @@ export class DoHomeworkComponent implements OnInit {
   }
 
   onPuzzleSolutionStateChanged(data: {stateType: PuzzleSolutionStateType, move: ChessJS.Move}) {
+    this.tabset.select('tabPuzzleTask');
     this.puzzleState = data.stateType;
     this.myLastMove = data.move;
     if (data.stateType == PuzzleSolutionStateType.PuzzleDone) {
@@ -74,6 +77,7 @@ export class DoHomeworkComponent implements OnInit {
   }
 
   findAllChecksPuzzleOnMoveMade(moveInfo: IMoveInfo) {
+    this.tabset.select('tabPuzzleTask');
     if (this.puzzleState != PuzzleSolutionStateType.PuzzleDone) {
       this.puzzleState = moveInfo.stateType;
       this.myLastMove = moveInfo.move;
