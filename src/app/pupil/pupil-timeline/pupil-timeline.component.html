@@ -7,11 +7,11 @@
           <span>Назначены {{a.data.assignedPuzzlesCount}} задачи. </span>
 
           <span [ngSwitch]="a.data.fixedPuzzlesCount">
-            <span *ngSwitchCase="0"><a routerLink="/p/do-homeworks/{{a.data.homeworkId}}">Решить задачи</a></span>
+            <span *ngSwitchCase="0"><a [routerLink]="['/p/do-homeworks', {homeworkId:a.data.homeworkId}]">Решить задачи</a></span>
             <span *ngSwitchCase="a.data.assignedPuzzlesCount">Все задачи решены <i class="far fa-thumbs-up light-green"></i></span>
             <span *ngSwitchDefault>
               Осталось решить <span class="badge badge-warning bg-light-yellow">{{a.data.assignedPuzzlesCount - a.data.fixedPuzzlesCount}}</span> задач.
-              <a routerLink="/p/do-homeworks/{{a.data.homeworkId}}">Решить оставшиеся</a>
+              <a [routerLink]="['/p/do-homeworks', {homeworkId:a.data.homeworkId}]">Решить оставшиеся</a>
             </span>
           </span>
         </span>

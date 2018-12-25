@@ -48,8 +48,6 @@ export class DoHomeworkComponent implements OnInit {
 
   ngOnInit() {
     this.currentPupil = this.authService.currentUser;
-    this.homeworkId = this.route.snapshot.paramMap.get('homeworkId');
-    this.puzzleId = this.route.snapshot.paramMap.get('puzzleId');
     this.route.params.subscribe(
       params => {
         console.log('params change', params);
@@ -140,7 +138,13 @@ export class DoHomeworkComponent implements OnInit {
   }
 
   private redirectToPuzzle(homeworkId: string, puzzleId: string, replaceUrl: boolean = false) {
-    this.router.navigate(['/p/do-homeworks/' + homeworkId + '/puzzles/' + puzzleId], {replaceUrl: replaceUrl});
+    let matrixParams = {
+      puzzleId: puzzleId
+    };
+    if (homeworkId) {
+      matrixParams['homeworkId'] = homeworkId;
+    }
+    this.router.navigate(['/p/do-homeworks', matrixParams], {replaceUrl: replaceUrl});
   }
 
   private markPuzzleFixed() {
@@ -169,6 +173,7 @@ export class DoHomeworkComponent implements OnInit {
     this.puzzleState = null;
     this.currentPuzzle = puzzle;
     this.findAllChecksPuzzleInfo = null;
+    console.log(this.currentPuzzle);
   }
 
 }

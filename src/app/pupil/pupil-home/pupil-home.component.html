@@ -1,24 +1,3 @@
-<!-- <table class="table table-bordered">
-  <tbody>
-    <tr *ngFor="let h of homeworks">
-      <td>
-        {{h.dateCreated | date:'d MMMM, h:mm':undefined:'ru' }} назначено {{h.puzzles.length}} задач
-      </td>
-      <td class="text-right" [ngSwitch]="h.pupilStats[0].fixedPuzzlesCount">
-        <span *ngSwitchCase="0">
-          <a routerLink="/p/do-homeworks/{{h.id}}">решить</a>
-        </span>
-        <span *ngSwitchCase="h.puzzles.length">
-          задачи решены <i class="fas fa-thumbs-up text-success"></i>
-        </span>
-        <span *ngSwitchDefault>
-            <a routerLink="/p/do-homeworks/{{h.id}}">решить</a> {{h.puzzles.length - h.pupilStats[0].fixedPuzzlesCount}} оставшиеся задачи
-        </span>
-      </td>
-    </tr>
-  </tbody>
-</table> -->
-
 <div class="jumbotron" *ngIf="homeworksCount == 0; else homeworks_added">
   <h1 class="display-4">Привет!</h1>
   <p class="lead">Здесь будут отображаться твои домашние задания, но на данный момент тренер еще не назначил ни одного.</p>

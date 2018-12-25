@@ -10,9 +10,7 @@ const routes: Routes = [
     component: PupilAreaComponent,
     children: [
       { path: '', component: PupilHomeComponent },      
-      { path: 'do-homeworks', component: DoHomeworkComponent },
-      { path: 'do-homeworks/:homeworkId', component: DoHomeworkComponent },
-      { path: 'do-homeworks/:homeworkId/puzzles/:puzzleId', component: DoHomeworkComponent },
+      { path: 'do-homeworks', component: DoHomeworkComponent }
     ]
   }
 ];
