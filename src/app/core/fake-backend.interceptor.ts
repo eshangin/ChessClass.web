@@ -634,15 +634,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             dateCreated: new Date(),
             puzzleType: PuzzleType.Standard,
             pgn: `
-[Round "-"]
-[White "9 AUTHORS"]
-[Black "#2"]
-[Result "1-0"]
-[FEN "8/8/8/8/1Q6/1K6/8/2Nk4 w - - 0 1"]
+[FEN "8/7p/3B3k/5K1p/8/8/8/8 w - - 0 1"]
 [SetUp "1"]
 
-1. Qa5 Kxc1 2. Qe1# 1-0`.trim(),
-            description: 'Белые выигрывают'
+1. Bf8# 1-0`.trim(),
+            description: 'Найти лучший ход за белых'
           } as Puzzle,
           {
               id: this.generateId(),
@@ -663,54 +659,33 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             dateCreated: new Date(),
             puzzleType: PuzzleType.Standard,
             pgn: `
-[Event "Illustrated London News"]
-[Site "?"]
-[Date "1849.??.??"]
-[Round "-"]
-[White "A. B. S."]
-[Black "#2"]
-[Result "1-0"]
-[FEN "8/8/5R2/8/2P1k3/2K5/5P2/2B5 w - - 0 1"]
+[FEN "4r2k/pp1bn2p/6p1/5p1q/3npB2/1BP4P/PP3PP1/4R1K1 w - - 0 1"]
 [SetUp "1"]
 
-1. Bb2 Ke5 2. Kd3# 1-0`.trim(),
-            description: 'Белые выигрывают'
+1. Be5# 1-0`.trim(),
+            description: 'Найти лучший ход за белых'
           } as Puzzle,
           {
             id: this.generateId(),
             dateCreated: new Date(),
             puzzleType: PuzzleType.Standard,
             pgn: `
-[Event "Probleemblad"]
-[Site "?"]
-[Date "1983.??.??"]
-[Round "-"]
-[White "AARZEN Hans"]
-[Black "#2"]
-[Result "1-0"]
-[FEN "2R3N1/3prn2/NP2qp2/3k1B2/R4PPQ/BnP2P2/bK2p3/8 w - - 0 1"]
+[FEN "2kr2nr/p2n1ppp/2p1p3/8/1P1P1B2/2N5/1PPKBPPP/7q w - - 0 1"]
 [SetUp "1"]
 
-1. Qxf6 Bb1 2. c4# 1-0`.trim(),
-            description: 'Белые выигрывают'
+1. Ba6# 1-0`.trim(),
+            description: 'Найти лучший ход за белых'
           } as Puzzle,
           {
             id: this.generateId(),
             dateCreated: new Date(),
             puzzleType: PuzzleType.Standard,
             pgn: `
-[Event "The Chess Players' Quarterly Chronicle"]
-[Site "?"]
-[Date "1870.??.??"]
-[Round "-"]
-[White "ABBOTT Joseph William"]
-[Black "#2"]
-[Result "1-0"]
-[FEN "K5Q1/3p1R2/3P3p/5N1p/3Pk2P/3p1p2/3B4/7B w - - 0 1"]
+[FEN "8/5Np1/p7/4qp2/2K1kn2/4b3/8/8 w - - 0 1"]
 [SetUp "1"]
 
-1. Kb7 Kd5 2. Re7# 1-0`.trim(),
-            description: 'Белые выигрывают'
+1. Ng5# 1-0`.trim(),
+            description: 'Найти лучший ход за белых'
           } as Puzzle,
           {
               id: this.generateId(),
