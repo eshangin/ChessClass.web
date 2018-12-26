@@ -714,6 +714,17 @@ export class FakeBackendInterceptor implements HttpInterceptor {
               puzzleType: PuzzleType.FindAllChecks,
               description: 'Найти все шахи за черных',
               fen: '1K6/8/8/2k5/6r1/8/8/8 b - - 0 1'              
+          } as Puzzle,
+          {
+            id: this.generateId(),
+            dateCreated: new Date(),
+            puzzleType: PuzzleType.Standard,
+            pgn: `
+[FEN "r2q1b1r/1pN1n1pp/p1n3k1/4Pb2/2BP4/8/PPP3PP/R1BQ1RK1 w - - 0 1"]
+[SetUp "1"]
+
+1. Qg4+ Bxg4 2. Bf7# 1-0`.trim(),
+            description: 'Найти лучший ход за белых'
           } as Puzzle
         ];
       }
