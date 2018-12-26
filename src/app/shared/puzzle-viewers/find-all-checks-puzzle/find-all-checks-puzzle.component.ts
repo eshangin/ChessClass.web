@@ -28,6 +28,7 @@ export class FindAllChecksPuzzleComponent implements OnChanges {
   boardConfig: Config;
   @Output() moveMade = new EventEmitter<IMoveInfo>();
   @Output() initialized = new EventEmitter<IInitializedInfo>();
+  @Output() boardInit = new EventEmitter<Api>();
   private cgApi: Api;
   private initialFenInfo: {
     dests: {
@@ -81,6 +82,7 @@ export class FindAllChecksPuzzleComponent implements OnChanges {
 
   onBoardInit(cgApi: Api) {
     this.cgApi = cgApi;
+    this.boardInit.emit(cgApi);
   }
 
   private onMove(orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) {

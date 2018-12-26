@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewChecked } from '@angular/core';
 import {AuthService} from 'src/app/services/auth.service';
 import {HomeworkService} from 'src/app/services/homework.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -12,13 +12,14 @@ import * as Chess from 'chess.js';
 import { PuzzleSolutionStateType } from 'src/app/shared/puzzle-viewers/standard-puzzle/standard-puzzle.component';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { PuzzleService } from 'src/app/services/puzzle.service';
+import { Api } from 'chessground/api';
 
 @Component({
   selector: 'app-do-homework',
   templateUrl: './do-homework.component.html',
   styleUrls: ['./do-homework.component.scss']
 })
-export class DoHomeworkComponent implements OnInit {
+export class DoHomeworkComponent implements OnInit, AfterViewChecked {
 
   currentPuzzle: Puzzle;
   puzzleState?: PuzzleSolutionStateType;
@@ -37,6 +38,8 @@ export class DoHomeworkComponent implements OnInit {
     checksLeft: number;
   };
   @ViewChild('tabs') tabset: NgbTabset;
+  private findAllChecksPuzzleCgApi: Api = null;
+  private findAllChecksPuzzleNeedRedraw: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -50,7 +53,6 @@ export class DoHomeworkComponent implements OnInit {
     this.currentPupil = this.authService.currentUser;
     this.route.params.subscribe(
       params => {
-        console.log('params change', params);
         this.homeworkId = params['homeworkId'];
         this.puzzleId = params['puzzleId'];
         if (!this.puzzleId) {
@@ -64,6 +66,15 @@ export class DoHomeworkComponent implements OnInit {
         }
       }
     );
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.findAllChecksPuzzleNeedRedraw) {
+      this.findAllChecksPuzzleNeedRedraw = false;
+      setTimeout(() => {
+        this.findAllChecksPuzzleCgApi.redrawAll();
+      }, 0);      
+    }
   }
 
   goToNextPuzzle() {
@@ -111,6 +122,11 @@ export class DoHomeworkComponent implements OnInit {
         }
       }
     }
+  }
+
+  findAllChecksPuzzleOnBoardInit(cgApi: Api) {
+    this.findAllChecksPuzzleNeedRedraw = true;
+    this.findAllChecksPuzzleCgApi = cgApi;
   }
 
   onChatThreadLoaded(chatMessages: ChatMessage[]) {
@@ -173,7 +189,7 @@ export class DoHomeworkComponent implements OnInit {
     this.puzzleState = null;
     this.currentPuzzle = puzzle;
     this.findAllChecksPuzzleInfo = null;
-    console.log(this.currentPuzzle);
+    this.findAllChecksPuzzleCgApi = null;
   }
 
 }

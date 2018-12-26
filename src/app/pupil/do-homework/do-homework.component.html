@@ -9,6 +9,7 @@
       *ngSwitchCase="PuzzleType.FindAllChecks" 
       [fen]="currentPuzzle.fen" 
       (initialized)="findAllChecksPuzzleOnInitialized($event)"
+      (boardInit)="findAllChecksPuzzleOnBoardInit($event)"
       (moveMade)="findAllChecksPuzzleOnMoveMade($event)"
       class="d-block"></app-find-all-checks-puzzle>
   </div>

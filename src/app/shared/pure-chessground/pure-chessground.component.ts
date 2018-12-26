@@ -45,13 +45,10 @@ export class PureChessgroundComponent implements AfterViewInit, OnChanges, After
 
   ngAfterViewChecked(): void {
     if (!this.isInitialized) {
-      // TODO :: find a way how to remove setTimeout which helps to properly draw chessground      
-      setTimeout(() => {
-        this.isInitialized = true;
-        const container = this.elementRef.nativeElement.children[0].children[0];
-        this.cg = Chessground(container, this.config);
-        this.initialized.emit(this.cg);          
-      }, 0);
+      this.isInitialized = true;
+      const container = this.elementRef.nativeElement.children[0].children[0];
+      this.cg = Chessground(container, this.config);
+      this.initialized.emit(this.cg);          
     }
     if (this.needRedrawCg) {
       this.needRedrawCg = false;
