@@ -13,7 +13,7 @@
       <app-pure-chessground [sizePx]="173" [config]="{fen: item.fen,viewOnly:true,coordinates:false}"></app-pure-chessground>
       <div class="card-body">
         <small>
-          <div class="text-truncate"><i>{{item.puzzle.description}}</i></div>
+          <div><i>{{item.puzzle.description}}</i></div>
           <app-chess-move-list *ngIf="item.puzzle.puzzleType == PuzzleType.Standard" class="d-block" [moves]="item.solution.moves" [blackIsFirst]="item.solution.turn == 'b'"></app-chess-move-list>
           <div *ngIf="item.puzzle.puzzleType == PuzzleType.FindAllChecks">
             <span *ngFor="let m of item.solution.allChecks">

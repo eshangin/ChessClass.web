@@ -18,7 +18,7 @@
       <app-pure-chessground [sizePx]="200" [config]="p.cgConfig"></app-pure-chessground>
       <div class="card-body">
         <small>
-          <div class="text-truncate"><i>{{p.description}}</i></div>
+          <div><i>{{p.description}}</i></div>
           <app-chess-move-list *ngIf="p.standardPuzzleSolution" [movesClickable]="true" (moveClick)="onMoveClick($event, p)" class="d-block" [moves]="p.standardPuzzleSolution.moves" [blackIsFirst]="p.standardPuzzleSolution.blackIsFirst"></app-chess-move-list>
           <div *ngIf="p.findAllChecksPuzzleSolution">
             Всего вариантов шаха: <span>{{p.findAllChecksPuzzleSolution.totalChecks}}</span>

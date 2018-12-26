@@ -724,7 +724,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 [SetUp "1"]
 
 1. Qg4+ Bxg4 2. Bf7# 1-0`.trim(),
-            description: 'Найти лучший ход за белых'
+            description: 'Белые начинают и ставят мат в 2 хода'
           } as Puzzle
         ];
       }
