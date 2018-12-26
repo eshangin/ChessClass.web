@@ -1,6 +1,1 @@
-<app-chess-board 
-  *ngIf="puzzleInitialFen"
-  [fen]="puzzleInitialFen" 
-  [showNotation]="showBoardNotation"
-  (pieceMoved)="onPieceMoved($event)"
-  (boardInitiated)="onBoardStatusChanged($event)"></app-chess-board>
+<app-pure-chessground [config]="boardConfig" (initialized)="onBoardInit($event)"></app-pure-chessground>  

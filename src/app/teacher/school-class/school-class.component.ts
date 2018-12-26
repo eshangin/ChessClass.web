@@ -76,7 +76,7 @@ export class SchoolClassComponent implements OnInit {
                 let cp = this.chessHelperService.parsePuzzle(p.pgn);
                 fen = cp.initialFen;
                 model.standardPuzzleSolution = {
-                  moves: cp.solutionMovements,
+                  moves: cp.solutionMovements.map(m => m.san),
                   blackIsFirst: cp.turn == 'b'
                 };
                 break;
