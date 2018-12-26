@@ -45,7 +45,6 @@ export class DashboardComponent implements OnInit {
     modalRef.result.then((result) => {
       result.class.uiState = 'active';
       this.addClassToGroup(result.class);
-      console.log(this.gClasses);
     }, () => {});
   }
 

@@ -10,9 +10,10 @@ import { MoveInfo, MoveType } from 'src/app/shared/chess-board/chess-board.compo
 import { IInitializedInfo, IMoveInfo } from 'src/app/shared/puzzle-viewers/find-all-checks-puzzle/find-all-checks-puzzle.component';
 import * as Chess from 'chess.js';
 import { PuzzleSolutionStateType } from 'src/app/shared/puzzle-viewers/standard-puzzle/standard-puzzle.component';
-import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTabset, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PuzzleService } from 'src/app/services/puzzle.service';
 import { Api } from 'chessground/api';
+import { SelectNonFixedPuzzleModalComponent } from '../select-non-fixed-puzzle-modal/select-non-fixed-puzzle-modal.component';
 
 @Component({
   selector: 'app-do-homework',
@@ -46,7 +47,8 @@ export class DoHomeworkComponent implements OnInit, AfterViewChecked {
     private homeworkService: HomeworkService,
     private router: Router,
     private route: ActivatedRoute,
-    private puzzleService: PuzzleService
+    private puzzleService: PuzzleService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit() {
@@ -149,6 +151,14 @@ export class DoHomeworkComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  onSkipPuzzleClick() {
+    const modalRef = this.modalService.open(SelectNonFixedPuzzleModalComponent, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
+    modalRef.componentInstance.exceptPuzzle = this.currentPuzzle;
+    modalRef.result.then((result: {selectedPuzzle:Puzzle}) => {
+      this.router.navigate(['/p/do-homeworks', {puzzleId: result.selectedPuzzle.id}]);
+    }, () => {});
+  }
+
   private saveAttempt(movements: ChessJS.Move[]): Observable<any> {
     return this.homeworkService.saveAttempt(this.homeworkId, this.currentPuzzle.id, movements.map(m => m.san));
   }
@@ -172,8 +182,8 @@ export class DoHomeworkComponent implements OnInit, AfterViewChecked {
 
   private fetchNextPuzzle(): Observable<Puzzle> {
     let call = this.homeworkId
-      ? this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, this.homeworkId, 1)
-      : this.homeworkService.getNonFixedPuzzles(this.authService.currentUser.id, null, 1);
+      ? this.homeworkService.getNonFixedPuzzles(this.homeworkId, 1)
+      : this.homeworkService.getNonFixedPuzzles(null, 1);
 
     return new Observable<Puzzle>(observer => {
       return call.subscribe(puzzles => observer.next(puzzles[0]));

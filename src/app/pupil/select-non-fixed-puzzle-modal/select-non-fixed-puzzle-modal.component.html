@@ -1,0 +1,28 @@
+<form>
+  <div class="modal-header">
+    <div class="modal-title">
+      <h4>Выбор задачи</h4>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="card-columns">
+      <div *ngFor="let item of puzzles; let i = index" class="card d-inline-block" style="width: 175px;">
+        <app-pure-chessground [sizePx]="173" [config]="{fen: item.fen,viewOnly:true,coordinates:false}"></app-pure-chessground>
+        <div class="card-body p-2">
+          <small>
+            <i>{{item.puzzle.description}}</i>
+          </small>
+          <hr class="mt-1 mb-2">
+          <div>
+            <button type="button" class="btn btn-sm" (click)="onChoosePuzzleClick(item.puzzle)">Решить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="puzzles.length == 0">Все другие задачи уже решены</div>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="puzzles.length != 0" type="button" class="btn btn-light" (click)="onDismissClick()">Отмена</button>
+    <button *ngIf="puzzles.length == 0" type="button" class="btn btn-primary" (click)="onDismissClick()">Закрыть</button>
+  </div>
+</form>

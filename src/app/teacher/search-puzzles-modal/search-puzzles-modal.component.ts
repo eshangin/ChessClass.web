@@ -65,7 +65,6 @@ export class SearchPuzzlesModalComponent implements OnInit {
       page: page
     } as IPuzzlesFilter;
     this.puzzleService.getPuzzles(request).subscribe(result => {
-      console.log(result);
       this.totalRecords = result.totalRecords;
       this.selectablePuzzles = result.items.map(p => {
         let fen = '';

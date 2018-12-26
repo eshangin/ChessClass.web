@@ -253,8 +253,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 }).sort((a, b) => a.dateCreated > b.dateCreated ? -1:1);
                 result = of(new HttpResponse({ status: 200, body: items }));
             }
-        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks\/puzzles\/non-fixed/)) {
-            const pupilId = request.url.split('/')[3];
+        } else if (request.url.match(/api\/homeworks\/puzzles\/non-fixed/)) {
+            const pupilId = currentUser.id;
             const url = this.router.parseUrl(request.url);
             const count = +url.queryParamMap.get('count');
             if (request.method == "GET") {
@@ -262,12 +262,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     .filter(h2p => !db.fixedPuzzles.find(fp => fp.pupilId == pupilId && fp.homework2puzzleId == h2p.id))
                     .sort((a, b) => a.dateCreated > b.dateCreated ? -1:1)
                     .map(h2p => db.puzzles.find(p => p.id == h2p.puzzleId));
+                const uniqPuzzles = [];
+                puzzles.forEach(p1 => {
+                    if (uniqPuzzles.findIndex(p2 => p2.id == p1.id) == -1) uniqPuzzles.push(p1);
+                })
 
-                result = of(new HttpResponse({ status: 200, body: count ? puzzles.slice(0, count) : puzzles }));
+                result = of(new HttpResponse({ status: 200, body: count ? uniqPuzzles.slice(0, count) : uniqPuzzles }));
             }
-        } else if (request.url.match(/api\/pupils\/(\w+)\/homeworks\/(\w+)\/puzzles\/non-fixed/)) {
-            const pupilId = request.url.split('/')[3];
-            const homeworkId = request.url.split('/')[5];
+        } else if (request.url.match(/api\/homeworks\/(\w+)\/puzzles\/non-fixed/)) {
+            const pupilId = currentUser.id;
+            const homeworkId = request.url.split('/')[3];
             const url = this.router.parseUrl(request.url);
             const count = +url.queryParamMap.get('count');
             if (request.method == "GET") {

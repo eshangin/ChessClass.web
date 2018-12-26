@@ -50,10 +50,10 @@ export class HomeworkService {
     return this.http.get<PuzzleFixAttempt[]>(url);
   }
 
-  getNonFixedPuzzles(pupilId: string, homeworkId?: string, count: number = 1): Observable<Puzzle[]> {
+  getNonFixedPuzzles(homeworkId?: string, count?: number): Observable<Puzzle[]> {
     const url = homeworkId
-      ? this.router.parseUrl(`api/pupils/${pupilId}/homeworks/${homeworkId}/puzzles/non-fixed`)
-      : this.router.parseUrl(`api/pupils/${pupilId}/homeworks/puzzles/non-fixed`)
+      ? this.router.parseUrl(`api/homeworks/${homeworkId}/puzzles/non-fixed`)
+      : this.router.parseUrl(`api/homeworks/puzzles/non-fixed`)
     if (count) {
       url.queryParams['count'] = count;
     }
