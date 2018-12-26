@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { Config } from 'chessground/config';
 import * as Chess from 'chess.js';
 import * as _ from 'underscore'
@@ -22,7 +22,7 @@ export interface IInitializedInfo {
   templateUrl: './find-all-checks-puzzle.component.html',
   styleUrls: ['./find-all-checks-puzzle.component.scss']
 })
-export class FindAllChecksPuzzleComponent implements OnInit {
+export class FindAllChecksPuzzleComponent implements OnChanges {
 
   @Input() fen: string;
   boardConfig: Config;
@@ -36,13 +36,20 @@ export class FindAllChecksPuzzleComponent implements OnInit {
     turn: 'white' | 'black',
     allChecks: ChessJS.Move[];
   };
-  private foundChecks: string[] = [];
+  private foundChecks: string[];
 
   constructor(
     private chessHelperService: ChessHelperService
   ) { }
 
-  ngOnInit() {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.fen) {
+      this.init();
+    }
+  }
+
+  private init() {
+    this.foundChecks = [];
     this.initialFenInfo = {
       dests: this.chessHelperService.getChessgroundPossibleDests(this.fen),
       turn: new Chess(this.fen).turn() == 'w' ? 'white' : 'black',
@@ -66,11 +73,10 @@ export class FindAllChecksPuzzleComponent implements OnInit {
       },
       selectable: {
         enabled: false
-      }
+      },
+      lastMove: null
     };
     this.initialized.emit({ fen: this.fen, allChecks: this.initialFenInfo.allChecks });
-
-    //this.viewNextCheck();
   }
 
   onBoardInit(cgApi: Api) {
