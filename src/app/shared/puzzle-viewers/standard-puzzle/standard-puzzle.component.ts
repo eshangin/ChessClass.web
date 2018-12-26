@@ -88,40 +88,29 @@ export class StandardPuzzleComponent implements OnChanges {
         this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.PuzzleDone, move: move});
       } else {
         this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.CorrectMove, move: move});
-        let programmaticMove = this.makeSolutionMove();
-        this.pieceMoved.emit({move: programmaticMove, moveType: MoveType.NormalProgrammatic});
+        let programmaticMove = this.getNextPuzzleMove();
+        this.disableBoardUserMoves();
+        setTimeout(() => {
+          this.cgApi.move(programmaticMove.from as cgTypes.Key, programmaticMove.to as cgTypes.Key);
+          this.engine.move(programmaticMove);
+          this.pieceMoved.emit({move: programmaticMove, moveType: MoveType.NormalProgrammatic});
+          this.updateBoardUiInfo(this.engine.fen(), this.engine.turn());            
+        }, 500);
       }
     } else {
       let undoMove = this.engine.undo();
       this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.IncorrectMove, move: undoMove});
       setTimeout(() => {
-        this.pieceMoved.emit({move: undoMove, moveType: MoveType.Undo});
-        let fen = this.engine.fen();
-        let turn: cgTypes.Color = this.engine.turn() == 'w' ? 'white' : 'black';
         // undo move
-        this.cgApi.set({
-          fen: fen,
-          turnColor: turn,
-          movable: {
-            color: turn,
-            dests: this.chessHelperService.getChessgroundPossibleDests(fen)
-          },
-          draggable: {enabled: true}
-        });
+        this.pieceMoved.emit({move: undoMove, moveType: MoveType.Undo});
+        this.updateBoardUiInfo(this.engine.fen(), this.engine.turn());
       }, 1000);
     }
   }
 
-  makeSolutionMove(): ChessJS.Move {
-    if (this.engine.history().length % 2 == 1) {
-      const movesMadeCount = this.engine.history().length;
-      let move = this.puzzleInfo.solutionMovements[movesMadeCount];
-      this.cgApi.move(move.from as cgTypes.Key, move.to as cgTypes.Key);
-      this.engine.move(move);
-      return move;
-    }
-
-    return null;
+  getNextPuzzleMove(): ChessJS.Move {
+    const movesMadeCount = this.engine.history().length;
+    return this.puzzleInfo.solutionMovements[movesMadeCount];
   }
 
   onBoardInit(cgApi: Api) {
@@ -138,5 +127,24 @@ export class StandardPuzzleComponent implements OnChanges {
 
   private arraysEqual(arr1: Array<any>, arr2: Array<any>): boolean {
     return arr1.length == arr2.length && !arr1.some((val, idx) => arr2[idx] !== val);
+  }
+
+  private disableBoardUserMoves() {
+    this.cgApi.set({
+      draggable: {enabled: false}
+    });
+  }
+
+  private updateBoardUiInfo(fen: string, turn: ChessJS.Types.ChessColor) {
+    let cgTurn: cgTypes.Color = turn == 'w' ? 'white' : 'black';
+    this.cgApi.set({
+      fen: fen,
+      turnColor: cgTurn,
+      movable: {
+        color: cgTurn,
+        dests: this.chessHelperService.getChessgroundPossibleDests(fen)
+      },
+      draggable: {enabled: true}
+    });
   }
 }
