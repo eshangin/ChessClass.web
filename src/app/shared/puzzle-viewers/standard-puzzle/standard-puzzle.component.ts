@@ -19,12 +19,11 @@ export enum PuzzleSolutionStateType {
 })
 export class StandardPuzzleComponent implements OnChanges {
 
+  boardConfig: Config;
   @Input() pgn: string;
-  fen: string;
   @Output() private puzzleSolutionStateChanged = new EventEmitter<{stateType: PuzzleSolutionStateType, move: ChessJS.Move}>();
   @Output() private pieceMoved = new EventEmitter<MoveInfo>();
   private puzzleInfo: ChessPuzzle;
-  boardConfig: Config;
   private cgApi: Api;
   private initialFenInfo: {
     dests: {
@@ -45,15 +44,15 @@ export class StandardPuzzleComponent implements OnChanges {
 
   private updatePgn() {
     this.puzzleInfo = this.chessHelperService.parsePuzzle(this.pgn);
-    this.fen = this.puzzleInfo.initialFen;
+    let fen = this.puzzleInfo.initialFen;
 
     this.initialFenInfo = {
-      dests: this.chessHelperService.getChessgroundPossibleDests(this.fen),
-      turn: new Chess(this.fen).turn() == 'w' ? 'white' : 'black',
-      allChecks: this.chessHelperService.findAllChecks(this.fen)
+      dests: this.chessHelperService.getChessgroundPossibleDests(fen),
+      turn: new Chess(fen).turn() == 'w' ? 'white' : 'black',
+      allChecks: this.chessHelperService.findAllChecks(fen)
     };
     this.boardConfig = { 
-      fen: this.fen,
+      fen: fen,
       turnColor: this.initialFenInfo.turn,
       movable: {
         dests: this.initialFenInfo.dests,
@@ -73,7 +72,7 @@ export class StandardPuzzleComponent implements OnChanges {
       },
       lastMove: null
     };
-    this.engine.load(this.fen);
+    this.engine.load(fen);
   }
 
   private onMove(orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) {
