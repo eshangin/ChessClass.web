@@ -92,7 +92,8 @@ export class AddHomeworkComponent implements OnInit {
     modalRef.result.then((result: ICreatePuzzleResult) => {
       this.pushPuzzle({
         pgn: result.pgn,
-        description: result.description
+        description: result.description,
+        puzzleType: PuzzleType.Standard
       } as Puzzle);
     }, () => {});
   }
