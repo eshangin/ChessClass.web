@@ -20,13 +20,10 @@ export enum PuzzleSolutionStateType {
 export class StandardPuzzleComponent implements OnChanges {
 
   @Input() pgn: string;
-  @Input() showBoardNotation: boolean = true;
   fen: string;
-  @Output() private pgnUpdated = new EventEmitter<ChessPuzzle>();
   @Output() private puzzleSolutionStateChanged = new EventEmitter<{stateType: PuzzleSolutionStateType, move: ChessJS.Move}>();
   @Output() private pieceMoved = new EventEmitter<MoveInfo>();
   private puzzleInfo: ChessPuzzle;
-  //private board: ChessBoardComponent;
   boardConfig: Config;
   private cgApi: Api;
   private initialFenInfo: {
@@ -48,7 +45,6 @@ export class StandardPuzzleComponent implements OnChanges {
 
   private updatePgn() {
     this.puzzleInfo = this.chessHelperService.parsePuzzle(this.pgn);
-    this.pgnUpdated.emit(this.puzzleInfo);
     this.fen = this.puzzleInfo.initialFen;
 
     this.initialFenInfo = {
@@ -117,10 +113,6 @@ export class StandardPuzzleComponent implements OnChanges {
     }
   }
 
-  onPieceMoved(moveInfo: MoveInfo) {
-    
-  }
-
   makeSolutionMove(): ChessJS.Move {
     if (this.engine.history().length % 2 == 1) {
       const movesMadeCount = this.engine.history().length;
@@ -128,27 +120,13 @@ export class StandardPuzzleComponent implements OnChanges {
       this.cgApi.move(move.from as cgTypes.Key, move.to as cgTypes.Key);
       this.engine.move(move);
       return move;
-      //this.board.movePiece(move);
     }
 
     return null;
   }
 
-  onBoardStatusChanged(board: ChessBoardComponent) {
-    //this.board = board;
-  }
-
   onBoardInit(cgApi: Api) {
     this.cgApi = cgApi;
-  }
-
-  private tryMovePieceIfOnlyOnePossibleMove(board: ChessBoardComponent) {
-    if (board.engine.history().length % 2 == 1) {
-      const possibleMoves = board.engine.moves();
-      if (possibleMoves.length == 1) {
-        board.movePiece(possibleMoves[0]);
-      }
-    }
   }
 
   private isCorrectPuzzleMove(puzzle: ChessPuzzle, engine: ChessInstance): boolean {
