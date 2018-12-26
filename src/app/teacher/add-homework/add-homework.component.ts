@@ -111,7 +111,7 @@ export class AddHomeworkComponent implements OnInit {
         let cp = this.chessHelperService.parsePuzzle(puzzle.pgn);
         fen = cp.initialFen;
         solution = {
-          moves: cp.solutionMovements,
+          moves: cp.solutionMovements.map(m => m.san),
           turn: cp.turn
         };
         break;

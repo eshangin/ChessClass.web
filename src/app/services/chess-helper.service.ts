@@ -4,7 +4,7 @@ import * as cgTypes from 'chessground/types';
 
 export interface ChessPuzzle {
   initialFen: string;
-  solutionMovements: string[];
+  solutionMovements: ChessJS.Move[];
   turn: ChessJS.Types.ChessColor;
 }
 
@@ -19,7 +19,7 @@ export class ChessHelperService {
     let engine = new Chess();
     engine.load_pgn(pgn);
     let puzzle = {
-      solutionMovements: engine.history()
+      solutionMovements: engine.history({verbose:true})
     } as ChessPuzzle;
 
     // Assume that max possible movements is 200. 200 should be enought.

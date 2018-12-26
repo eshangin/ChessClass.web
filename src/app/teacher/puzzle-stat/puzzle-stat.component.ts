@@ -89,7 +89,7 @@ export class PuzzleStatComponent implements OnInit {
           let cp = this.chessHelperService.parsePuzzle(this.puzzle.pgn);
           this.puzzleFen = cp.initialFen;
           this.puzzleSolution = {
-            moves: cp.solutionMovements,
+            moves: cp.solutionMovements.map(m => m.san),
             blackIsFirst: cp.turn == 'b'
           };
           break;
