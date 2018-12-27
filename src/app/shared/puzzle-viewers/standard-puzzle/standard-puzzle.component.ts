@@ -1,87 +1,96 @@
 import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import {ChessPuzzle, ChessHelperService} from 'src/app/services/chess-helper.service';
-import { Api } from 'chessground/api';
 import * as cgTypes from 'chessground/types';
-import { Config } from 'chessground/config';
 import * as Chess from 'chess.js';
-import { MoveInfo, PuzzleSolutionStateType, PuzzleWorkflowService } from 'src/app/services/puzzle-workflow/puzzle-workflow.service';
-import { StandardPuzzleWorkflowService } from 'src/app/services/puzzle-workflow/standard-puzzle-workflow.service';
+import { PuzzleComponent, PuzzleSolutionStateType, MoveType } from '../puzzle-component';
 
 @Component({
   selector: 'app-standard-puzzle',
   templateUrl: './standard-puzzle.component.html',
   styleUrls: ['./standard-puzzle.component.scss']
 })
-export class StandardPuzzleComponent implements OnChanges {
+export class StandardPuzzleComponent extends PuzzleComponent implements OnChanges {
 
-  boardConfig: Config;
   @Input() pgn: string;
-  @Output() private puzzleSolutionStateChanged = new EventEmitter<{stateType: PuzzleSolutionStateType, move: ChessJS.Move}>();
-  @Output() private pieceMoved = new EventEmitter<MoveInfo>();
   private puzzleInfo: ChessPuzzle;
-  private initialFenInfo: {
-    dests: {
-      [key: string]: cgTypes.Key[];
-    },
-    turn: 'white' | 'black'
-  };
-  private puzzleWorkflowService: PuzzleWorkflowService;
-  private cgApi: Api;
+  private engine: ChessInstance = new Chess();
 
   constructor(
-    private chessHelperService: ChessHelperService) {
+    protected chessHelperService: ChessHelperService) {
+      super(chessHelperService);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pgn) {
-      this.init();
+      this.initStandardPuzzle();
     }
   }
 
-  private init() {
+  private initStandardPuzzle() {
     this.puzzleInfo = this.chessHelperService.parsePuzzle(this.pgn);
     let fen = this.puzzleInfo.initialFen;
-
-    this.initialFenInfo = {
-      dests: this.chessHelperService.getChessgroundPossibleDests(fen),
-      turn: new Chess(fen).turn() == 'w' ? 'white' : 'black'
-    };
-    this.boardConfig = { 
-      fen: fen,
-      turnColor: this.initialFenInfo.turn,
-      movable: {
-        dests: this.initialFenInfo.dests,
-        color: this.initialFenInfo.turn,
-        free: false,
-        showDests: false,
-        events: {
-          after: (orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) => 
-            this.onMove(orig, dest, metadata)
-        }
-      },
-      draggable: {
-        enabled: true
-      },
-      selectable: {
-        enabled: false
-      },
-      lastMove: null
-    };
-    this.tryInitWorkflow();
+    this.engine.load(fen);
+    super.init(fen);
   }
 
-  onBoardInit(cgApi: Api) {
-    this.cgApi = cgApi;
-    this.tryInitWorkflow();
+  getPuzzleSolutionState(move: ChessJS.Move): PuzzleSolutionStateType {
+    this.engine.move(move);
+    if (this.isCorrectPuzzleMove(this.puzzleInfo, this.engine)) {
+      return (this.puzzleInfo.solutionMovements.length == this.engine.history().length)
+        ? PuzzleSolutionStateType.PuzzleDone
+        : PuzzleSolutionStateType.CorrectMove;
+    }
+
+    return PuzzleSolutionStateType.IncorrectMove;
   }
 
-  private tryInitWorkflow() {
-    if (this.cgApi) {
-      this.puzzleWorkflowService = new StandardPuzzleWorkflowService(this.pgn, this.cgApi, this.pieceMoved, this.puzzleSolutionStateChanged);
+  convertMove(orig: cgTypes.Key, dest: cgTypes.Key): ChessJS.Move {
+    return (this.engine.moves({verbose:true}) as ChessJS.Move[]).find(m => m.from == orig && m.to == dest);
+  }
+
+  handlePuzzleSolutionState(move: ChessJS.Move, state: PuzzleSolutionStateType) {
+    switch (state) {
+      case PuzzleSolutionStateType.PuzzleDone:
+        this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.PuzzleDone, move: move});
+        break;
+      case PuzzleSolutionStateType.CorrectMove:
+        this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.CorrectMove, move: move});
+        this.disableBoardUserMoves();
+        setTimeout(() => {
+          let programmaticMove = this.getNextPuzzleMove();
+          this.cgApi.move(programmaticMove.from as cgTypes.Key, programmaticMove.to as cgTypes.Key);
+          this.engine.move(programmaticMove);
+          this.pieceMoved.emit({move: programmaticMove, moveType: MoveType.NormalProgrammatic});
+          this.updateBoardUiInfo(this.engine.fen(), this.engine.turn() == 'w' ? 'white' : 'black');
+        }, 500);
+        break;
+      case PuzzleSolutionStateType.IncorrectMove:
+        this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.IncorrectMove, move: move});
+        this.disableBoardUserMoves();
+        setTimeout(() => {
+          // undo move
+          let undoMove = this.engine.undo();
+          this.pieceMoved.emit({move: undoMove, moveType: MoveType.Undo});
+          this.updateBoardUiInfo(this.engine.fen(), this.engine.turn() == 'w' ? 'white' : 'black');
+        }, 1000);
+        break;
     }
   }
 
-  private onMove(orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) {
-    this.puzzleWorkflowService.handleCgMove(orig, dest);
+  private getNextPuzzleMove(): ChessJS.Move {
+    const movesMadeCount = this.engine.history().length;
+    return this.puzzleInfo.solutionMovements[movesMadeCount];
+  }
+
+  private isCorrectPuzzleMove(puzzle: ChessPuzzle, engine: ChessInstance): boolean {
+    const movesMadeCount = engine.history().length;
+
+    return movesMadeCount == 0
+      ? false
+      : this.arraysEqual(puzzle.solutionMovements.slice(0, movesMadeCount).map(m => m.san), engine.history());
+  }
+
+  private arraysEqual(arr1: Array<any>, arr2: Array<any>): boolean {
+    return arr1.length == arr2.length && !arr1.some((val, idx) => arr2[idx] !== val);
   }
 }

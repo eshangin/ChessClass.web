@@ -4,8 +4,7 @@ import * as Chess from 'chess.js';
 import * as _ from 'underscore'
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
 import * as cgTypes from 'chessground/types';
-import { PuzzleSolutionStateType } from 'src/app/services/puzzle-workflow/puzzle-workflow.service';
-import { PuzzleComponent, IMoveInfo } from '../puzzle-component';
+import { PuzzleComponent, IMoveInfo, PuzzleSolutionStateType } from '../puzzle-component';
 
 @Component({
   selector: 'app-find-all-checks-puzzle',

@@ -3,7 +3,6 @@ import { Config } from "chessground/config";
 import { EventEmitter, Output } from "@angular/core";
 import * as cgTypes from 'chessground/types';
 import { ChessHelperService } from "src/app/services/chess-helper.service";
-import { PuzzleSolutionStateType, MoveInfo, MoveType } from "src/app/services/puzzle-workflow/puzzle-workflow.service";
 import * as Chess from 'chess.js';
 
 export interface IMoveInfo {
@@ -15,6 +14,24 @@ export interface IInitializedInfo {
     fen: string;
 }
 
+export enum PuzzleSolutionStateType {
+  CorrectMove = 1,
+  PuzzleDone,
+  IncorrectMove
+}
+
+export interface MoveInfo {
+  move: ChessJS.Move;
+  moveType: MoveType;
+}
+
+export enum MoveType {
+  NormalOnDrop = 1,
+  NormalProgrammatic,
+  Undo,
+  UndoAll
+}
+
 export abstract class PuzzleComponent {
 
   protected cgApi: Api;
@@ -22,8 +39,8 @@ export abstract class PuzzleComponent {
   @Output() moveMade = new EventEmitter<IMoveInfo>();
   @Output() boardInit = new EventEmitter<Api>();
   @Output() initialized = new EventEmitter<IInitializedInfo>();
-  @Output() private puzzleSolutionStateChanged = new EventEmitter<{stateType: PuzzleSolutionStateType, move: ChessJS.Move}>();
-  @Output() private pieceMoved = new EventEmitter<MoveInfo>();
+  @Output() protected puzzleSolutionStateChanged = new EventEmitter<{stateType: PuzzleSolutionStateType, move: ChessJS.Move}>();
+  @Output() protected pieceMoved = new EventEmitter<MoveInfo>();
   protected initialFenInfo: {
       dests: {
           [key: string]: cgTypes.Key[];
