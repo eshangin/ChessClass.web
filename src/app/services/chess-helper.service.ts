@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as Chess from 'chess.js';
 import * as cgTypes from 'chessground/types';
+import { Api } from 'chessground/api';
 
 export interface ChessPuzzle {
   initialFen: string;
@@ -78,5 +79,9 @@ export class ChessHelperService {
       engine.undo();
     });
     return checkMoves;
+  }
+
+  isCgInCheck(cgApi: Api) {
+    return new Chess(this.tryFixFen(cgApi.getFen(), cgApi.state.turnColor == 'white' ? 'w' : 'b')).in_check();
   }
 }

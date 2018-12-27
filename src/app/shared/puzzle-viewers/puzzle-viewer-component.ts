@@ -77,9 +77,7 @@ export abstract class PuzzleViewerComponent {
       lastMove: null,
       events: {
         move: (orig: cgTypes.Key, dest: cgTypes.Key, capturedPiece?: cgTypes.Piece) => {
-          let inCheck = new Chess(this.chessHelperService.tryFixFen(this.cgApi.getFen(),
-            this.cgApi.state.turnColor == 'white' ? 'w' : 'b')).in_check();
-          this.cgApi.set({ check: inCheck });
+          this.cgApi.set({ check: this.chessHelperService.isCgInCheck(this.cgApi) });
         }
       }
     };

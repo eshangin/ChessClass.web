@@ -180,7 +180,12 @@ export class CreatePuzzleWizardComponent implements OnInit, AfterViewChecked, On
       highlight: {
         lastMove: true
       },
-      resizable: true
+      resizable: true,
+      events: {
+        move: (orig: cgTypes.Key, dest: cgTypes.Key, capturedPiece?: cgTypes.Piece) => {
+          this.recorderCgApi.set({ check: this.chessHelperService.isCgInCheck(this.recorderCgApi) });
+        }
+      }
     };
   }
 
