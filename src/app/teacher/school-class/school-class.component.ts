@@ -11,6 +11,8 @@ import { Config } from 'chessground/config';
 import * as _ from 'underscore'
 import * as Chess from 'chess.js';
 import { PuzzleType } from 'src/app/services/puzzle.model';
+import { Api } from 'chessground/api';
+import * as cgTypes from 'chessground/types';
 
 class HomeworkViewModel {
   id: string;
@@ -32,6 +34,7 @@ class PuzzleViewModel {
     totalChecks: number;
   };
   cgConfig: Config;
+  cgApi: Api;
 }
 
 @Component({
@@ -88,7 +91,7 @@ export class SchoolClassComponent implements OnInit {
                 break;
             }
             model.initialFen = fen;
-            model.cgConfig = {fen: fen, viewOnly: true, coordinates: false};
+            model.cgConfig = {fen: fen, viewOnly: true, coordinates: false, lastMove: null, check: false};
             return model;
           })
         } as HomeworkViewModel;
@@ -96,17 +99,21 @@ export class SchoolClassComponent implements OnInit {
     });
   }
 
+  onBoardInit(cgApi: Api, puzzleView: PuzzleViewModel) {
+    puzzleView.cgApi = cgApi;
+  }
+
   onMoveClick(moveInfo: MoveClickInfo, puzzle: PuzzleViewModel) {
     let engine = new Chess(puzzle.initialFen);
     for (let i = 0; i <= moveInfo.moveIndex; i++) {
       engine.move(moveInfo.moves[i]);
     }
-    let newFen = engine.fen();
-    puzzle.cgConfig = _.extend({}, puzzle.cgConfig, {fen: newFen});
-    this.scheduleFenReset(puzzle);
+    puzzle.cgApi.set({fen: engine.fen(), turnColor: engine.turn() == 'w' ? 'white' : 'black'});
+    puzzle.cgApi.set({check: this.chessHelperService.isCgInCheck(puzzle.cgApi)});
+    this.schedulePuzzleReset(puzzle);
   }
 
-  private scheduleFenReset(puzzle: PuzzleViewModel) {
+  private schedulePuzzleReset(puzzle: PuzzleViewModel) {
     let prevTimer = this.revertPositoinTimeouts.get(puzzle.id);
     if (prevTimer) {
       clearTimeout(prevTimer);
@@ -114,7 +121,7 @@ export class SchoolClassComponent implements OnInit {
     this.revertPositoinTimeouts.set(puzzle.id, 
       setTimeout(() => {
         this.revertPositoinTimeouts.delete(puzzle.id);
-        puzzle.cgConfig = _.extend({}, puzzle.cgConfig, {fen: puzzle.initialFen});
+        puzzle.cgApi.set(puzzle.cgConfig);
       }, 2000)
     );
   }

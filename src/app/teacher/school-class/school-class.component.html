@@ -15,7 +15,7 @@
     <hr>
     <div *ngFor="let p of h.puzzles" class="card align-top mr-3 mb-3 pull-left d-inline-block" style="width: 202px;">
       <div *ngIf="p.fixedPercent == 100" class="b-board-overlay"></div>
-      <app-pure-chessground [sizePx]="200" [config]="p.cgConfig"></app-pure-chessground>
+      <app-pure-chessground [sizePx]="200" [config]="p.cgConfig" (initialized)="onBoardInit($event, p)"></app-pure-chessground>
       <div class="card-body">
         <small>
           <div><i>{{p.description}}</i></div>
