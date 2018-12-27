@@ -6,7 +6,6 @@ import {Puzzle, PuzzleType} from 'src/app/services/puzzle.model';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/services/user.model';
 import { ChatMessage } from 'src/app/services/chat-message.model';
-import { IInitializedInfo, IMoveInfo } from 'src/app/shared/puzzle-viewers/find-all-checks-puzzle/find-all-checks-puzzle.component';
 import * as Chess from 'chess.js';
 import { NgbTabset, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PuzzleService } from 'src/app/services/puzzle.service';
@@ -14,6 +13,7 @@ import { Api } from 'chessground/api';
 import { SelectNonFixedPuzzleModalComponent } from '../select-non-fixed-puzzle-modal/select-non-fixed-puzzle-modal.component';
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
 import { MoveInfo, PuzzleSolutionStateType, MoveType } from 'src/app/services/puzzle-workflow/puzzle-workflow.service';
+import { IInitializedInfo, IMoveInfo } from 'src/app/shared/puzzle-viewers/puzzle-component';
 
 @Component({
   selector: 'app-do-homework',

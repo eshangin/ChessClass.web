@@ -4,89 +4,44 @@ import * as Chess from 'chess.js';
 import * as _ from 'underscore'
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
 import * as cgTypes from 'chessground/types';
-import { Api } from 'chessground/api';
 import { PuzzleSolutionStateType } from 'src/app/services/puzzle-workflow/puzzle-workflow.service';
-
-export interface IMoveInfo {
-  stateType: PuzzleSolutionStateType,
-  move: ChessJS.Move
-}
-
-export interface IInitializedInfo {
-  fen: string;
-}
+import { PuzzleComponent, IMoveInfo } from '../puzzle-component';
 
 @Component({
   selector: 'app-find-all-checks-puzzle',
   templateUrl: './find-all-checks-puzzle.component.html',
   styleUrls: ['./find-all-checks-puzzle.component.scss']
 })
-export class FindAllChecksPuzzleComponent implements OnChanges {
+export class FindAllChecksPuzzleComponent extends PuzzleComponent implements OnChanges {
 
   @Input() fen: string;
   boardConfig: Config;
-  @Output() moveMade = new EventEmitter<IMoveInfo>();
-  @Output() initialized = new EventEmitter<IInitializedInfo>();
-  @Output() boardInit = new EventEmitter<Api>();
-  private cgApi: Api;
-  private initialFenInfo: {
-    dests: {
-      [key: string]: cgTypes.Key[];
-    },
-    turn: 'white' | 'black',
-    allChecks: ChessJS.Move[];
-  };
   private foundChecks: string[];
+  private allChecks: ChessJS.Move[];
 
   constructor(
-    private chessHelperService: ChessHelperService
-  ) { }
+    protected chessHelperService: ChessHelperService
+  ) {
+    super(chessHelperService);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.fen) {
-      this.init();
+      this.initFindChecksPuzzle();
     }
   }
 
-  private init() {
+  private initFindChecksPuzzle() {
+    this.allChecks = this.chessHelperService.findAllChecks(this.fen);
     this.foundChecks = [];
-    this.initialFenInfo = {
-      dests: this.chessHelperService.getChessgroundPossibleDests(this.fen),
-      turn: new Chess(this.fen).turn() == 'w' ? 'white' : 'black',
-      allChecks: this.chessHelperService.findAllChecks(this.fen)
-    };
-    this.boardConfig = { 
-      fen: this.fen,
-      turnColor: this.initialFenInfo.turn,
-      movable: {
-        dests: this.initialFenInfo.dests,
-        color: this.initialFenInfo.turn,
-        free: false,
-        showDests: false,
-        events: {
-          after: (orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) => 
-            this.onMove(orig, dest, metadata)
-        }
-      },
-      draggable: {
-        enabled: true
-      },
-      selectable: {
-        enabled: false
-      },
-      lastMove: null
-    };
-    this.initialized.emit({ fen: this.fen });
+    this.init(this.fen);
   }
 
-  onBoardInit(cgApi: Api) {
-    this.cgApi = cgApi;
-    this.boardInit.emit(cgApi);
+  convertMove(orig: cgTypes.Key, dest: cgTypes.Key): ChessJS.Move {
+    return (new Chess(this.fen).moves({verbose:true}) as ChessJS.Move[]).find(m => m.from == orig && m.to == dest);
   }
 
-  private onMove(orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) {
-    let move = (new Chess(this.fen).moves({verbose:true}) as ChessJS.Move[]).find(m => m.from == orig && m.to == dest);
-    let state = this.getPuzzleSolutionState(move);
+  handlePuzzleSolutionState(move: ChessJS.Move, state: PuzzleSolutionStateType) {
     this.moveMade.emit({ stateType: state, move: move } as IMoveInfo);
     this.disableBoardUserMoves();
     setTimeout(() => {
@@ -95,7 +50,7 @@ export class FindAllChecksPuzzleComponent implements OnChanges {
     }, 1000);
   }
 
-  private getPuzzleSolutionState(move: ChessJS.Move): PuzzleSolutionStateType {
+  getPuzzleSolutionState(move: ChessJS.Move): PuzzleSolutionStateType {
     let e = new Chess(this.fen);
     e.move(move);
     const isCheck = e.in_check();
@@ -103,29 +58,10 @@ export class FindAllChecksPuzzleComponent implements OnChanges {
       this.foundChecks.push(move.san);
     }
     let status = isCheck 
-                  ? this.foundChecks.length == this.initialFenInfo.allChecks.length
+                  ? this.foundChecks.length == this.allChecks.length
                       ? PuzzleSolutionStateType.PuzzleDone
                       : PuzzleSolutionStateType.CorrectMove
                   : PuzzleSolutionStateType.IncorrectMove;
     return status;
   }
-
-  private disableBoardUserMoves() {
-    this.cgApi.set({
-      draggable: {enabled: false}
-    });
-  }
-
-  private updateBoardUiInfo(fen: string, turn: 'white' | 'black') {
-    this.cgApi.set({
-      fen: fen,
-      turnColor: turn,
-      movable: {
-        color: turn,
-        dests: this.chessHelperService.getChessgroundPossibleDests(fen)
-      },
-      draggable: {enabled: true}
-    });
-  }
-
 }
