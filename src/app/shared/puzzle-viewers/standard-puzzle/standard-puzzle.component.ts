@@ -75,46 +75,57 @@ export class StandardPuzzleComponent implements OnChanges {
     this.engine.load(fen);
   }
 
+  onBoardInit(cgApi: Api) {
+    this.cgApi = cgApi;
+  }
+
   private onMove(orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) {
     let move = (this.engine.moves({verbose:true}) as ChessJS.Move[]).find(m => m.from == orig && m.to == dest);
     this.engine.move(move);
     this.pieceMoved.emit({move: move, moveType: MoveType.NormalOnDrop});
 
-    if (this.isCorrectPuzzleMove(this.puzzleInfo, this.engine)) {
-      console.log('Correct move!!!');      
-
-      if (this.puzzleInfo.solutionMovements.length == this.engine.history().length) {
-        console.log('Done!!!');
+    let state = this.getPuzzleSolutionState();
+    switch (state) {
+      case PuzzleSolutionStateType.PuzzleDone:
         this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.PuzzleDone, move: move});
-      } else {
+        break;
+      case PuzzleSolutionStateType.CorrectMove:
         this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.CorrectMove, move: move});
-        let programmaticMove = this.getNextPuzzleMove();
         this.disableBoardUserMoves();
         setTimeout(() => {
+          let programmaticMove = this.getNextPuzzleMove();
           this.cgApi.move(programmaticMove.from as cgTypes.Key, programmaticMove.to as cgTypes.Key);
           this.engine.move(programmaticMove);
           this.pieceMoved.emit({move: programmaticMove, moveType: MoveType.NormalProgrammatic});
-          this.updateBoardUiInfo(this.engine.fen(), this.engine.turn());            
+          this.updateBoardUiInfo(this.engine.fen(), this.engine.turn() == 'w' ? 'white' : 'black');
         }, 500);
-      }
-    } else {
-      let undoMove = this.engine.undo();
-      this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.IncorrectMove, move: undoMove});
-      setTimeout(() => {
-        // undo move
-        this.pieceMoved.emit({move: undoMove, moveType: MoveType.Undo});
-        this.updateBoardUiInfo(this.engine.fen(), this.engine.turn());
-      }, 1000);
+        break;
+      case PuzzleSolutionStateType.IncorrectMove:
+        this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.IncorrectMove, move: move});
+        this.disableBoardUserMoves();
+        setTimeout(() => {
+          // undo move
+          let undoMove = this.engine.undo();
+          this.pieceMoved.emit({move: undoMove, moveType: MoveType.Undo});
+          this.updateBoardUiInfo(this.engine.fen(), this.engine.turn() == 'w' ? 'white' : 'black');
+        }, 1000);
+        break;
     }
   }
 
-  getNextPuzzleMove(): ChessJS.Move {
+  private getNextPuzzleMove(): ChessJS.Move {
     const movesMadeCount = this.engine.history().length;
     return this.puzzleInfo.solutionMovements[movesMadeCount];
   }
 
-  onBoardInit(cgApi: Api) {
-    this.cgApi = cgApi;
+  private getPuzzleSolutionState(): PuzzleSolutionStateType {
+    if (this.isCorrectPuzzleMove(this.puzzleInfo, this.engine)) {
+      return (this.puzzleInfo.solutionMovements.length == this.engine.history().length)
+        ? PuzzleSolutionStateType.PuzzleDone
+        : PuzzleSolutionStateType.CorrectMove;
+    }
+
+    return PuzzleSolutionStateType.IncorrectMove;
   }
 
   private isCorrectPuzzleMove(puzzle: ChessPuzzle, engine: ChessInstance): boolean {
@@ -135,13 +146,13 @@ export class StandardPuzzleComponent implements OnChanges {
     });
   }
 
-  private updateBoardUiInfo(fen: string, turn: ChessJS.Types.ChessColor) {
-    let cgTurn: cgTypes.Color = turn == 'w' ? 'white' : 'black';
+  private updateBoardUiInfo(fen: string, turn: 'white' | 'black') {
+    this.cgApi.cancelMove();
     this.cgApi.set({
       fen: fen,
-      turnColor: cgTurn,
+      turnColor: turn,
       movable: {
-        color: cgTurn,
+        color: turn,
         dests: this.chessHelperService.getChessgroundPossibleDests(fen)
       },
       draggable: {enabled: true}

@@ -87,6 +87,16 @@ export class FindAllChecksPuzzleComponent implements OnChanges {
 
   private onMove(orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) {
     let move = (new Chess(this.fen).moves({verbose:true}) as ChessJS.Move[]).find(m => m.from == orig && m.to == dest);
+    let state = this.getPuzzleSolutionState(move, orig, dest);
+    this.moveMade.emit({ stateType: state, move: move } as IMoveInfo);
+    this.disableBoardUserMoves();
+    setTimeout(() => {
+      // move to initial pozition
+      this.updateBoardUiInfo(this.fen, this.initialFenInfo.turn)
+    }, 1000);
+  }
+
+  private getPuzzleSolutionState(move: ChessJS.Move, orig: cgTypes.Key, dest: cgTypes.Key): PuzzleSolutionStateType {
     const isCheck = this.initialFenInfo.allChecks.some(m => {
       return m.from == orig && m.to == dest;
     });
@@ -98,41 +108,25 @@ export class FindAllChecksPuzzleComponent implements OnChanges {
                       ? PuzzleSolutionStateType.PuzzleDone
                       : PuzzleSolutionStateType.CorrectMove
                   : PuzzleSolutionStateType.IncorrectMove;
-    this.moveMade.emit({ stateType: status, move: move } as IMoveInfo);
+    return status;
+  }
+
+  private disableBoardUserMoves() {
     this.cgApi.set({
       draggable: {enabled: false}
     });
-    setTimeout(() => {
-      // move to initial pozition
-      this.cgApi.set({
-        fen: this.fen,
-        turnColor: this.initialFenInfo.turn,
-        movable: {
-          color: this.initialFenInfo.turn,
-          dests: this.chessHelperService.getChessgroundPossibleDests(this.fen)
-        },
-        draggable: {enabled: true}
-      });
-    }, 1000);
   }
 
-  private viewNextCheck(moves?: ChessJS.Move[]) {
-    if (!moves) {
-      moves = this.initialFenInfo.allChecks;
-    }
-    let checkMove = moves.pop();
-    if (checkMove) {
-      setTimeout(() => {
-        console.log(checkMove);
-        let engine = new Chess(this.fen);
-        engine.move(checkMove);
-        this.boardConfig = _.extend({}, this.boardConfig, {fen: engine.fen()});
-        setTimeout(() => {
-          this.boardConfig = _.extend({}, this.boardConfig, {fen: this.fen});
-          this.viewNextCheck(moves);
-        }, 1000);          
-      }, 1000);
-    }
+  private updateBoardUiInfo(fen: string, turn: 'white' | 'black') {
+    this.cgApi.set({
+      fen: fen,
+      turnColor: turn,
+      movable: {
+        color: turn,
+        dests: this.chessHelperService.getChessgroundPossibleDests(fen)
+      },
+      draggable: {enabled: true}
+    });
   }
 
 }
