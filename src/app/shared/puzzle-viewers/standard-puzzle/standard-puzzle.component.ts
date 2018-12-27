@@ -26,6 +26,7 @@ export class StandardPuzzleComponent implements OnChanges {
     turn: 'white' | 'black'
   };
   private puzzleWorkflowService: PuzzleWorkflowService;
+  private cgApi: Api;
 
   constructor(
     private chessHelperService: ChessHelperService) {
@@ -66,10 +67,18 @@ export class StandardPuzzleComponent implements OnChanges {
       },
       lastMove: null
     };
+    this.tryInitWorkflow();
   }
 
   onBoardInit(cgApi: Api) {
-    this.puzzleWorkflowService = new StandardPuzzleWorkflowService(this.pgn, cgApi, this.pieceMoved, this.puzzleSolutionStateChanged);
+    this.cgApi = cgApi;
+    this.tryInitWorkflow();
+  }
+
+  private tryInitWorkflow() {
+    if (this.cgApi) {
+      this.puzzleWorkflowService = new StandardPuzzleWorkflowService(this.pgn, this.cgApi, this.pieceMoved, this.puzzleSolutionStateChanged);
+    }
   }
 
   private onMove(orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) {
