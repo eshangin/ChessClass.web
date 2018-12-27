@@ -29,8 +29,7 @@ export class StandardPuzzleComponent implements OnChanges {
     dests: {
       [key: string]: cgTypes.Key[];
     },
-    turn: 'white' | 'black',
-    allChecks: ChessJS.Move[];
+    turn: 'white' | 'black'
   };
   private engine: ChessInstance = new Chess();
 
@@ -38,18 +37,17 @@ export class StandardPuzzleComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pgn) {
-      this.updatePgn();
+      this.init();
     }
   }
 
-  private updatePgn() {
+  private init() {
     this.puzzleInfo = this.chessHelperService.parsePuzzle(this.pgn);
     let fen = this.puzzleInfo.initialFen;
 
     this.initialFenInfo = {
       dests: this.chessHelperService.getChessgroundPossibleDests(fen),
-      turn: new Chess(fen).turn() == 'w' ? 'white' : 'black',
-      allChecks: this.chessHelperService.findAllChecks(fen)
+      turn: new Chess(fen).turn() == 'w' ? 'white' : 'black'
     };
     this.boardConfig = { 
       fen: fen,
@@ -81,10 +79,9 @@ export class StandardPuzzleComponent implements OnChanges {
 
   private onMove(orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) {
     let move = (this.engine.moves({verbose:true}) as ChessJS.Move[]).find(m => m.from == orig && m.to == dest);
-    this.engine.move(move);
     this.pieceMoved.emit({move: move, moveType: MoveType.NormalOnDrop});
 
-    let state = this.getPuzzleSolutionState();
+    let state = this.getPuzzleSolutionState(move);
     switch (state) {
       case PuzzleSolutionStateType.PuzzleDone:
         this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.PuzzleDone, move: move});
@@ -118,7 +115,8 @@ export class StandardPuzzleComponent implements OnChanges {
     return this.puzzleInfo.solutionMovements[movesMadeCount];
   }
 
-  private getPuzzleSolutionState(): PuzzleSolutionStateType {
+  private getPuzzleSolutionState(move: ChessJS.Move): PuzzleSolutionStateType {
+    this.engine.move(move);
     if (this.isCorrectPuzzleMove(this.puzzleInfo, this.engine)) {
       return (this.puzzleInfo.solutionMovements.length == this.engine.history().length)
         ? PuzzleSolutionStateType.PuzzleDone

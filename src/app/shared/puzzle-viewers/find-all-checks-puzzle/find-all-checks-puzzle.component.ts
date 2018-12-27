@@ -14,7 +14,6 @@ export interface IMoveInfo {
 
 export interface IInitializedInfo {
   fen: string;
-  allChecks: ChessJS.Move[];
 }
 
 @Component({
@@ -77,7 +76,7 @@ export class FindAllChecksPuzzleComponent implements OnChanges {
       },
       lastMove: null
     };
-    this.initialized.emit({ fen: this.fen, allChecks: this.initialFenInfo.allChecks });
+    this.initialized.emit({ fen: this.fen });
   }
 
   onBoardInit(cgApi: Api) {
@@ -87,7 +86,7 @@ export class FindAllChecksPuzzleComponent implements OnChanges {
 
   private onMove(orig: cgTypes.Key, dest: cgTypes.Key, metadata: cgTypes.MoveMetadata) {
     let move = (new Chess(this.fen).moves({verbose:true}) as ChessJS.Move[]).find(m => m.from == orig && m.to == dest);
-    let state = this.getPuzzleSolutionState(move, orig, dest);
+    let state = this.getPuzzleSolutionState(move);
     this.moveMade.emit({ stateType: state, move: move } as IMoveInfo);
     this.disableBoardUserMoves();
     setTimeout(() => {
@@ -96,10 +95,10 @@ export class FindAllChecksPuzzleComponent implements OnChanges {
     }, 1000);
   }
 
-  private getPuzzleSolutionState(move: ChessJS.Move, orig: cgTypes.Key, dest: cgTypes.Key): PuzzleSolutionStateType {
-    const isCheck = this.initialFenInfo.allChecks.some(m => {
-      return m.from == orig && m.to == dest;
-    });
+  private getPuzzleSolutionState(move: ChessJS.Move): PuzzleSolutionStateType {
+    let e = new Chess(this.fen);
+    e.move(move);
+    const isCheck = e.in_check();
     if (isCheck && this.foundChecks.indexOf(move.san) == -1) {
       this.foundChecks.push(move.san);
     }

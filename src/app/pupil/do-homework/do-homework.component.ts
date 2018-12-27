@@ -14,6 +14,7 @@ import { NgbTabset, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PuzzleService } from 'src/app/services/puzzle.service';
 import { Api } from 'chessground/api';
 import { SelectNonFixedPuzzleModalComponent } from '../select-non-fixed-puzzle-modal/select-non-fixed-puzzle-modal.component';
+import { ChessHelperService } from 'src/app/services/chess-helper.service';
 
 @Component({
   selector: 'app-do-homework',
@@ -48,7 +49,8 @@ export class DoHomeworkComponent implements OnInit, AfterViewChecked {
     private router: Router,
     private route: ActivatedRoute,
     private puzzleService: PuzzleService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private chessHelperService: ChessHelperService
   ) { }
 
   ngOnInit() {
@@ -99,12 +101,13 @@ export class DoHomeworkComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  findAllChecksPuzzleOnInitialized(initInfo: IInitializedInfo) {    
+  findAllChecksPuzzleOnInitialized(initInfo: IInitializedInfo) {
+    const allChecks = this.chessHelperService.findAllChecks(initInfo.fen);
     this.findAllChecksPuzzleInfo = {
-      allChecks: initInfo.allChecks,
+      allChecks: allChecks,
       turn: new Chess(initInfo.fen).turn(),
       foundChecks: [],
-      checksLeft: initInfo.allChecks.length
+      checksLeft: allChecks.length
     };
   }
 
