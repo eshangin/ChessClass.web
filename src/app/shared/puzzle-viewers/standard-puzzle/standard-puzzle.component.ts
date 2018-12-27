@@ -1,15 +1,15 @@
-import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import {ChessPuzzle, ChessHelperService} from 'src/app/services/chess-helper.service';
 import * as cgTypes from 'chessground/types';
 import * as Chess from 'chess.js';
-import { PuzzleComponent, PuzzleSolutionStateType, MoveType } from '../puzzle-component';
+import { PuzzleViewerComponent, PuzzleSolutionStateType, MoveType } from '../puzzle-viewer-component';
 
 @Component({
   selector: 'app-standard-puzzle',
   templateUrl: './standard-puzzle.component.html',
   styleUrls: ['./standard-puzzle.component.scss']
 })
-export class StandardPuzzleComponent extends PuzzleComponent implements OnChanges {
+export class StandardPuzzleComponent extends PuzzleViewerComponent implements OnChanges {
 
   @Input() pgn: string;
   private puzzleInfo: ChessPuzzle;

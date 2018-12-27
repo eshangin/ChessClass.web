@@ -3,7 +3,7 @@ import { Component, Input, ElementRef, Output, EventEmitter, AfterViewInit, Simp
 import * as ChessBoard from 'chessboardjs';
 import * as Chess from 'chess.js';
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
-import { MoveInfo, MoveType } from '../puzzle-viewers/puzzle-component';
+import { MoveInfo, MoveType } from '../puzzle-viewers/puzzle-viewer-component';
 
 @Component({
   selector: 'app-chess-board',

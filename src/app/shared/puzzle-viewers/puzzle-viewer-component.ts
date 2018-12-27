@@ -32,7 +32,7 @@ export enum MoveType {
   UndoAll
 }
 
-export abstract class PuzzleComponent {
+export abstract class PuzzleViewerComponent {
 
   protected cgApi: Api;
   boardConfig: Config;

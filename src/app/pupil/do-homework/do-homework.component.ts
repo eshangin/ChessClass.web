@@ -12,7 +12,7 @@ import { PuzzleService } from 'src/app/services/puzzle.service';
 import { Api } from 'chessground/api';
 import { SelectNonFixedPuzzleModalComponent } from '../select-non-fixed-puzzle-modal/select-non-fixed-puzzle-modal.component';
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
-import { IInitializedInfo, IMoveInfo, PuzzleSolutionStateType, MoveInfo, MoveType } from 'src/app/shared/puzzle-viewers/puzzle-component';
+import { IInitializedInfo, PuzzleSolutionStateType, MoveInfo, MoveType } from 'src/app/shared/puzzle-viewers/puzzle-viewer-component';
 
 @Component({
   selector: 'app-do-homework',

@@ -1,17 +1,17 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Config } from 'chessground/config';
 import * as Chess from 'chess.js';
 import * as _ from 'underscore'
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
 import * as cgTypes from 'chessground/types';
-import { PuzzleComponent, IMoveInfo, PuzzleSolutionStateType } from '../puzzle-component';
+import { PuzzleViewerComponent, PuzzleSolutionStateType } from '../puzzle-viewer-component';
 
 @Component({
   selector: 'app-find-all-checks-puzzle',
   templateUrl: './find-all-checks-puzzle.component.html',
   styleUrls: ['./find-all-checks-puzzle.component.scss']
 })
-export class FindAllChecksPuzzleComponent extends PuzzleComponent implements OnChanges {
+export class FindAllChecksPuzzleComponent extends PuzzleViewerComponent implements OnChanges {
 
   @Input() fen: string;
   boardConfig: Config;
