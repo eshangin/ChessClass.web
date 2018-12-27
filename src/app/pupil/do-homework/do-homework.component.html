@@ -11,7 +11,7 @@
         [fen]="currentPuzzle.fen" 
         (initialized)="findAllChecksPuzzleOnInitialized($event)"
         (boardInit)="findAllChecksPuzzleOnBoardInit($event)"
-        (moveMade)="findAllChecksPuzzleOnMoveMade($event)"
+        (puzzleSolutionStateChanged)="findAllChecksPuzzleStateChanged($event)"
         class="d-block"></app-find-all-checks-puzzle>
     </div>
     <div *ngIf="puzzleState != puzzleSolutionStateTypes.PuzzleDone">

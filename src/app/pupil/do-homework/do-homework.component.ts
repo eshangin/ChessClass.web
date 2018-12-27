@@ -89,11 +89,11 @@ export class DoHomeworkComponent implements OnInit, AfterViewChecked {
     });
   }
 
-  onPuzzleSolutionStateChanged(data: {stateType: PuzzleSolutionStateType, move: ChessJS.Move}) {
+  onPuzzleSolutionStateChanged(moveInfo: {stateType: PuzzleSolutionStateType, move: ChessJS.Move}) {
     this.tabset.select('tabPuzzleTask');
-    this.puzzleState = data.stateType;
-    this.myLastMove = data.move;
-    if (data.stateType == PuzzleSolutionStateType.PuzzleDone) {
+    this.puzzleState = moveInfo.stateType;
+    this.myLastMove = moveInfo.move;
+    if (moveInfo.stateType == PuzzleSolutionStateType.PuzzleDone) {
       this.saveAttempt(this.movements).subscribe();
       this.markPuzzleFixed();
     }
@@ -109,7 +109,7 @@ export class DoHomeworkComponent implements OnInit, AfterViewChecked {
     };
   }
 
-  findAllChecksPuzzleOnMoveMade(moveInfo: IMoveInfo) {
+  findAllChecksPuzzleStateChanged(moveInfo: {stateType: PuzzleSolutionStateType, move: ChessJS.Move}) {
     this.tabset.select('tabPuzzleTask');
     if (this.puzzleState != PuzzleSolutionStateType.PuzzleDone) {
       this.puzzleState = moveInfo.stateType;

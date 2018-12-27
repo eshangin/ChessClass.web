@@ -36,7 +36,6 @@ export abstract class PuzzleComponent {
 
   protected cgApi: Api;
   boardConfig: Config;
-  @Output() moveMade = new EventEmitter<IMoveInfo>();
   @Output() boardInit = new EventEmitter<Api>();
   @Output() initialized = new EventEmitter<IInitializedInfo>();
   @Output() protected puzzleSolutionStateChanged = new EventEmitter<{stateType: PuzzleSolutionStateType, move: ChessJS.Move}>();
@@ -89,7 +88,7 @@ export abstract class PuzzleComponent {
     this.pieceMoved.emit({move: move, moveType: MoveType.NormalOnDrop});
 
     let state = this.getPuzzleSolutionState(move);
-    this.puzzleSolutionStateChanged.emit({stateType: PuzzleSolutionStateType.PuzzleDone, move: move});
+    this.puzzleSolutionStateChanged.emit({stateType: state, move: move});
     this.handlePuzzleSolutionState(move, state);
   }
 

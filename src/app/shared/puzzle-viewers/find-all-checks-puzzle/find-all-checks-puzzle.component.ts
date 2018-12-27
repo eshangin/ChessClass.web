@@ -41,12 +41,13 @@ export class FindAllChecksPuzzleComponent extends PuzzleComponent implements OnC
   }
 
   handlePuzzleSolutionState(move: ChessJS.Move, state: PuzzleSolutionStateType) {
-    this.moveMade.emit({ stateType: state, move: move } as IMoveInfo);
     this.disableBoardUserMoves();
-    setTimeout(() => {
-      // move to initial pozition
-      this.updateBoardUiInfo(this.fen, this.initialFenInfo.turn)
-    }, 1000);
+    if (state != PuzzleSolutionStateType.PuzzleDone) {
+      setTimeout(() => {
+        // move to initial pozition
+        this.updateBoardUiInfo(this.fen, this.initialFenInfo.turn)
+      }, 1000);
+    }
   }
 
   getPuzzleSolutionState(move: ChessJS.Move): PuzzleSolutionStateType {
