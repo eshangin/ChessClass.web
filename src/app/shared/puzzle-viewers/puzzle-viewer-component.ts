@@ -57,6 +57,7 @@ export abstract class PuzzleViewerComponent {
     this.boardConfig = { 
       fen: fen,
       turnColor: this.initialFenInfo.turn,
+      check: false,
       movable: {
         dests: this.initialFenInfo.dests,
         color: this.initialFenInfo.turn,
@@ -73,7 +74,14 @@ export abstract class PuzzleViewerComponent {
       selectable: {
         enabled: false
       },
-      lastMove: null
+      lastMove: null,
+      events: {
+        move: (orig: cgTypes.Key, dest: cgTypes.Key, capturedPiece?: cgTypes.Piece) => {
+          let inCheck = new Chess(this.chessHelperService.tryFixFen(this.cgApi.getFen(),
+            this.cgApi.state.turnColor == 'white' ? 'w' : 'b')).in_check();
+          this.cgApi.set({ check: inCheck });
+        }
+      }
     };
     this.initialized.emit({ fen: fen });
   }
@@ -100,13 +108,13 @@ export abstract class PuzzleViewerComponent {
     });
   }
 
-  protected updateBoardUiInfo(fen: string, turn: 'white' | 'black') {
+  protected makeBoardMove(orig: cgTypes.Key, dest: cgTypes.Key, newDests: { [key: string]: cgTypes.Key[] }, turn: 'white' | 'black') {
+    this.cgApi.move(orig, dest);
     this.cgApi.set({
-      fen: fen,
       turnColor: turn,
       movable: {
         color: turn,
-        dests: this.chessHelperService.getChessgroundPossibleDests(fen)
+        dests: newDests
       },
       draggable: {enabled: true}
     });

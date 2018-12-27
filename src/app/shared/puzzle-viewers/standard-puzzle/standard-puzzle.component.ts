@@ -61,7 +61,10 @@ export class StandardPuzzleComponent extends PuzzleViewerComponent implements On
           this.cgApi.move(programmaticMove.from as cgTypes.Key, programmaticMove.to as cgTypes.Key);
           this.engine.move(programmaticMove);
           this.pieceMoved.emit({move: programmaticMove, moveType: MoveType.NormalProgrammatic});
-          this.updateBoardUiInfo(this.engine.fen(), this.engine.turn() == 'w' ? 'white' : 'black');
+          const fen = this.engine.fen();
+          const dests = this.chessHelperService.getChessgroundPossibleDests(fen);
+          this.makeBoardMove(programmaticMove.from as cgTypes.Key, programmaticMove.to as cgTypes.Key, 
+            dests, this.engine.turn() == 'w' ? 'white' : 'black');
         }, 500);
         break;
       case PuzzleSolutionStateType.IncorrectMove:
@@ -71,7 +74,9 @@ export class StandardPuzzleComponent extends PuzzleViewerComponent implements On
           // undo move
           let undoMove = this.engine.undo();
           this.pieceMoved.emit({move: undoMove, moveType: MoveType.Undo});
-          this.updateBoardUiInfo(this.engine.fen(), this.engine.turn() == 'w' ? 'white' : 'black');
+          const fen = this.engine.fen();
+          const dests = this.chessHelperService.getChessgroundPossibleDests(fen);
+          this.makeBoardMove(move.to as cgTypes.Key, move.from as cgTypes.Key, dests, this.engine.turn() == 'w' ? 'white' : 'black');
         }, 1000);
         break;
     }

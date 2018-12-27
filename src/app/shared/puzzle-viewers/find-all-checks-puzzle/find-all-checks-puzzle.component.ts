@@ -45,7 +45,8 @@ export class FindAllChecksPuzzleComponent extends PuzzleViewerComponent implemen
     if (state != PuzzleSolutionStateType.PuzzleDone) {
       setTimeout(() => {
         // move to initial pozition
-        this.updateBoardUiInfo(this.fen, this.initialFenInfo.turn)
+        const dests = this.chessHelperService.getChessgroundPossibleDests(this.fen);
+        this.makeBoardMove(move.to as cgTypes.Key, move.from as cgTypes.Key, dests, this.initialFenInfo.turn)
       }, 1000);
     }
   }
