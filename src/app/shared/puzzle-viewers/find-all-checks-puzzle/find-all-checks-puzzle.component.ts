@@ -5,7 +5,7 @@ import * as _ from 'underscore'
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
 import * as cgTypes from 'chessground/types';
 import { Api } from 'chessground/api';
-import { PuzzleSolutionStateType } from '../standard-puzzle/standard-puzzle.component';
+import { PuzzleSolutionStateType } from 'src/app/services/puzzle-workflow/puzzle-workflow.service';
 
 export interface IMoveInfo {
   stateType: PuzzleSolutionStateType,

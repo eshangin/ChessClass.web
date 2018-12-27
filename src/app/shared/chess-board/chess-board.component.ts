@@ -3,18 +3,7 @@ import { Component, Input, ElementRef, Output, EventEmitter, AfterViewInit, Simp
 import * as ChessBoard from 'chessboardjs';
 import * as Chess from 'chess.js';
 import { ChessHelperService } from 'src/app/services/chess-helper.service';
-
-export enum MoveType {
-  NormalOnDrop = 1,
-  NormalProgrammatic,
-  Undo,
-  UndoAll
-}
-
-export interface MoveInfo {
-  move: ChessJS.Move;
-  moveType: MoveType;
-}
+import { MoveInfo, MoveType } from 'src/app/services/puzzle-workflow/puzzle-workflow.service';
 
 @Component({
   selector: 'app-chess-board',

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {ChessBoardComponent, MoveInfo} from 'src/app/shared/chess-board/chess-board.component';
+import {ChessBoardComponent} from 'src/app/shared/chess-board/chess-board.component';
+import { MoveInfo } from 'src/app/services/puzzle-workflow/puzzle-workflow.service';
 
 interface IGameInfo {
   board: ChessBoardComponent;
