@@ -13,8 +13,8 @@
   <li *ngFor="let h of homeworks" class="mb-4">
     <span>Назначено {{h.dateCreated | date:'d MMMM, H:mm':undefined:'ru' }}</span>
     <hr>
-    <div *ngFor="let p of h.puzzles" class="card align-top mr-3 mb-3 pull-left d-inline-block" style="width: 202px;">
-      <div *ngIf="p.fixedPercent == 100" class="b-board-overlay"></div>
+    <div *ngFor="let p of h.puzzles" class="b-board card align-top mr-3 mb-3 pull-left d-inline-block" style="width: 202px;">
+      <div *ngIf="p.fixedPercent == 100" class="b-board__overlay" [style.width.px]="200" [style.height.px]="200"></div>
       <app-pure-chessground [sizePx]="200" [config]="p.cgConfig" (initialized)="onBoardInit($event, p)"></app-pure-chessground>
       <div class="card-body">
         <small>
